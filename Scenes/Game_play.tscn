@@ -1,0 +1,97 @@
+[gd_scene load_steps=16 format=3 uid="uid://bw6x2fu47ssrf"]
+
+[ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_dyuqt"]
+[ext_resource type="Texture2D" uid="uid://cuxtn34e6qryq" path="res://Assets/UI/button_shuffle_normal.png" id="2_h6uwh"]
+[ext_resource type="Texture2D" uid="uid://ckbs8n4ouovj1" path="res://Assets/UI/button_shuffle_pressed.png" id="3_nadkd"]
+[ext_resource type="Texture2D" uid="uid://ch58av02hqkn7" path="res://Assets/UI/button_pause_normal.png" id="4_4u64v"]
+[ext_resource type="Texture2D" uid="uid://dbf0ywilo5t7b" path="res://Assets/UI/button_pause_pressed.png" id="5_eobtf"]
+[ext_resource type="Texture2D" uid="uid://clj30v2rho2gg" path="res://Assets/UI/indicator_has_jack.png" id="6_1elpm"]
+[ext_resource type="Texture2D" uid="uid://cgdp8cj774r5i" path="res://Assets/UI/Cards/card_7_diamond.png" id="7_ql667"]
+[ext_resource type="Texture2D" uid="uid://u3wenxuarpjy" path="res://Assets/UI/Cards/card_8_club.png" id="8_v5rwg"]
+[ext_resource type="Texture2D" uid="uid://bttx4gxnigm41" path="res://Assets/UI/Cards/card_8_diamond.png" id="9_js8lp"]
+[ext_resource type="Texture2D" uid="uid://dqvd1opjip08s" path="res://Assets/UI/Cards/card_8_heart.png" id="10_5xafi"]
+[ext_resource type="Texture2D" uid="uid://dqus0tqecef8r" path="res://Assets/UI/Cards/card_9_spade.png" id="11_bk7f8"]
+[ext_resource type="Texture2D" uid="uid://dctl8s8n6mw77" path="res://Assets/UI/Cards/card_a_diamond.png" id="12_ff6ri"]
+[ext_resource type="Texture2D" uid="uid://bcro7o432maud" path="res://Assets/UI/Cards/card_k_heart.png" id="13_wprc1"]
+[ext_resource type="Texture2D" uid="uid://bo1kuplornvnr" path="res://Assets/UI/Cards/card_q_heart.png" id="14_xme2h"]
+[ext_resource type="Texture2D" uid="uid://cd8r46mdpn0tv" path="res://Assets/UI/Cards/new_card_back.png" id="15_xachr"]
+
+[node name="Game_play" type="Node2D"]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+
+[node name="MainBg" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(533.5, 963.5)
+scale = Vector2(0.261806, 0.253516)
+texture = ExtResource("1_dyuqt")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="ShuffleButton" type="TextureButton" parent="UI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -137.0
+offset_top = -200.0
+offset_right = 137.0
+offset_bottom = -116.0
+grow_horizontal = 2
+grow_vertical = 0
+texture_normal = ExtResource("2_h6uwh")
+texture_pressed = ExtResource("3_nadkd")
+
+[node name="PauseButton" type="TextureButton" parent="UI"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 90.0
+offset_top = -220.0
+offset_right = 216.0
+offset_bottom = -98.0
+grow_vertical = 0
+texture_normal = ExtResource("4_4u64v")
+texture_pressed = ExtResource("5_eobtf")
+
+[node name="IndicatorHasJack" type="Sprite2D" parent="."]
+position = Vector2(947, 1754)
+texture = ExtResource("6_1elpm")
+
+[node name="Card7Diamond" type="Sprite2D" parent="."]
+position = Vector2(548, 1471)
+texture = ExtResource("7_ql667")
+
+[node name="Card8Club" type="Sprite2D" parent="."]
+position = Vector2(398, 1456)
+texture = ExtResource("8_v5rwg")
+
+[node name="Card8Diamond" type="Sprite2D" parent="."]
+position = Vector2(817, 1433)
+texture = ExtResource("9_js8lp")
+
+[node name="Card8Heart" type="Sprite2D" parent="."]
+position = Vector2(209, 1107)
+texture = ExtResource("10_5xafi")
+
+[node name="Card9Spade" type="Sprite2D" parent="."]
+position = Vector2(513, 1040)
+texture = ExtResource("11_bk7f8")
+
+[node name="CardADiamond" type="Sprite2D" parent="."]
+position = Vector2(723, 1067)
+texture = ExtResource("12_ff6ri")
+
+[node name="CardKHeart" type="Sprite2D" parent="."]
+position = Vector2(963, 1107)
+texture = ExtResource("13_wprc1")
+
+[node name="CardQHeart" type="Sprite2D" parent="."]
+position = Vector2(198, 1393)
+texture = ExtResource("14_xme2h")
+
+[node name="NewCardBack" type="Sprite2D" parent="."]
+position = Vector2(230, 757)
+texture = ExtResource("15_xachr")
