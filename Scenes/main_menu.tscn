@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://bdqcch58ny85f"]
+[gd_scene load_steps=9 format=3 uid="uid://bdqcch58ny85f"]
 
 [ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_r35uy"]
 [ext_resource type="Texture2D" uid="uid://b1gcjcf4qbryi" path="res://Assets/UI/button_primary_normal.png" id="2_yvb42"]
 [ext_resource type="Texture2D" uid="uid://c0sayeopluoor" path="res://Assets/UI/button_primary_pressed.png" id="3_wmjq0"]
 [ext_resource type="Texture2D" uid="uid://3qogcbfh4881" path="res://Assets/UI/button_exit.png" id="4_e1icq"]
+[ext_resource type="Script" path="res://Scenes/StartButton.gd" id="4_udhgg"]
 [ext_resource type="Texture2D" uid="uid://ct4oto8qjn1xw" path="res://Assets/UI/button_exit_pressed.png" id="5_xjqnw"]
 [ext_resource type="Texture2D" uid="uid://12h5dofygqgs" path="res://Assets/UI/button_settings.png" id="6_txnc6"]
 [ext_resource type="Texture2D" uid="uid://biicnt0mj8rsn" path="res://Assets/UI/button_settings_pressed.png" id="7_mbsrj"]
@@ -51,6 +52,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture_normal = ExtResource("2_yvb42")
 texture_pressed = ExtResource("3_wmjq0")
+script = ExtResource("4_udhgg")
 
 [node name="Label" type="Label" parent="UI/StartButton"]
 layout_mode = 1
@@ -94,3 +96,5 @@ offset_bottom = -56.0
 grow_vertical = 0
 texture_normal = ExtResource("6_txnc6")
 texture_pressed = ExtResource("7_mbsrj")
+
+[connection signal="pressed" from="UI/StartButton" to="UI/StartButton" method="_on_pressed"]
