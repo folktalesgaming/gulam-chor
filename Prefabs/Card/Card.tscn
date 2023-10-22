@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://cohmcy8s6a7qf"]
+
+[ext_resource type="Script" path="res://Prefabs/Card/Card.gd" id="1_uhcpj"]
+
+[node name="MarginContainer" type="MarginContainer"]
+offset_right = 154.0
+offset_bottom = 244.0
+pivot_offset = Vector2(77, 122)
+script = ExtResource("1_uhcpj")
+
+[node name="Card" type="Sprite2D" parent="."]
+centered = false
