@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bdqcch58ny85f"]
+[gd_scene load_steps=12 format=3 uid="uid://bdqcch58ny85f"]
 
 [ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_r35uy"]
 [ext_resource type="Texture2D" uid="uid://b1gcjcf4qbryi" path="res://Assets/UI/button_primary_normal.png" id="2_yvb42"]
@@ -7,7 +7,12 @@
 [ext_resource type="Script" path="res://Scenes/StartButton.gd" id="4_udhgg"]
 [ext_resource type="Texture2D" uid="uid://ct4oto8qjn1xw" path="res://Assets/UI/button_exit_pressed.png" id="5_xjqnw"]
 [ext_resource type="Texture2D" uid="uid://12h5dofygqgs" path="res://Assets/UI/button_settings.png" id="6_txnc6"]
+[ext_resource type="Script" path="res://Scenes/ExitButton.gd" id="7_8u5bf"]
 [ext_resource type="Texture2D" uid="uid://biicnt0mj8rsn" path="res://Assets/UI/button_settings_pressed.png" id="7_mbsrj"]
+[ext_resource type="Script" path="res://Scenes/ConfirmationDialog.gd" id="10_0x41j"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vnbaq"]
+bg_color = Color(0, 0, 0, 0.529412)
 
 [node name="MainMenu" type="Node2D"]
 
@@ -84,6 +89,7 @@ grow_horizontal = 0
 grow_vertical = 0
 texture_normal = ExtResource("4_e1icq")
 texture_pressed = ExtResource("5_xjqnw")
+script = ExtResource("7_8u5bf")
 
 [node name="SettingsButton" type="TextureButton" parent="UI"]
 anchors_preset = 2
@@ -97,4 +103,20 @@ grow_vertical = 0
 texture_normal = ExtResource("6_txnc6")
 texture_pressed = ExtResource("7_mbsrj")
 
+[node name="ExitPopupPanel" type="PopupPanel" parent="."]
+transparent_bg = true
+size = Vector2i(1080, 1920)
+theme_override_styles/panel = SubResource("StyleBoxFlat_vnbaq")
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="ExitPopupPanel"]
+title = "Exit"
+position = Vector2i(100, 900)
+size = Vector2i(900, 200)
+ok_button_text = "Exit"
+dialog_text = "Do you want to exit ?"
+script = ExtResource("10_0x41j")
+
 [connection signal="pressed" from="UI/StartButton" to="UI/StartButton" method="_on_pressed"]
+[connection signal="pressed" from="UI/ExitButton" to="UI/ExitButton" method="_on_pressed"]
+[connection signal="canceled" from="ExitPopupPanel/ConfirmationDialog" to="ExitPopupPanel/ConfirmationDialog" method="_on_canceled"]
+[connection signal="confirmed" from="ExitPopupPanel/ConfirmationDialog" to="ExitPopupPanel/ConfirmationDialog" method="_on_confirmed"]
