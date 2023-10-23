@@ -10,3 +10,6 @@ script = ExtResource("1_uhcpj")
 
 [node name="Card" type="Sprite2D" parent="."]
 centered = false
+
+[node name="CardBack" type="Sprite2D" parent="."]
+centered = false
