@@ -1,6 +1,18 @@
-# Gulam Chor
+<div align="center">
+    <img src="https://raw.githubusercontent.com/folktalesgaming/gulam-chor/a8ecd1813606b27f019c28d7374c721b9dd531d4/icon.svg" />
+</div>
+
+# Gulam Chor (Jack the theif)
 
 Gulam Chor is a classic card game where one of the Jack`(Gulam)` is removed from the pack of cards and all the remaining cards are shuffled and divided among the players. After that the players will remove the pair cards and one by one players will pick the card in random from next player until all the cards are removed except for the odd Jack at which point the game ends and the player with the odd jack is the loser.
+
+## Few screenshots of games
+
+These screenshots contains the screenshot during the development of the game, so might not represent the final game (`i.e the MVP version of the game`)
+
+**Main Menu** | **Game Play Screen**
+--|--
+![Main menu](https://github.com/floktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_main_menu.png?raw=true) | ![Game Play Screen](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_play.png?raw=true)
 
 # Plans For the Game
 
