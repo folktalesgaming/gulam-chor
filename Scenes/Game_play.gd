@@ -22,7 +22,14 @@ const RightPlayerCardPositionOffset = 0.07
 const TopPlayerCardPositionOffset = 0.05
 const LeftPlayerCardPositionOffset = 0.07
 
+# TODO: make it proper player prefabs and player models to represent them
+var player = [];
+var playerRight = [];
+var playerLeft = [];
+var playerTop = [];
+
 func _ready():
+	# TODO: add animations to divide the cards into players
 	for card in deckOfCards:
 		var new_card = CardBase.instantiate()
 		new_card.cardName = card
@@ -34,20 +41,43 @@ func _ready():
 			new_card.rotation = deg_to_rad(angle)/2
 			new_card.SetIsMyCard()
 			$PlayerCards.add_child(new_card)
+			player.append(card)
 			angle += PlayerHandCardAngleOffset
 		if playerIndex == 1:
 			new_card.position = ViewportSize * Vector2(0.95, 1 - posOffsetYRight)
 			new_card.rotation = deg_to_rad(90)
 			$SecondPlayer.add_child(new_card)
+			playerRight.append(card)
 			posOffsetYRight += RightPlayerCardPositionOffset
 		if playerIndex == 2:
 			new_card.position = ViewportSize * Vector2(0.75 - posOffsetX, -0.1)
 			$ThirdPlayer.add_child(new_card)
+			playerTop.append(card)
 			posOffsetX += TopPlayerCardPositionOffset
 		if playerIndex == 3:
 			new_card.position = ViewportSize * Vector2(-0.08, 1 - posOffsetYLeft)
 			new_card.rotation = deg_to_rad(90)
+			playerLeft.append(card)
 			$FourthPlayer.add_child(new_card)
 			posOffsetYLeft += LeftPlayerCardPositionOffset
 		
 		playerIndex = (1+playerIndex)%4
+		
+	# TODO: add animations for removing pairs of cards into the center pile
+	player = Utility.removePairs(player)
+	removeCardsFromScreen($PlayerCards, player)
+	
+	playerRight = Utility.removePairs(playerRight)
+	removeCardsFromScreen($SecondPlayer, playerRight)
+	
+	playerTop = Utility.removePairs(playerTop)
+	removeCardsFromScreen($ThirdPlayer, playerTop)
+	
+	playerLeft = Utility.removePairs(playerLeft)
+	removeCardsFromScreen($FourthPlayer, playerLeft)	
+
+# TODO: adjust the position of remaining cards in hands for each players after removing pairs
+func removeCardsFromScreen(node, toCheckCardList):
+	for card in node.get_children():
+		if not toCheckCardList.has(card.cardName):
+			card.free()
