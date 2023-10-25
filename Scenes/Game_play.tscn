@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bw6x2fu47ssrf"]
+[gd_scene load_steps=9 format=3 uid="uid://bw6x2fu47ssrf"]
 
 [ext_resource type="Script" path="res://Scenes/Game_play.gd" id="1_0htco"]
 [ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_dyuqt"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://ch58av02hqkn7" path="res://Assets/UI/button_pause_normal.png" id="4_4u64v"]
 [ext_resource type="Texture2D" uid="uid://dbf0ywilo5t7b" path="res://Assets/UI/button_pause_pressed.png" id="5_eobtf"]
 [ext_resource type="Texture2D" uid="uid://clj30v2rho2gg" path="res://Assets/UI/indicator_has_jack.png" id="6_1elpm"]
+[ext_resource type="Texture2D" uid="uid://kiaaggymnfik" path="res://Assets/UI/Cards/deck_of_cards.png" id="8_5bn2q"]
 
 [node name="Game_play" type="Node2D"]
 script = ExtResource("1_0htco")
@@ -60,3 +61,12 @@ texture = ExtResource("6_1elpm")
 [node name="ThirdPlayer" type="Node2D" parent="."]
 
 [node name="FourthPlayer" type="Node2D" parent="."]
+
+[node name="PackOfDeck" type="Node2D" parent="."]
+position = Vector2(540, 900)
+
+[node name="Decks" type="Sprite2D" parent="PackOfDeck"]
+texture = ExtResource("8_5bn2q")
+
+[node name="PairCards" type="Node2D" parent="."]
+position = Vector2(540, 900)
