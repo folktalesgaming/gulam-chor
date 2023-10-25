@@ -1,12 +1,31 @@
-[gd_scene load_steps=2 format=3 uid="uid://cohmcy8s6a7qf"]
+[gd_scene load_steps=3 format=3 uid="uid://cohmcy8s6a7qf"]
 
 [ext_resource type="Script" path="res://Prefabs/Card/Card.gd" id="1_uhcpj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7g344"]
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.831373, 0.176471, 0.286275, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(1, 0, 0, 0.72549)
+shadow_size = 10
 
 [node name="MarginContainer" type="MarginContainer"]
 offset_right = 154.0
 offset_bottom = 244.0
 pivot_offset = Vector2(77, 122)
 script = ExtResource("1_uhcpj")
+
+[node name="SelectedContainer" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7g344")
 
 [node name="Card" type="Sprite2D" parent="."]
 centered = false
