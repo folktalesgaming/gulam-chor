@@ -5,6 +5,8 @@ const Utility = preload("res://Utils/utility.gd")
 const DeckOfCard = preload("res://Utils/deck_of_cards_classic.gd")
 
 @onready var deckOfCards = Utility.shuffleDeck(DeckOfCard.getDeckClassic())
+@onready var PairCardsPosition = $PairCards.position
+
 @onready var ViewportSize = ProjectSettings.get_setting("display/window/size/viewport_width")
 #Vector2(get_viewport().size.x, get_viewport().size.y)
 @onready var CenterCardOval = ViewportSize * Vector2(0.45, 1.55)
@@ -49,7 +51,7 @@ func _ready():
 		var new_card = CardBase.instantiate()
 		new_card.cardName = card
 		new_card.startPosition = $PackOfDeck.position
-		new_card.startRotation = 0
+		new_card.startRotation = deg_to_rad(0)
 		
 		if playerIndex == 0:
 			# TODO: Make it more dynamic for later when removing pairs and adding cards to hand 
@@ -83,11 +85,10 @@ func _ready():
 		playerIndex = (1+playerIndex)%4
 		
 	$PackOfDeck.visible = false
-
-	# TODO: add animations for removing pairs of cards into the center pile
-	player = Utility.removePairs(player)
-	removeCardsFromScreen($PlayerCards, player)
 	
+	$RemovePairBotTimer.start() # starting the timer for the bots to remove their pairs
+
+func _on_remove_pair_bot_timer_timeout():
 	playerRight = Utility.removePairs(playerRight)
 	removeCardsFromScreen($SecondPlayer, playerRight)
 	
@@ -96,16 +97,35 @@ func _ready():
 	
 	playerLeft = Utility.removePairs(playerLeft)
 	removeCardsFromScreen($FourthPlayer, playerLeft)
+	
+	$RemovePairPlayerTimer.start() # starting the timer for the pairs in player hand to pop up
 
 # TODO: adjust the position of remaining cards in hands for each players after removing pairs
 func removeCardsFromScreen(node, toCheckCardList):
 	for card in node.get_children():
 		if not toCheckCardList.has(card.cardName):
-			card.startPosition = card.position
-			card.targetPosition = Vector2($PairCards.position.x + rng.randf_range(-2.0, 2.0), $PairCards.position.y + rng.randf_range(-1.0, 1.0))
-			card.startRotation = card.rotation
-			card.targetRotation = deg_to_rad(rng.randf_range(-130.0, 130.0))
-			card.SetIsMyCard()
-			card.state = MOVINGFROMHANDTOPAIR
-			removedPairCards.append(card)
+			var new_removed_card = CardBase.instantiate()
+			new_removed_card.cardName = card.cardName
+			new_removed_card.startPosition = Vector2(PairCardsPosition.x - card.position.x, PairCardsPosition.y - card.position.y)
+			new_removed_card.targetPosition = Vector2(rng.randf_range(-2.0, 10.0), rng.randf_range(-2.0, 10.0))
+			new_removed_card.startRotation = card.rotation
+			new_removed_card.targetRotation = deg_to_rad(card.rotation + rng.randf_range(-30.0, 60.0))
+			new_removed_card.SetIsMyCard()
+			$PairCards.add_child(new_removed_card)
+			new_removed_card.state = MOVINGFROMHANDTOPAIR
 			card.free()
+
+
+func _on_remove_pair_player_timer_timeout():
+	# TODO: add animations for removing pairs of cards into the center pile
+	# player = Utility.removePairs(player)
+	# removeCardsFromScreen($PlayerCards, player)
+	popUpPlayerPairs()
+
+func popUpPlayerPairs():
+	var toRemovePairs = Utility.removePairs(player)
+	for card in $PlayerCards.get_children():
+		if not toRemovePairs.has(card.cardName):
+			card.startPosition = card.position
+			card.targetPosition = Vector2(card.position.x, card.position.y - 60)
+			card.state = INPAIR

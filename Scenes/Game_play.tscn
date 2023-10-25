@@ -69,4 +69,15 @@ position = Vector2(540, 900)
 texture = ExtResource("8_5bn2q")
 
 [node name="PairCards" type="Node2D" parent="."]
-position = Vector2(540, 900)
+position = Vector2(540, 600)
+rotation = 3.14159
+
+[node name="RemovePairBotTimer" type="Timer" parent="."]
+wait_time = 2.5
+one_shot = true
+
+[node name="RemovePairPlayerTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="RemovePairBotTimer" to="." method="_on_remove_pair_bot_timer_timeout"]
+[connection signal="timeout" from="RemovePairPlayerTimer" to="." method="_on_remove_pair_player_timer_timeout"]
