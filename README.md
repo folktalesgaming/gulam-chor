@@ -10,9 +10,13 @@ Gulam Chor is a classic card game where one of the Jack`(Gulam)` is removed from
 
 These screenshots contains the screenshot during the development of the game, so might not represent the final game (`i.e the MVP version of the game`)
 
-**Main Menu** | **Game Play Screen** | **Game Play Screen First Round**
---|--|--
-![Main menu](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_main_menu.png?raw=true) | ![Game Play Screen](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_play.png?raw=true) | ![Game Play screen first round](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_play_first_round.png?raw=true)
+**Main Menu** | **Exit Model**
+--|--
+![Main menu](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_main_menu.png?raw=true) | ![Exit Model](https://github.com/folktalesgaming/gulam-chor/blob/mian/git_assets/gulam_chor_exit_popup.png?raw=true)
+
+**Game Play Screen** | **Game Play Screen First Round**
+--|--
+![Game Play Screen](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_play.png?raw=true) | ![Game Play screen first round](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_play_first_round.png?raw=true)
 
 # Plans For the Game
 
