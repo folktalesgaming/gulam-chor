@@ -12,7 +12,7 @@ These screenshots contains the screenshot during the development of the game, so
 
 **Main Menu** | **Exit Model**
 --|--
-![Main menu](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_main_menu.png?raw=true) | ![Exit Model](https://github.com/folktalesgaming/gulam-chor/blob/mian/git_assets/gulam_chor_exit_popup.png?raw=true)
+![Main menu](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_main_menu.png?raw=true) | ![Exit Model](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_exit_popup.png?raw=true)
 
 **Game Play Screen** | **Game Play Screen First Round**
 --|--
