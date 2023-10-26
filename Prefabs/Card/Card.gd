@@ -5,7 +5,8 @@ var startPosition = 0
 var targetPosition = 0
 var startRotation = deg_to_rad(0)
 var targetRotation = 0
-var DRAWTIME = 1
+var DRAWTIME = 0.4 # time for the tween animation to animate for. TODO: make different timing for different states of the card
+var GETFROMDECKTIME = 0.08
 
 enum {
 	INDECK,
@@ -37,23 +38,23 @@ func _physics_process(_delta):
 		INDECK:
 			pass
 		MOVINGFROMDECKTOHAND:
-			animateFromStartToTarget(INHAND)
+			animateFromStartToTarget(INHAND, GETFROMDECKTIME)
 		INHAND:
 			pass
 		INPAIR:
-			animateFromStartToTarget(INHAND, false, true)
+			animateFromStartToTarget(INHAND, DRAWTIME, false, true)
 		MOVINGFROMHANDTOPAIR:
-			animateFromStartToTarget(INDECK)
+			animateFromStartToTarget(INDECK, DRAWTIME)
 		INPICK:
 			pass
 		MOVINGFROMPICKTOHAND:
 			pass
 		REORGANIZE:
-			animateFromStartToTarget(INHAND)
+			animateFromStartToTarget(INHAND, DRAWTIME)
 		SHUFFLE:
 			pass
 
-func animateFromStartToTarget(nextState, shouldRotate=true, selected=false):
+func animateFromStartToTarget(nextState, tweenTime, shouldRotate=true, selected=false):
 	if tween:
 		tween.kill()
 		
@@ -62,13 +63,13 @@ func animateFromStartToTarget(nextState, shouldRotate=true, selected=false):
 	tween.set_trans(Tween.TRANS_CUBIC)
 	tween.set_parallel(true)
 	
-	tween.tween_property($".", "position", targetPosition, DRAWTIME).from(startPosition)
+	tween.tween_property($".", "position", targetPosition, tweenTime).from(startPosition)
 	if shouldRotate:
-		tween.tween_property($".", "rotation", targetRotation, DRAWTIME-0.5).from(startRotation)
+		tween.tween_property($".", "rotation", targetRotation, tweenTime).from(startRotation)
 	else:
 		if selected:
-			tween.tween_property($SelectedContainer, "visible", true, DRAWTIME-0.7).from(false)
+			tween.tween_property($SelectedContainer, "visible", true, tweenTime-0.3).from(false)
 		else:
-			tween.tween_property($SelectedContainer, "visible", false, DRAWTIME-0.7).from(true)
+			tween.tween_property($SelectedContainer, "visible", false, tweenTime-0.3).from(true)
 	
 	state = nextState

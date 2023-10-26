@@ -51,30 +51,30 @@ func _ready():
 		var new_card = CardBase.instantiate()
 		new_card.cardName = card
 		new_card.startPosition = $PackOfDeck.position
-		new_card.startRotation = deg_to_rad(0)
+		new_card.startRotation = deg_to_rad(30)
 		
 		if playerIndex == 0:
 			# TODO: Make it more dynamic for later when removing pairs and adding cards to hand 
 			OvalAngleVector = Vector2(-Horizontal_radius * cos(angle), -Vertical_radius * sin(angle))
-			new_card.targetPosition = CenterCardOval - OvalAngleVector
+			new_card.targetPosition = CenterCardOval - OvalAngleVector - $PlayerCards.position
 			new_card.targetRotation = deg_to_rad(angle)/2
 			new_card.SetIsMyCard()
 			$PlayerCards.add_child(new_card)
 			player.append(card)
 			angle += PlayerHandCardAngleOffset
 		if playerIndex == 1:
-			new_card.targetPosition = ViewportSize * Vector2(0.95, 1 - posOffsetYRight)
+			new_card.targetPosition = ViewportSize * Vector2(0.95, 1 - posOffsetYRight) - $SecondPlayer.position
 			new_card.targetRotation = deg_to_rad(90)
 			$SecondPlayer.add_child(new_card)
 			playerRight.append(card)
 			posOffsetYRight += RightPlayerCardPositionOffset
 		if playerIndex == 2:
-			new_card.targetPosition = ViewportSize * Vector2(0.75 - posOffsetX, -0.1)
+			new_card.targetPosition = ViewportSize * Vector2(0.75 - posOffsetX, -0.1) - $ThirdPlayer.position
 			$ThirdPlayer.add_child(new_card)
 			playerTop.append(card)
 			posOffsetX += TopPlayerCardPositionOffset
 		if playerIndex == 3:
-			new_card.targetPosition = ViewportSize * Vector2(-0.08, 1 - posOffsetYLeft)
+			new_card.targetPosition = ViewportSize * Vector2(-0.08, 1 - posOffsetYLeft) - $FourthPlayer.position
 			new_card.targetRotation = deg_to_rad(90)
 			playerLeft.append(card)
 			$FourthPlayer.add_child(new_card)
@@ -83,6 +83,8 @@ func _ready():
 		new_card.state = MOVINGFROMDECKTOHAND
 		
 		playerIndex = (1+playerIndex)%4
+		
+		await get_tree().create_timer(0.08).timeout
 		
 	$PackOfDeck.visible = false
 	

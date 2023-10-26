@@ -55,15 +55,19 @@ position = Vector2(947, 1754)
 texture = ExtResource("6_1elpm")
 
 [node name="PlayerCards" type="Node2D" parent="."]
+position = Vector2(-300, -300)
 
 [node name="SecondPlayer" type="Node2D" parent="."]
+position = Vector2(-300, -300)
 
 [node name="ThirdPlayer" type="Node2D" parent="."]
+position = Vector2(-300, -300)
 
 [node name="FourthPlayer" type="Node2D" parent="."]
+position = Vector2(-300, -300)
 
 [node name="PackOfDeck" type="Node2D" parent="."]
-position = Vector2(540, 900)
+position = Vector2(540, 800)
 
 [node name="Decks" type="Sprite2D" parent="PackOfDeck"]
 texture = ExtResource("8_5bn2q")
@@ -73,7 +77,6 @@ position = Vector2(540, 600)
 rotation = 3.14159
 
 [node name="RemovePairBotTimer" type="Timer" parent="."]
-wait_time = 2.5
 one_shot = true
 
 [node name="RemovePairPlayerTimer" type="Timer" parent="."]
