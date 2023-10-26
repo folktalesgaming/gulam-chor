@@ -1,5 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://bdqcch58ny85f"]
+[gd_scene load_steps=17 format=3 uid="uid://bdqcch58ny85f"]
 
+[ext_resource type="Script" path="res://Scenes/main_menu.gd" id="1_37p43"]
 [ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_r35uy"]
 [ext_resource type="Texture2D" uid="uid://b1gcjcf4qbryi" path="res://Assets/UI/button_primary_normal.png" id="2_yvb42"]
 [ext_resource type="Texture2D" uid="uid://c0sayeopluoor" path="res://Assets/UI/button_primary_pressed.png" id="3_wmjq0"]
@@ -9,12 +10,17 @@
 [ext_resource type="Texture2D" uid="uid://12h5dofygqgs" path="res://Assets/UI/button_settings.png" id="6_txnc6"]
 [ext_resource type="Script" path="res://Scenes/ExitButton.gd" id="7_8u5bf"]
 [ext_resource type="Texture2D" uid="uid://biicnt0mj8rsn" path="res://Assets/UI/button_settings_pressed.png" id="7_mbsrj"]
-[ext_resource type="Script" path="res://Scenes/ConfirmationDialog.gd" id="10_0x41j"]
+[ext_resource type="Texture2D" uid="uid://c1d7mpor85pkl" path="res://Assets/UI/ExitModel.png" id="10_l0yw5"]
+[ext_resource type="Texture2D" uid="uid://c1wk82yd0x01c" path="res://Assets/UI/button_yes_exit_normal.png" id="11_5mf3j"]
+[ext_resource type="Texture2D" uid="uid://dynm4vuix8362" path="res://Assets/UI/button_yes_exit_pressed.png" id="12_rsih8"]
+[ext_resource type="Texture2D" uid="uid://dfdop1ufla8wo" path="res://Assets/UI/button_no_exit_normal.png" id="13_wiqc1"]
+[ext_resource type="Texture2D" uid="uid://ltnj1e2igrxw" path="res://Assets/UI/button_no_exit_pressed.png" id="14_lqgyn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vnbaq"]
 bg_color = Color(0, 0, 0, 0.529412)
 
 [node name="MainMenu" type="Node2D"]
+script = ExtResource("1_37p43")
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 
@@ -108,15 +114,38 @@ transparent_bg = true
 size = Vector2i(1080, 1920)
 theme_override_styles/panel = SubResource("StyleBoxFlat_vnbaq")
 
-[node name="ConfirmationDialog" type="ConfirmationDialog" parent="ExitPopupPanel"]
-title = "Exit"
-position = Vector2i(100, 900)
-size = Vector2i(900, 200)
-ok_button_text = "Exit"
-dialog_text = "Do you want to exit ?"
-script = ExtResource("10_0x41j")
+[node name="Sprite2D" type="Sprite2D" parent="ExitPopupPanel"]
+position = Vector2(540, 960)
+texture = ExtResource("10_l0yw5")
+
+[node name="YesButton" type="TextureButton" parent="ExitPopupPanel/Sprite2D"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -800.0
+offset_top = -408.0
+offset_right = -400.0
+offset_bottom = -275.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_vertical = 8
+texture_normal = ExtResource("11_5mf3j")
+texture_pressed = ExtResource("12_rsih8")
+
+[node name="NoButton" type="TextureButton" parent="ExitPopupPanel/Sprite2D"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = -408.0
+offset_bottom = -275.0
+grow_vertical = 0
+texture_normal = ExtResource("13_wiqc1")
+texture_pressed = ExtResource("14_lqgyn")
 
 [connection signal="pressed" from="UI/StartButton" to="UI/StartButton" method="_on_pressed"]
 [connection signal="pressed" from="UI/ExitButton" to="UI/ExitButton" method="_on_pressed"]
-[connection signal="canceled" from="ExitPopupPanel/ConfirmationDialog" to="ExitPopupPanel/ConfirmationDialog" method="_on_canceled"]
-[connection signal="confirmed" from="ExitPopupPanel/ConfirmationDialog" to="ExitPopupPanel/ConfirmationDialog" method="_on_confirmed"]
+[connection signal="pressed" from="ExitPopupPanel/Sprite2D/YesButton" to="." method="_on_yes_button_pressed"]
+[connection signal="pressed" from="ExitPopupPanel/Sprite2D/NoButton" to="." method="_on_no_button_pressed"]
