@@ -58,7 +58,7 @@ func _ready():
 			OvalAngleVector = Vector2(-Horizontal_radius * cos(angle), -Vertical_radius * sin(angle))
 			new_card.targetPosition = CenterCardOval - OvalAngleVector - $PlayerCards.position
 			new_card.targetRotation = deg_to_rad(angle)/2
-			new_card.SetIsMyCard()
+			new_card.SetCardVisible()
 			$PlayerCards.add_child(new_card)
 			player.append(card)
 			angle += PlayerHandCardAngleOffset
@@ -112,11 +112,10 @@ func removeCardsFromScreen(node, toCheckCardList):
 			new_removed_card.targetPosition = Vector2(rng.randf_range(-2.0, 10.0), rng.randf_range(-2.0, 10.0))
 			new_removed_card.startRotation = card.rotation
 			new_removed_card.targetRotation = deg_to_rad(card.rotation + rng.randf_range(-30.0, 60.0))
-			new_removed_card.SetIsMyCard()
+			new_removed_card.SetCardVisible()
 			$PairCards.add_child(new_removed_card)
 			new_removed_card.state = MOVINGFROMHANDTOPAIR
 			card.free()
-
 
 func _on_remove_pair_player_timer_timeout():
 	# TODO: add animations for removing pairs of cards into the center pile
@@ -131,3 +130,45 @@ func popUpPlayerPairs():
 			card.startPosition = card.position
 			card.targetPosition = Vector2(card.position.x, card.position.y - 60)
 			card.state = INPAIR
+			
+	rearrangeCards($SecondPlayer, 1)
+	rearrangeCards($ThirdPlayer, 2)
+	rearrangeCards($FourthPlayer, 3)
+
+func _physics_process(_delta):
+	pass
+
+# TODO: when rearranging make the card position relative to the number of remaining cards 
+func rearrangeCards(node, pIndex):
+	var cards = node.get_children()
+	
+	match pIndex:
+		0:
+			pass
+		1:
+			posOffsetYRight = 0
+			for card in cards:
+				card.startPosition = card.position
+				card.startRotation = card.rotation
+				card.targetPosition = ViewportSize * Vector2(0.95, 0.85 - posOffsetYRight) - node.position
+				card.targetRotation = card.rotation
+				card.state = REORGANIZE
+				posOffsetYRight += RightPlayerCardPositionOffset
+		2:
+			posOffsetX = 0
+			for card in cards:
+				card.startPosition = card.position
+				card.startRotation = card.rotation
+				card.targetPosition = ViewportSize * Vector2(0.45 - posOffsetX, -0.1) - node.position
+				card.targetRotation = card.rotation
+				card.state = REORGANIZE
+				posOffsetX += TopPlayerCardPositionOffset
+		3:
+			posOffsetYLeft = 0
+			for card in cards:
+				card.startPosition = card.position
+				card.startRotation = card.rotation
+				card.targetPosition = ViewportSize * Vector2(-0.08, 0.85 - posOffsetYLeft) - node.position
+				card.targetRotation = card.rotation
+				card.state = REORGANIZE
+				posOffsetYLeft += LeftPlayerCardPositionOffset

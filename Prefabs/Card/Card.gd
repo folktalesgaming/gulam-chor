@@ -1,6 +1,7 @@
 extends MarginContainer
 
 var cardName = "card_a_spade"
+
 var startPosition = 0
 var targetPosition = 0
 var startRotation = deg_to_rad(0)
@@ -30,7 +31,7 @@ func _ready():
 	$CardBack.texture = load("res://Assets/UI/Cards/new_card_back.png")
 	$CardBack.scale *= size/$CardBack.texture.get_size()
 
-static func SetIsMyCard():
+static func SetCardVisible():
 	$CardBack.visible = false
 
 func _physics_process(_delta):

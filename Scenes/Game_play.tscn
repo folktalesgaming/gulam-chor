@@ -73,7 +73,7 @@ position = Vector2(540, 800)
 texture = ExtResource("8_5bn2q")
 
 [node name="PairCards" type="Node2D" parent="."]
-position = Vector2(540, 600)
+position = Vector2(580, 960)
 rotation = 3.14159
 
 [node name="RemovePairBotTimer" type="Timer" parent="."]
