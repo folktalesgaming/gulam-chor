@@ -32,3 +32,5 @@ centered = false
 
 [node name="CardBack" type="Sprite2D" parent="."]
 centered = false
+
+[connection signal="gui_input" from="SelectedContainer" to="." method="_on_selected_container_gui_input"]

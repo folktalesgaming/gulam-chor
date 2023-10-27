@@ -1,6 +1,7 @@
 extends MarginContainer
 
 var cardName = "card_a_spade"
+var isInPair = false
 
 var startPosition = 0
 var targetPosition = 0
@@ -9,18 +10,18 @@ var targetRotation = 0
 var DRAWTIME = 0.4 # time for the tween animation to animate for. TODO: make different timing for different states of the card
 var GETFROMDECKTIME = 0.08
 
-enum {
+enum STATE {
 	INDECK,
 	MOVINGFROMDECKTOHAND,
 	INHAND,
+	INPICKING,
 	INPAIR,
-	MOVINGFROMHANDTOPAIR,
-	INPICK,
-	MOVINGFROMPICKTOHAND,
+	MOVINGFROMHANDTODECK,
+	MOVINGFROMPICKINGTOHAND,
 	REORGANIZE,
 	SHUFFLE,
 }
-var state = INDECK
+var state = STATE.INDECK
 
 var tween
 
@@ -36,26 +37,26 @@ static func SetCardVisible():
 
 func _physics_process(_delta):
 	match state:
-		INDECK:
+		STATE.INDECK:
 			pass
-		MOVINGFROMDECKTOHAND:
-			animateFromStartToTarget(INHAND, GETFROMDECKTIME)
-		INHAND:
+		STATE.MOVINGFROMDECKTOHAND:
+			animateFromStartToTarget(STATE.INHAND, GETFROMDECKTIME)
+		STATE.INHAND:
 			pass
-		INPAIR:
-			animateFromStartToTarget(INHAND, DRAWTIME, false, true)
-		MOVINGFROMHANDTOPAIR:
-			animateFromStartToTarget(INDECK, DRAWTIME)
-		INPICK:
-			pass
-		MOVINGFROMPICKTOHAND:
-			pass
-		REORGANIZE:
-			animateFromStartToTarget(INHAND, DRAWTIME)
-		SHUFFLE:
+		STATE.INPAIR:
+			animateFromStartToTarget(STATE.INHAND, DRAWTIME, false, true, true)
+		STATE.MOVINGFROMHANDTODECK:
+			animateFromStartToTarget(STATE.INDECK, DRAWTIME)
+		STATE.INPICKING:
+			animateFromStartToTarget(STATE.INHAND, DRAWTIME, false, true, true)
+		STATE.MOVINGFROMPICKINGTOHAND:
+			animateFromStartToTarget(STATE.INHAND, DRAWTIME, true, true, false)
+		STATE.REORGANIZE:
+			animateFromStartToTarget(STATE.INHAND, DRAWTIME)
+		STATE.SHUFFLE:
 			pass
 
-func animateFromStartToTarget(nextState, tweenTime, shouldRotate=true, selected=false):
+func animateFromStartToTarget(nextState, tweenTime, shouldRotate=true, shouldSelect=false, selected=false):
 	if tween:
 		tween.kill()
 		
@@ -67,10 +68,15 @@ func animateFromStartToTarget(nextState, tweenTime, shouldRotate=true, selected=
 	tween.tween_property($".", "position", targetPosition, tweenTime).from(startPosition)
 	if shouldRotate:
 		tween.tween_property($".", "rotation", targetRotation, tweenTime).from(startRotation)
-	else:
+	if shouldSelect:
 		if selected:
 			tween.tween_property($SelectedContainer, "visible", true, tweenTime-0.3).from(false)
 		else:
 			tween.tween_property($SelectedContainer, "visible", false, tweenTime-0.3).from(true)
 	
 	state = nextState
+
+
+func _on_selected_container_gui_input(event):
+	if event is InputEventMouseButton and event.pressed and event.button_index == 1 and self.isInPair:
+		pass
