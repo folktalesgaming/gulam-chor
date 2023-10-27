@@ -3,25 +3,43 @@ static func shuffleDeck(deck):
 	deck.shuffle()
 	return deck
 
-static func removePairs(inHandCards):
+static func findPairs(inHandCards):
 	var cards = getCardNumbers(inHandCards)
-	var newInHandCards = []
-	var afterRemoveCards = []
-	var i = 0
+	var nonPairCardsIndices = []
+	var pairCardsIndices = []
+	var nonPairCards = []
+	var pairCards = []
+	var index = 0
 	
 	for card in cards:
-		if not afterRemoveCards.has(card):
-			afterRemoveCards.append(card)
-			newInHandCards.append(inHandCards[i])
+		if not nonPairCards.has(card):
+			nonPairCards.append(card)
+			nonPairCardsIndices.append(index)
 		else:
-			var previousCardIndex = afterRemoveCards.find(card)
-			afterRemoveCards.pop_at(previousCardIndex)
-			newInHandCards.pop_at(previousCardIndex)
-			
-		i += 1
-		
-	return newInHandCards
+			pairCards.append(card)
+			pairCardsIndices.append(index)
+			var prevIndex = nonPairCards.find(card)
+			pairCards.append(nonPairCards[prevIndex])
+			pairCardsIndices.append(nonPairCardsIndices[prevIndex])
+			nonPairCards.pop_at(prevIndex)
+			nonPairCardsIndices.pop_at(prevIndex)
+		index += 1
 	
+	index = 0
+	for i in nonPairCardsIndices:
+		nonPairCards[index] = inHandCards[i]
+		index += 1
+	
+	index = 0
+	for i in pairCardsIndices:
+		pairCards[index] = inHandCards[i]
+		index += 1
+	
+	return {
+		"pairCards": pairCards,
+		"nonPairCards": nonPairCards
+	}
+
 static func getCardNumbers(cards):
 	var numbers = []
 	for card in cards:
