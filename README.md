@@ -14,9 +14,9 @@ These screenshots contains the screenshot during the development of the game, so
 --|--
 ![Main menu](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_main_menu.png?raw=true) | ![Exit Model](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_exit_popup.png?raw=true)
 
-**Game Play Screen** | **Game Play Screen First Round**
---|--
-![Game Play Screen](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_play.png?raw=true) | ![Game Play screen first round](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_play_first_round.png?raw=true)
+**Game Play Screen** | **Game Play Screen First Round** | **Game Play Picking**
+--|--|--
+![Game Play Screen](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_play.png?raw=true) | ![Game Play screen first round](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_play_first_round.png?raw=true) | ![Game Play Picking](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_picking.png?raw=true)
 
 # Plans For the Game
 
