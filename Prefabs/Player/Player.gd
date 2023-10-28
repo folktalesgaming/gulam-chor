@@ -11,3 +11,10 @@ func AddCardInHand(toAddCard):
 
 func SetNewSetOfCards(newCards):
 	cardsInHand = newCards
+
+func RemoveCardsFromHand(toRemoveCards):
+	var newCards = []
+	for card in cardsInHand:
+		if not toRemoveCards.has(card):
+			newCards.append(card)
+	SetNewSetOfCards(newCards)
