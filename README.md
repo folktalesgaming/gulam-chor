@@ -15,7 +15,7 @@ These screenshots contains the screenshot during the development of the game, so
 ![Main menu](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_main_menu.png?raw=true) | ![Exit Model](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_exit_popup.png?raw=true)
 
 **Game Play Screen** | **Game Play Screen First Round** | **Game Play Picking** | **Game Play Picked Card**
---|--|--
+--|--|--|--
 ![Game Play Screen](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_play.png?raw=true) | ![Game Play screen first round](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_play_first_round.png?raw=true) | ![Game Play Picking](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_picking.png?raw=true) | ![Game play picked](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_pick_by_player.png?raw=true)
 
 # Plans For the Game
@@ -26,8 +26,8 @@ There will be two modes for the game `Classic Mode` and `Random Mode`.
 
 ### Classic Mode
 
-- [ ] Will be played out same as classic gulam chor.
-- [ ] One of the `JACK (GULAM)` will have one odd pair.
+- [x] Will be played out same as classic gulam chor.
+- [x] One of the `JACK (GULAM)` will have one odd pair.
 
 ### Random Mode
 
@@ -48,7 +48,9 @@ There is only one type of skin available for the card as seen below.
 For the MVP of the game the game will feature only `4 players mode` with 4 players needed by making the remaining player with `game AI` if there are less than 4 players to play.
 
 - [ ] Make able to play more than 4 players.
-- [ ] Make able to play `2 or 3 players mode` also.
+- [x] ~~Make able to play `2 or 3 players mode` also.~~
+
+> It turns out we need atleast 4 players to make this game fun to play (user feedbacks)
 
 ## Future Plans
 
