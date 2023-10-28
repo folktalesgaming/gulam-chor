@@ -25,6 +25,7 @@ var posOffsetYLeft = 0 # Position of cards of player to the left
 var posOffsetX = 0 # Position of cards of player to the top
 
 var isGameMoving = false # Determine the game is on automatic mode or waiting for player inputs
+var isPlayerTurnToPick = false # Determine if it is players turn to pick card
 
 # Offset of cards angle and position of each players
 const PlayerHandCardAngleOffset = 0.12
@@ -34,6 +35,9 @@ const LeftPlayerCardPositionOffset = 0.07
 
 # random number generator
 var rng = RandomNumberGenerator.new()
+
+# picked card by players
+var pickedCard = null
 
 # State of each card
 enum STATE {
@@ -133,10 +137,18 @@ func _on_remove_pair_player_timer_timeout():
 func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 	pairUnPairCards(nextPlayer, nextPlayerIndex, STATE.INPICKING)
 	isGameMoving = false
-	await get_tree().create_timer(2).timeout # later make it wait till the player choose one
 	
 	# picking card from next player
-	var pickedCard = Utility.pickRandomCard(nextPlayer.get_children())
+	if currentPlayerIndex == 0:
+		await get_tree().create_timer(3).timeout
+		if not pickedCard:
+			await get_tree().create_timer(1.5).timeout
+		if not pickedCard:
+			pickedCard = Utility.pickRandomCard(nextPlayer.get_children())
+	else:
+		await get_tree().create_timer(1.5).timeout
+		pickedCard = Utility.pickRandomCard(nextPlayer.get_children())
+	
 	var sPos = pickedCard.position
 	var sRot = pickedCard.rotation
 	var shouldShowCard = false
@@ -160,6 +172,7 @@ func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 		rearrangeCards(currentPlayer, currentPlayerIndex)
 	
 	playerTurn = getNextPlayerIndex(currentPlayerIndex)
+	pickedCard = null
 	isGameMoving = true
 
 # TODO: when rearranging make the card position relative to the number of remaining cards 
@@ -221,6 +234,7 @@ func addCardToPile(toAddCardName, node, state, startPos, startRot, playerIndex, 
 	#var cardNum = 0
 	
 	var new_to_add_card = CardBase.instantiate()
+	new_to_add_card.connect("pick_card", pickCardByPlayer)
 	new_to_add_card.cardName = toAddCardName
 	new_to_add_card.startPosition = startPos
 	new_to_add_card.startRotation = startRot
@@ -279,6 +293,7 @@ func pairUnPairCards(node, index, state, shouldEffectAllCard=true, affectedCards
 	var spread = 0 # TODO: Create a spread effect in picking mode
 	var tPosOffSetY = 0
 	var tPosOffSetX = 0
+	var isCardInPickingOrPair = false
 	
 	match index:
 		0:
@@ -291,6 +306,7 @@ func pairUnPairCards(node, index, state, shouldEffectAllCard=true, affectedCards
 			tPosOffSetY = spread
 			if not isreverse:
 				tPosOffSetX = -offset
+				isCardInPickingOrPair = true # later make it for all cards in multiplayer mode
 			else:
 				tPosOffSetX = offset
 		2:
@@ -310,12 +326,14 @@ func pairUnPairCards(node, index, state, shouldEffectAllCard=true, affectedCards
 		for card in node.get_children():
 			card.startPosition = card.position
 			card.targetPosition = Vector2(card.position.x + tPosOffSetX, card.position.y + tPosOffSetY)
+			card.isCardInPickingOrPair = isCardInPickingOrPair
 			card.state = state
 	else:
 		for card in node.get_children():
 			if affectedCardsName.has(card.cardName):
 				card.startPosition = card.position
 				card.targetPosition = Vector2(card.position.x + tPosOffSetX, card.position.y + tPosOffSetY)
+				card.isCardInPickingOrPair = isCardInPickingOrPair
 				card.state = state
 
 # Adjust the card before adding it to the pair pile and add to pile card
@@ -336,6 +354,7 @@ func removeCards(node):
 	adjustPositionRotationToThrow(node, cardsSplited.pairCards)
 	removeCardsFromPile(node, cardsSplited.pairCards)
 
+# Get the index of next player that will pick
 func getNextPlayerIndex(currentIndex):
 	var nextPlayerIndex = (currentIndex+1) % 4
 	var numberOfCardsInPlayerHand = getNumberOfPlayerCards(nextPlayerIndex)
@@ -343,13 +362,15 @@ func getNextPlayerIndex(currentIndex):
 		return getNextPlayerIndex(nextPlayerIndex)
 	return nextPlayerIndex
 
+# Get the index of next player that will get their card picked
 func getNextPlayerToPickFromIndex(currentPlayerIndex):
 	var nextPlayerIndex = (currentPlayerIndex+1)%4
 	var numberOfCardsInPlayerHand = getNumberOfPlayerCards(nextPlayerIndex)
 	if numberOfCardsInPlayerHand <= 0:
 		return getNextPlayerToPickFromIndex(nextPlayerIndex)
 	return nextPlayerIndex
-	
+
+# get the number of cards in player hand
 func getNumberOfPlayerCards(index):
 	var numberOfCardsInPlayerHand = 0
 	match index:
@@ -362,3 +383,8 @@ func getNumberOfPlayerCards(index):
 		3:
 			numberOfCardsInPlayerHand = $Player4.cardsInHand.size()
 	return numberOfCardsInPlayerHand
+
+# pick the card from human player
+func pickCardByPlayer(card):
+	if playerToPickFromNode==$Player2:
+		pickedCard = card

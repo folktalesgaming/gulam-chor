@@ -1,7 +1,9 @@
 extends MarginContainer
 
+signal pick_card(card)
+
 var cardName = "card_a_spade"
-var isInPair = false
+var isCardInPickingOrPair = false
 
 var startPosition = 0
 var targetPosition = 0
@@ -19,6 +21,7 @@ enum STATE {
 	MOVINGFROMHANDTODECK,
 	MOVINGFROMPICKINGTOHAND,
 	REORGANIZE,
+	INPICKED,
 	SHUFFLE,
 }
 var state = STATE.INDECK
@@ -49,6 +52,8 @@ func _physics_process(_delta):
 			animateFromStartToTarget(STATE.INDECK, DRAWTIME)
 		STATE.INPICKING:
 			animateFromStartToTarget(STATE.INHAND, DRAWTIME, false, true, true)
+		STATE.INPICKED:
+			animateInPicked()
 		STATE.MOVINGFROMPICKINGTOHAND:
 			animateFromStartToTarget(STATE.INHAND, DRAWTIME, true, true, false)
 		STATE.REORGANIZE:
@@ -76,7 +81,21 @@ func animateFromStartToTarget(nextState, tweenTime, shouldRotate=true, shouldSel
 	
 	state = nextState
 
+func animateInPicked():
+	if tween:
+		tween.kill()
+	
+	tween = create_tween()
+	tween.set_ease(Tween.EASE_IN_OUT)
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.set_parallel(true)
+	
+	tween.tween_property($PickedContainer, "visible", true, 0.5).from(false)
+	tween.tween_property($SelectedContainer, "visible", false, 0.5).from(true)
+	
+	state = STATE.INHAND
 
 func _on_selected_container_gui_input(event):
-	if event is InputEventMouseButton and event.pressed and event.button_index == 1 and self.isInPair:
-		pass
+	if event is InputEventMouseButton and event.pressed and event.button_index == 1 and isCardInPickingOrPair:
+		state = STATE.INPICKED
+		emit_signal("pick_card", self)
