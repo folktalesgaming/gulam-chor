@@ -96,12 +96,16 @@ func _physics_process(_delta):
 				playerToPickFromNode = $Player4
 		match playerTurn:
 			0:
+				$YourTurnIndicator.show()
 				turn(playerToPickFromNode, playerToPickFrom, $Player, 0)
 			1:
+				$YourTurnIndicator.hide()
 				turn(playerToPickFromNode, playerToPickFrom, $Player2, 1)
 			2:
+				$YourTurnIndicator.hide()
 				turn(playerToPickFromNode, playerToPickFrom, $Player3, 2)
 			3:
+				$YourTurnIndicator.hide()
 				turn(playerToPickFromNode, playerToPickFrom, $Player4, 3)
 
 func _on_remove_pair_bot_timer_timeout():
@@ -306,19 +310,24 @@ func pairUnPairCards(node, index, state, shouldEffectAllCard=true, affectedCards
 			tPosOffSetY = spread
 			if not isreverse:
 				tPosOffSetX = -offset
-				isCardInPickingOrPair = true # later make it for all cards in multiplayer mode
+				if playerTurn == 0 and playerToPickFrom == 1:
+					isCardInPickingOrPair = true # later make it for all cards in multiplayer mode
 			else:
 				tPosOffSetX = offset
 		2:
 			tPosOffSetX = spread
 			if not isreverse:
 				tPosOffSetY = offset
+				if playerTurn == 0 and playerToPickFrom == 2:
+					isCardInPickingOrPair = true
 			else:
 				tPosOffSetY = -offset
 		3:
 			tPosOffSetY = spread
 			if not isreverse:
 				tPosOffSetX = offset
+				if playerTurn == 0 and playerToPickFrom == 3:
+					isCardInPickingOrPair = true
 			else:
 				tPosOffSetX = -offset
 	
@@ -386,5 +395,4 @@ func getNumberOfPlayerCards(index):
 
 # pick the card from human player
 func pickCardByPlayer(card):
-	if playerToPickFromNode==$Player2:
-		pickedCard = card
+	pickedCard = card

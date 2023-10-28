@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bw6x2fu47ssrf"]
+[gd_scene load_steps=11 format=3 uid="uid://bw6x2fu47ssrf"]
 
 [ext_resource type="Script" path="res://Scenes/Game_play.gd" id="1_0htco"]
 [ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_dyuqt"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://clj30v2rho2gg" path="res://Assets/UI/indicator_has_jack.png" id="6_1elpm"]
 [ext_resource type="Texture2D" uid="uid://kiaaggymnfik" path="res://Assets/UI/Cards/deck_of_cards.png" id="8_5bn2q"]
 [ext_resource type="PackedScene" uid="uid://bwiltpf34vfyb" path="res://Prefabs/Player/Player.tscn" id="8_131w6"]
+[ext_resource type="Texture2D" uid="uid://db3ug52vsbvd6" path="res://Assets/UI/your_turn_indicator.png" id="8_bu65m"]
 
 [node name="Game_play" type="Node2D"]
 script = ExtResource("1_0htco")
@@ -54,6 +55,11 @@ texture_pressed = ExtResource("5_eobtf")
 [node name="IndicatorHasJack" type="Sprite2D" parent="."]
 position = Vector2(947, 1754)
 texture = ExtResource("6_1elpm")
+
+[node name="YourTurnIndicator" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(538, 1672)
+texture = ExtResource("8_bu65m")
 
 [node name="Player" parent="." instance=ExtResource("8_131w6")]
 position = Vector2(-300, -300)
