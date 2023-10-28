@@ -46,3 +46,7 @@ static func getCardNumbers(cards):
 		numbers.append(card.split("_")[1])
 	
 	return numbers
+
+static func pickRandomCard(cards):
+	var rng = RandomNumberGenerator.new()
+	return cards[rng.randi_range(0, cards.size()-1)]
