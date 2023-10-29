@@ -67,6 +67,8 @@ func startTheGame():
 	$GameOverText.visible = false
 	$ReplayButton.visible = false
 	$ExitButton.visible = false
+	$IndicatorHasJack.texture = null
+	$YourTurnIndicator.hide()
 	
 	isGameMoving = false
 	playerTurn = 0
@@ -111,11 +113,13 @@ func _physics_process(_delta):
 	if not isGameOver:
 		if $PairCards.get_child_count() >= 50:
 			isGameMoving = false
-			showFinalEmotes(getLossingPlayerIndex())
 			isGameOver = true
 			$GameOverText.visible = true
 			$ReplayButton.visible = true
 			$ExitButton.visible = true
+			var losingPlayerIndex = getLossingPlayerIndex()
+			showFinalEmotes(losingPlayerIndex)
+			showTheUnpairJack(losingPlayerIndex)
 		if isGameMoving:
 			playerToPickFrom = getNextPlayerToPickFromIndex(playerTurn)
 			match playerToPickFrom:
@@ -205,6 +209,11 @@ func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 	# rearranging cards for both players
 	await get_tree().create_timer(0.5).timeout
 	rearrangeCards(nextPlayer, nextPlayerIndex)
+	if currentPlayerIndex == 0 || nextPlayerIndex == 0:
+		if checkJack():
+			$IndicatorHasJack.texture = load("res://Assets/UI/indicator_has_jack.png")
+		else:
+			$IndicatorHasJack.texture = load("res://Assets/UI/indicator_no_jack.png")
 	if currentPlayer.cardsInHand.size() > 0:
 		rearrangeCards(currentPlayer, currentPlayerIndex)
 	
@@ -283,10 +292,10 @@ func addCardToPile(toAddCardName, node, state, startPos, startRot, playerIndex, 
 			targetRotation = deg_to_rad(angle)/2
 		1:
 			targetPosition = ViewportSize * Vector2(0.95, 1 - posOffsetYRight) - node.position
-			targetRotation = deg_to_rad(90)
+			targetRotation = deg_to_rad(-90)
 		2:
 			targetPosition = ViewportSize * Vector2(0.75 - posOffsetX, -0.1) - node.position
-			targetRotation = deg_to_rad(0)
+			targetRotation = deg_to_rad(180)
 		3:
 			targetPosition = ViewportSize * Vector2(-0.08, 1 - posOffsetYLeft) - node.position
 			targetRotation = deg_to_rad(90)
@@ -479,6 +488,22 @@ func removeEmotes():
 	$Emotes/Player3Emote.texture = null
 	$Emotes/Player4Emote.texture = null
 
+# Show the remaining jack
+func showTheUnpairJack(playerIndex):
+	var player
+	match playerIndex:
+		0:
+			player = $Players/Player
+		1:
+			player = $Players/Player2
+		2:
+			player = $Players/Player3
+		3:
+			player = $Players/Player4
+	
+	for card in player.get_children():
+		card.SetCardVisible()
+
 # Remove the unpaired jack
 func removeTheUnpairJack(playerIndex):
 	var player
@@ -495,3 +520,10 @@ func removeTheUnpairJack(playerIndex):
 	for card in player.get_children():
 		card.free()
 	player.RemoveAllCards()
+
+# Check for jack in player hand
+func checkJack():
+	for card in $Players/Player.cardsInHand:
+		if card == "card_j_spade" or card == "card_j_diamond" or card == "card_j_heart":
+			return true
+	return false
