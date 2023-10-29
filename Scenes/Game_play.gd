@@ -68,7 +68,7 @@ func startTheGame():
 	$ReplayButton.visible = false
 	$ExitButton.visible = false
 	$IndicatorHasJack.texture = null
-	$YourTurnIndicator.hide()
+	indicatePlayerTurn(false)
 	
 	isGameMoving = false
 	playerTurn = 0
@@ -133,16 +133,16 @@ func _physics_process(_delta):
 					playerToPickFromNode = $Players/Player4
 			match playerTurn:
 				0:
-					$YourTurnIndicator.show()
+					indicatePlayerTurn(true)
 					turn(playerToPickFromNode, playerToPickFrom, $Players/Player, 0)
 				1:
-					$YourTurnIndicator.hide()
+					indicatePlayerTurn(false)
 					turn(playerToPickFromNode, playerToPickFrom, $Players/Player2, 1)
 				2:
-					$YourTurnIndicator.hide()
+					indicatePlayerTurn(false)
 					turn(playerToPickFromNode, playerToPickFrom, $Players/Player3, 2)
 				3:
-					$YourTurnIndicator.hide()
+					indicatePlayerTurn(false)
 					turn(playerToPickFromNode, playerToPickFrom, $Players/Player4, 3)
 
 func _on_remove_pair_bot_timer_timeout():
@@ -527,3 +527,20 @@ func checkJack():
 		if card == "card_j_spade" or card == "card_j_diamond" or card == "card_j_heart":
 			return true
 	return false
+
+# indicate player turn
+func indicatePlayerTurn(isPlayerTurn):
+	if isPlayerTurn:
+		$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_dots1.png")
+		await get_tree().create_timer(0.9).timeout
+		$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_dots2.png")
+		await get_tree().create_timer(0.9).timeout
+		$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_dots3.png")
+		await get_tree().create_timer(1).timeout
+		$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_dots1.png")
+		await get_tree().create_timer(0.5).timeout
+		$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_dots2.png")
+		await get_tree().create_timer(0.5).timeout
+		$Emotes/PlayerEmote.texture = null
+	else:
+		$Emotes/PlayerEmote.texture = null

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bw6x2fu47ssrf"]
+[gd_scene load_steps=11 format=3 uid="uid://bw6x2fu47ssrf"]
 
 [ext_resource type="Script" path="res://Scenes/Game_play.gd" id="1_0htco"]
 [ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_dyuqt"]
@@ -8,7 +8,6 @@
 [ext_resource type="Texture2D" uid="uid://dbf0ywilo5t7b" path="res://Assets/UI/button_pause_pressed.png" id="5_eobtf"]
 [ext_resource type="Texture2D" uid="uid://kiaaggymnfik" path="res://Assets/UI/Cards/deck_of_cards.png" id="8_5bn2q"]
 [ext_resource type="PackedScene" uid="uid://bwiltpf34vfyb" path="res://Prefabs/Player/Player.tscn" id="8_131w6"]
-[ext_resource type="Texture2D" uid="uid://db3ug52vsbvd6" path="res://Assets/UI/your_turn_indicator.png" id="8_bu65m"]
 [ext_resource type="Texture2D" uid="uid://b1gcjcf4qbryi" path="res://Assets/UI/button_primary_normal.png" id="11_u47v6"]
 [ext_resource type="Texture2D" uid="uid://c0sayeopluoor" path="res://Assets/UI/button_primary_pressed.png" id="12_7a1c6"]
 
@@ -55,11 +54,6 @@ texture_pressed = ExtResource("5_eobtf")
 
 [node name="IndicatorHasJack" type="Sprite2D" parent="."]
 position = Vector2(947, 1754)
-
-[node name="YourTurnIndicator" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(538, 1672)
-texture = ExtResource("8_bu65m")
 
 [node name="PackOfDeck" type="Node2D" parent="."]
 position = Vector2(540, 800)
