@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bw6x2fu47ssrf"]
+[gd_scene load_steps=13 format=3 uid="uid://bw6x2fu47ssrf"]
 
 [ext_resource type="Script" path="res://Scenes/Game_play.gd" id="1_0htco"]
 [ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_dyuqt"]
@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://kiaaggymnfik" path="res://Assets/UI/Cards/deck_of_cards.png" id="8_5bn2q"]
 [ext_resource type="PackedScene" uid="uid://bwiltpf34vfyb" path="res://Prefabs/Player/Player.tscn" id="8_131w6"]
 [ext_resource type="Texture2D" uid="uid://db3ug52vsbvd6" path="res://Assets/UI/your_turn_indicator.png" id="8_bu65m"]
+[ext_resource type="Texture2D" uid="uid://b1gcjcf4qbryi" path="res://Assets/UI/button_primary_normal.png" id="11_u47v6"]
+[ext_resource type="Texture2D" uid="uid://c0sayeopluoor" path="res://Assets/UI/button_primary_pressed.png" id="12_7a1c6"]
 
 [node name="Game_play" type="Node2D"]
 script = ExtResource("1_0htco")
@@ -61,18 +63,6 @@ visible = false
 position = Vector2(538, 1672)
 texture = ExtResource("8_bu65m")
 
-[node name="Player" parent="." instance=ExtResource("8_131w6")]
-position = Vector2(-300, -300)
-
-[node name="Player2" parent="." instance=ExtResource("8_131w6")]
-position = Vector2(-300, -300)
-
-[node name="Player3" parent="." instance=ExtResource("8_131w6")]
-position = Vector2(-300, -300)
-
-[node name="Player4" parent="." instance=ExtResource("8_131w6")]
-position = Vector2(-300, -300)
-
 [node name="PackOfDeck" type="Node2D" parent="."]
 position = Vector2(540, 800)
 
@@ -89,5 +79,122 @@ one_shot = true
 [node name="RemovePairPlayerTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="Players" type="Node2D" parent="."]
+
+[node name="Player" parent="Players" instance=ExtResource("8_131w6")]
+position = Vector2(-300, -300)
+
+[node name="Player2" parent="Players" instance=ExtResource("8_131w6")]
+position = Vector2(-300, -300)
+
+[node name="Player3" parent="Players" instance=ExtResource("8_131w6")]
+position = Vector2(-300, -300)
+
+[node name="Player4" parent="Players" instance=ExtResource("8_131w6")]
+position = Vector2(-300, -300)
+
+[node name="Emotes" type="Node2D" parent="."]
+
+[node name="PlayerEmote" type="Sprite2D" parent="Emotes"]
+position = Vector2(540, 1300)
+scale = Vector2(2, 2)
+
+[node name="Player2Emote" type="Sprite2D" parent="Emotes"]
+position = Vector2(900, 820)
+rotation = -1.5708
+scale = Vector2(2, 2)
+
+[node name="Player3Emote" type="Sprite2D" parent="Emotes"]
+position = Vector2(540, 200)
+rotation = 3.14159
+scale = Vector2(2, 2)
+
+[node name="Player4Emote" type="Sprite2D" parent="Emotes"]
+position = Vector2(200, 820)
+rotation = 1.5708
+scale = Vector2(2, 2)
+
+[node name="GameOverText" type="Label" parent="."]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 274.0
+offset_top = 292.0
+offset_right = 824.0
+offset_bottom = 394.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.376471, 0.368627, 1)
+theme_override_font_sizes/font_size = 72
+text = "GAME FINISHED"
+
+[node name="ReplayButton" type="TextureButton" parent="."]
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 196.0
+offset_top = 984.0
+offset_right = 929.0
+offset_bottom = 1098.0
+grow_horizontal = 2
+grow_vertical = 0
+texture_normal = ExtResource("11_u47v6")
+texture_pressed = ExtResource("12_7a1c6")
+
+[node name="Replay" type="Label" parent="ReplayButton"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -68.0
+offset_top = -30.5
+offset_right = 68.0
+offset_bottom = 30.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 42
+text = "Replay"
+
+[node name="ExitButton" type="TextureButton" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 193.0
+offset_top = 1119.0
+offset_right = 926.0
+offset_bottom = 1233.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("11_u47v6")
+texture_pressed = ExtResource("12_7a1c6")
+
+[node name="Exit" type="Label" parent="ExitButton"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 42
+text = "Exit Back"
+
 [connection signal="timeout" from="RemovePairBotTimer" to="." method="_on_remove_pair_bot_timer_timeout"]
 [connection signal="timeout" from="RemovePairPlayerTimer" to="." method="_on_remove_pair_player_timer_timeout"]
+[connection signal="pressed" from="ReplayButton" to="." method="_on_replay_button_pressed"]
+[connection signal="pressed" from="ExitButton" to="." method="_on_exit_button_pressed"]

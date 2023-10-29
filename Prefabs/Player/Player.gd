@@ -18,3 +18,6 @@ func RemoveCardsFromHand(toRemoveCards):
 		if not toRemoveCards.has(card):
 			newCards.append(card)
 	SetNewSetOfCards(newCards)
+
+func RemoveAllCards():
+	cardsInHand = []

@@ -3,6 +3,7 @@ extends Node2D
 const CardBase = preload("res://Prefabs/Card/Card.tscn")
 const Utility = preload("res://Utils/utility.gd")
 const DeckOfCard = preload("res://Utils/deck_of_cards_classic.gd")
+const Emotes = preload("res://Utils/emotes.gd")
 
 @onready var deckOfCards = Utility.shuffleDeck(DeckOfCard.getDeckClassic())
 @onready var PairCardsPosition = $PairCards.position
@@ -16,7 +17,7 @@ var OvalAngleVector = Vector2() # Vector to convert the polar points (r, 0) to c
 
 var playerTurn = 0 # To determine the turn of player
 var playerToPickFrom = 1
-@onready var playerToPickFromNode = $Player2
+@onready var playerToPickFromNode = $Players/Player2
 
 var cardSpread = 0.25
 
@@ -26,6 +27,7 @@ var posOffsetX = 0 # Position of cards of player to the top
 
 var isGameMoving = false # Determine the game is on automatic mode or waiting for player inputs
 var isPlayerTurnToPick = false # Determine if it is players turn to pick card
+var isGameOver = false # Determine the game is over or not
 
 # Offset of cards angle and position of each players
 const PlayerHandCardAngleOffset = 0.12
@@ -53,22 +55,47 @@ enum STATE {
 }
 
 func _ready():
+	startTheGame()
+
+func startTheGame():
+	# reset everything to replay
+	removeTheUnpairJack(getLossingPlayerIndex())
+	for card in $PairCards.get_children():
+		card.free()
+	removeEmotes()
+	isGameOver = false
+	$GameOverText.visible = false
+	$ReplayButton.visible = false
+	$ExitButton.visible = false
+	
+	isGameMoving = false
+	playerTurn = 0
+	angle = deg_to_rad(-130)
+	posOffsetX = 0
+	posOffsetYLeft = 0
+	posOffsetYRight = 0
+	playerToPickFrom = 1
+	playerToPickFromNode = $Players/Player2
+	pickedCard = null
+	deckOfCards = Utility.shuffleDeck(DeckOfCard.getDeckClassic())
+	
+	# real game start
 	var packOfDeckPosition = $PackOfDeck.position
 	var startRotation = deg_to_rad(30)
 	
 	for card in deckOfCards:
 		if playerTurn == 0:
 			# TODO: Make it more dynamic for later when removing pairs and adding cards to hand 
-			addCardToPile(card, $Player, STATE.MOVINGFROMDECKTOHAND, packOfDeckPosition, startRotation, 0, true)
+			addCardToPile(card, $Players/Player, STATE.MOVINGFROMDECKTOHAND, packOfDeckPosition, startRotation, 0, true)
 			angle += PlayerHandCardAngleOffset
 		if playerTurn == 1:
-			addCardToPile(card, $Player2, STATE.MOVINGFROMDECKTOHAND, packOfDeckPosition, startRotation, 1)
+			addCardToPile(card, $Players/Player2, STATE.MOVINGFROMDECKTOHAND, packOfDeckPosition, startRotation, 1)
 			posOffsetYRight += RightPlayerCardPositionOffset
 		if playerTurn == 2:
-			addCardToPile(card, $Player3, STATE.MOVINGFROMDECKTOHAND, packOfDeckPosition, startRotation, 2)
+			addCardToPile(card, $Players/Player3, STATE.MOVINGFROMDECKTOHAND, packOfDeckPosition, startRotation, 2)
 			posOffsetX += TopPlayerCardPositionOffset
 		if playerTurn == 3:
-			addCardToPile(card, $Player4, STATE.MOVINGFROMDECKTOHAND, packOfDeckPosition, startRotation, 3)
+			addCardToPile(card, $Players/Player4, STATE.MOVINGFROMDECKTOHAND, packOfDeckPosition, startRotation, 3)
 			posOffsetYLeft += LeftPlayerCardPositionOffset
 		
 		playerTurn = (1+playerTurn)%4
@@ -81,56 +108,62 @@ func _ready():
 	$RemovePairBotTimer.start() # starting the timer for the bots to remove their pairs
 
 func _physics_process(_delta):
-	if $PairCards.get_child_count() >= 50:
-		isGameMoving = false #TODO: create a game finish screen and mechanism to know who lost
-	if isGameMoving:
-		playerToPickFrom = getNextPlayerToPickFromIndex(playerTurn)
-		match playerToPickFrom:
-			0:
-				playerToPickFromNode = $Player
-			1:
-				playerToPickFromNode = $Player2
-			2:
-				playerToPickFromNode = $Player3
-			3:
-				playerToPickFromNode = $Player4
-		match playerTurn:
-			0:
-				$YourTurnIndicator.show()
-				turn(playerToPickFromNode, playerToPickFrom, $Player, 0)
-			1:
-				$YourTurnIndicator.hide()
-				turn(playerToPickFromNode, playerToPickFrom, $Player2, 1)
-			2:
-				$YourTurnIndicator.hide()
-				turn(playerToPickFromNode, playerToPickFrom, $Player3, 2)
-			3:
-				$YourTurnIndicator.hide()
-				turn(playerToPickFromNode, playerToPickFrom, $Player4, 3)
+	if not isGameOver:
+		if $PairCards.get_child_count() >= 50:
+			isGameMoving = false
+			showFinalEmotes(getLossingPlayerIndex())
+			isGameOver = true
+			$GameOverText.visible = true
+			$ReplayButton.visible = true
+			$ExitButton.visible = true
+		if isGameMoving:
+			playerToPickFrom = getNextPlayerToPickFromIndex(playerTurn)
+			match playerToPickFrom:
+				0:
+					playerToPickFromNode = $Players/Player
+				1:
+					playerToPickFromNode = $Players/Player2
+				2:
+					playerToPickFromNode = $Players/Player3
+				3:
+					playerToPickFromNode = $Players/Player4
+			match playerTurn:
+				0:
+					$YourTurnIndicator.show()
+					turn(playerToPickFromNode, playerToPickFrom, $Players/Player, 0)
+				1:
+					$YourTurnIndicator.hide()
+					turn(playerToPickFromNode, playerToPickFrom, $Players/Player2, 1)
+				2:
+					$YourTurnIndicator.hide()
+					turn(playerToPickFromNode, playerToPickFrom, $Players/Player3, 2)
+				3:
+					$YourTurnIndicator.hide()
+					turn(playerToPickFromNode, playerToPickFrom, $Players/Player4, 3)
 
 func _on_remove_pair_bot_timer_timeout():
-	removeCards($Player2)
-	removeCards($Player3)
-	removeCards($Player4)
+	removeCards($Players/Player2)
+	removeCards($Players/Player3)
+	removeCards($Players/Player4)
 	
 	# starting the timer for the pairs in player hand to pop up
 	$RemovePairPlayerTimer.start() 
 
 func _on_remove_pair_player_timer_timeout():
-	var cardsSplit = Utility.findPairs($Player.cardsInHand)
-	pairUnPairCards($Player, 0, STATE.INPAIR, false, cardsSplit.pairCards)
+	var cardsSplit = Utility.findPairs($Players/Player.cardsInHand)
+	pairUnPairCards($Players/Player, 0, STATE.INPAIR, false, cardsSplit.pairCards)
 	
 	# rearrange BOT cards
-	rearrangeCards($Player2, 1)
-	rearrangeCards($Player3, 2)
-	rearrangeCards($Player4, 3)
+	rearrangeCards($Players/Player2, 1)
+	rearrangeCards($Players/Player3, 2)
+	rearrangeCards($Players/Player4, 3)
 	
 	# await 0.5 sec
 	await get_tree().create_timer(0.5).timeout
 	
 	# remove the pair cards from player hand
-	removeCards($Player)
-	rearrangeCards($Player, 0)
+	removeCards($Players/Player)
+	rearrangeCards($Players/Player, 0)
 	
 	# await 0.5 sec
 	await get_tree().create_timer(0.5).timeout
@@ -190,7 +223,7 @@ func rearrangeCards(node, pIndex):
 				card.startPosition = card.position
 				card.startRotation = card.rotation
 				OvalAngleVector = Vector2(-Horizontal_radius * cos(angle), -Vertical_radius * sin(angle))
-				card.targetPosition = CenterCardOval - OvalAngleVector - $Player.position
+				card.targetPosition = CenterCardOval - OvalAngleVector - $Players/Player.position
 				card.targetRotation = deg_to_rad(angle)/2
 				card.state = STATE.REORGANIZE
 				angle += PlayerHandCardAngleOffset
@@ -384,15 +417,81 @@ func getNumberOfPlayerCards(index):
 	var numberOfCardsInPlayerHand = 0
 	match index:
 		0:
-			numberOfCardsInPlayerHand = $Player.cardsInHand.size()
+			numberOfCardsInPlayerHand = $Players/Player.cardsInHand.size()
 		1:
-			numberOfCardsInPlayerHand = $Player2.cardsInHand.size()
+			numberOfCardsInPlayerHand = $Players/Player2.cardsInHand.size()
 		2:
-			numberOfCardsInPlayerHand = $Player3.cardsInHand.size()
+			numberOfCardsInPlayerHand = $Players/Player3.cardsInHand.size()
 		3:
-			numberOfCardsInPlayerHand = $Player4.cardsInHand.size()
+			numberOfCardsInPlayerHand = $Players/Player4.cardsInHand.size()
 	return numberOfCardsInPlayerHand
 
 # pick the card from human player
 func pickCardByPlayer(card):
 	pickedCard = card
+
+func getLossingPlayerIndex():
+	if $Players/Player.cardsInHand.size() >= 1:
+		return 0
+	if $Players/Player2.cardsInHand.size() >= 1:
+		return 1
+	if $Players/Player3.cardsInHand.size() >= 1:
+		return 2
+	
+	return 3
+
+# show emotes at end of game
+func showFinalEmotes(losserIndex):
+	match losserIndex:
+		0:
+			$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_"+Emotes.getSadEmote()+".png")
+			$Emotes/Player2Emote.texture = load("res://Assets/Emotes/emote_"+Emotes.getHappyEmote()+".png")
+			$Emotes/Player3Emote.texture = load("res://Assets/Emotes/emote_"+Emotes.getHappyEmote()+".png")
+			$Emotes/Player4Emote.texture = load("res://Assets/Emotes/emote_"+Emotes.getHappyEmote()+".png")
+		1:
+			$Emotes/Player2Emote.texture = load("res://Assets/Emotes/emote_"+Emotes.getSadEmote()+".png")
+			$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_"+Emotes.getHappyEmote()+".png")
+			$Emotes/Player3Emote.texture = load("res://Assets/Emotes/emote_"+Emotes.getHappyEmote()+".png")
+			$Emotes/Player4Emote.texture = load("res://Assets/Emotes/emote_"+Emotes.getHappyEmote()+".png")
+		2:
+			$Emotes/Player3Emote.texture = load("res://Assets/Emotes/emote_"+Emotes.getSadEmote()+".png")
+			$Emotes/Player2Emote.texture = load("res://Assets/Emotes/emote_"+Emotes.getHappyEmote()+".png")
+			$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_"+Emotes.getHappyEmote()+".png")
+			$Emotes/Player4Emote.texture = load("res://Assets/Emotes/emote_"+Emotes.getHappyEmote()+".png")
+		3:
+			$Emotes/Player4Emote.texture = load("res://Assets/Emotes/emote_"+Emotes.getSadEmote()+".png")
+			$Emotes/Player2Emote.texture = load("res://Assets/Emotes/emote_"+Emotes.getHappyEmote()+".png")
+			$Emotes/Player3Emote.texture = load("res://Assets/Emotes/emote_"+Emotes.getHappyEmote()+".png")
+			$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_"+Emotes.getHappyEmote()+".png")
+
+# on click replay button
+func _on_replay_button_pressed():
+	startTheGame()
+
+# on click exit button
+func _on_exit_button_pressed():
+	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
+
+# remove the emotes
+func removeEmotes():
+	$Emotes/PlayerEmote.texture = null
+	$Emotes/Player2Emote.texture = null
+	$Emotes/Player3Emote.texture = null
+	$Emotes/Player4Emote.texture = null
+
+# Remove the unpaired jack
+func removeTheUnpairJack(playerIndex):
+	var player
+	match playerIndex:
+		0:
+			player = $Players/Player
+		1:
+			player = $Players/Player2
+		2:
+			player = $Players/Player3
+		3:
+			player = $Players/Player4
+	
+	for card in player.get_children():
+		card.free()
+	player.RemoveAllCards()
