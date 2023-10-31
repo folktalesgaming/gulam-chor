@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bdqcch58ny85f"]
+[gd_scene load_steps=18 format=3 uid="uid://bdqcch58ny85f"]
 
 [ext_resource type="Script" path="res://Scenes/main_menu.gd" id="1_37p43"]
 [ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_r35uy"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://dynm4vuix8362" path="res://Assets/UI/button_yes_exit_pressed.png" id="12_rsih8"]
 [ext_resource type="Texture2D" uid="uid://dfdop1ufla8wo" path="res://Assets/UI/button_no_exit_normal.png" id="13_wiqc1"]
 [ext_resource type="Texture2D" uid="uid://ltnj1e2igrxw" path="res://Assets/UI/button_no_exit_pressed.png" id="14_lqgyn"]
+[ext_resource type="AudioStream" uid="uid://caehe17orvu1p" path="res://Assets/Audios/click1.ogg" id="16_acu6k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vnbaq"]
 bg_color = Color(0, 0, 0, 0.529412)
@@ -145,7 +146,14 @@ grow_vertical = 0
 texture_normal = ExtResource("13_wiqc1")
 texture_pressed = ExtResource("14_lqgyn")
 
+[node name="AudioListener2D" type="AudioListener2D" parent="."]
+
+[node name="ButtonClick" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("16_acu6k")
+volume_db = 2.0
+
 [connection signal="pressed" from="UI/StartButton" to="UI/StartButton" method="_on_pressed"]
 [connection signal="pressed" from="UI/ExitButton" to="UI/ExitButton" method="_on_pressed"]
+[connection signal="pressed" from="UI/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="ExitPopupPanel/Sprite2D/YesButton" to="." method="_on_yes_button_pressed"]
 [connection signal="pressed" from="ExitPopupPanel/Sprite2D/NoButton" to="." method="_on_no_button_pressed"]

@@ -51,6 +51,8 @@ enum STATE {
 	MOVINGFROMHANDTODECK,
 	MOVINGFROMPICKINGTOHAND,
 	REORGANIZE,
+	INPICKED,
+	INREMOVEPICKED,
 	SHUFFLE,
 }
 
@@ -85,6 +87,7 @@ func startTheGame():
 	var packOfDeckPosition = $PackOfDeck.position
 	var startRotation = deg_to_rad(30)
 	
+	$CardShuffle.play()
 	for card in deckOfCards:
 		if playerTurn == 0:
 			# TODO: Make it more dynamic for later when removing pairs and adding cards to hand 
@@ -106,6 +109,7 @@ func startTheGame():
 		
 	$PackOfDeck.visible = false
 	playerTurn = 0
+	$CardShuffle.stop()
 	
 	$RemovePairBotTimer.start() # starting the timer for the bots to remove their pairs
 
@@ -167,6 +171,7 @@ func _on_remove_pair_player_timer_timeout():
 	
 	# remove the pair cards from player hand
 	removeCards($Players/Player)
+	$CardPairThrow.play()
 	rearrangeCards($Players/Player, 0)
 	
 	# await 0.5 sec
@@ -181,13 +186,17 @@ func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 	
 	# picking card from next player
 	if currentPlayerIndex == 0:
+		$PlayerPickTurnTime.start()
+		$UI/Control/PlayerPickTurnTimer.visible = true
 		await get_tree().create_timer(3).timeout
-		if not pickedCard:
-			await get_tree().create_timer(1.5).timeout
+		$UI/Control/PlayerPickTurnTimer.visible = false
 		if not pickedCard:
 			pickedCard = Utility.pickRandomCard(nextPlayer.get_children())
 	else:
-		await get_tree().create_timer(1.5).timeout
+		if $Players/Player.cardsInHand.size() <= 0:
+			await get_tree().create_timer(0.2).timeout
+		else:
+			await get_tree().create_timer(1).timeout
 		pickedCard = Utility.pickRandomCard(nextPlayer.get_children())
 	
 	var sPos = pickedCard.position
@@ -196,18 +205,26 @@ func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 	if currentPlayerIndex == 0:
 		shouldShowCard = true
 	addCardToPile(pickedCard.cardName, currentPlayer, STATE.MOVINGFROMPICKINGTOHAND, sPos, sRot, currentPlayerIndex, shouldShowCard)
+	$CardTake.play()
 	removeCardsFromPile(nextPlayer, [pickedCard.cardName])
 	pairUnPairCards(nextPlayer, nextPlayerIndex, STATE.MOVINGFROMPICKINGTOHAND, true, [], true)
 	
 	# checking if there is pair after pickup and throwing the pair cards
-	await get_tree().create_timer(0.7).timeout
+	if $Players/Player.cardsInHand.size() <= 0:
+		await get_tree().create_timer(0.3).timeout
+	else:
+		await get_tree().create_timer(0.7).timeout
 	var cardsSplitted = Utility.findPairs(currentPlayer.cardsInHand)
 	if(cardsSplitted.pairCards.size() > 0):
 		adjustPositionRotationToThrow(currentPlayer, cardsSplitted.pairCards)
+		$CardPairThrow.play()
 		removeCardsFromPile(currentPlayer, cardsSplitted.pairCards)
 	
 	# rearranging cards for both players
-	await get_tree().create_timer(0.5).timeout
+	if $Players/Player.cardsInHand.size() <= 0:
+		await get_tree().create_timer(0.2).timeout
+	else:
+		await get_tree().create_timer(0.5).timeout
 	rearrangeCards(nextPlayer, nextPlayerIndex)
 	if currentPlayerIndex == 0 || nextPlayerIndex == 0:
 		if checkJack():
@@ -403,6 +420,7 @@ func removeCards(node):
 	var cardsSplited = Utility.findPairs(node.cardsInHand)
 	node.SetNewSetOfCards(cardsSplited.nonPairCards)
 	adjustPositionRotationToThrow(node, cardsSplited.pairCards)
+	$CardPairThrow.play()
 	removeCardsFromPile(node, cardsSplited.pairCards)
 
 # Get the index of next player that will pick
@@ -437,7 +455,19 @@ func getNumberOfPlayerCards(index):
 
 # pick the card from human player
 func pickCardByPlayer(card):
-	pickedCard = card
+	if playerTurn == 0 and not pickedCard == null and not pickedCard == card:
+		for cards in playerToPickFromNode.get_children():
+			if cards.cardName == pickedCard.cardName:
+				cards.state = STATE.INREMOVEPICKED
+				break
+	if pickedCard == card:
+		for cards in playerToPickFromNode.get_children():
+			if cards.cardName == pickedCard.cardName:
+				cards.state = STATE.INREMOVEPICKED
+				break
+		pickedCard = null
+	else:
+		pickedCard = card
 
 func getLossingPlayerIndex():
 	if $Players/Player.cardsInHand.size() >= 1:
@@ -475,10 +505,14 @@ func showFinalEmotes(losserIndex):
 
 # on click replay button
 func _on_replay_button_pressed():
+	$ButtonClick.play()
+	await get_tree().create_timer(0.2).timeout
 	startTheGame()
 
 # on click exit button
 func _on_exit_button_pressed():
+	$ButtonClick.play()
+	await get_tree().create_timer(0.2).timeout
 	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
 
 # remove the emotes
@@ -532,11 +566,11 @@ func checkJack():
 func indicatePlayerTurn(isPlayerTurn):
 	if isPlayerTurn:
 		$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_dots1.png")
-		await get_tree().create_timer(0.9).timeout
+		await get_tree().create_timer(0.5).timeout
 		$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_dots2.png")
-		await get_tree().create_timer(0.9).timeout
+		await get_tree().create_timer(0.5).timeout
 		$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_dots3.png")
-		await get_tree().create_timer(1).timeout
+		await get_tree().create_timer(0.5).timeout
 		$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_dots1.png")
 		await get_tree().create_timer(0.5).timeout
 		$Emotes/PlayerEmote.texture = load("res://Assets/Emotes/emote_dots2.png")
@@ -544,3 +578,9 @@ func indicatePlayerTurn(isPlayerTurn):
 		$Emotes/PlayerEmote.texture = null
 	else:
 		$Emotes/PlayerEmote.texture = null
+
+func _on_shuffle_button_pressed():
+	$ButtonClick.play()
+
+func _on_pause_button_pressed():
+	$ButtonClick.play()
