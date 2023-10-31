@@ -22,6 +22,7 @@ enum STATE {
 	MOVINGFROMPICKINGTOHAND,
 	REORGANIZE,
 	INPICKED,
+	INREMOVEPICKED,
 	SHUFFLE,
 }
 var state = STATE.INDECK
@@ -54,6 +55,8 @@ func _physics_process(_delta):
 			animateFromStartToTarget(STATE.INHAND, DRAWTIME, false, true, true)
 		STATE.INPICKED:
 			animateInPicked()
+		STATE.INREMOVEPICKED:
+			animateInRemovePicked()
 		STATE.MOVINGFROMPICKINGTOHAND:
 			animateFromStartToTarget(STATE.INHAND, DRAWTIME, true, true, false)
 		STATE.REORGANIZE:
@@ -92,6 +95,20 @@ func animateInPicked():
 	
 	tween.tween_property($PickedContainer, "visible", true, 0.5).from(false)
 	tween.tween_property($SelectedContainer, "visible", false, 0.5).from(true)
+	
+	state = STATE.INHAND
+
+func animateInRemovePicked():
+	if tween:
+		tween.kill()
+	
+	tween = create_tween()
+	tween.set_ease(Tween.EASE_IN_OUT)
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.set_parallel(true)
+	
+	tween.tween_property($PickedContainer, "visible", false, 0.5).from(true)
+	tween.tween_property($SelectedContainer, "visible", true, 0.5).from(false)
 	
 	state = STATE.INHAND
 
