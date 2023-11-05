@@ -25,6 +25,7 @@ const Emotes = preload("res://Utils/emotes.gd")
 @onready var GameOverText = get_node("GameOverText")
 @onready var ReplayButton = get_node("ReplayButton")
 @onready var ExitButton = get_node("ExitButton")
+@onready var PausePanel = get_node("UI/PausePanel")
 
 @onready var RemovePairBotTimer = get_node("RemovePairBotTimer")
 @onready var RemovePairPlayerTimer = get_node("RemovePairPlayerTimer")
@@ -61,6 +62,7 @@ var posOffsetX = 0 # Position of cards of player to the top
 var isGameMoving = false # Determine the game is on automatic mode or waiting for player inputs
 var isPlayerTurnToPick = false # Determine if it is players turn to pick card
 var isGameOver = false # Determine the game is over or not
+var isPaused = false # Determine the game is paused or not
 
 # Offset of cards angle and position of each players
 const PlayerHandCardAngleOffset = 0.12
@@ -148,39 +150,40 @@ func startTheGame():
 
 func _physics_process(_delta):
 	if not isGameOver:
-		if PairCards.get_child_count() >= 50:
-			isGameMoving = false
-			isGameOver = true
-			GameOverText.visible = true
-			ReplayButton.visible = true
-			ExitButton.visible = true
-			var losingPlayerIndex = getLossingPlayerIndex()
-			showFinalEmotes(losingPlayerIndex)
-			showTheUnpairJack(losingPlayerIndex)
-		if isGameMoving:
-			playerToPickFrom = getNextPlayerToPickFromIndex(playerTurn)
-			match playerToPickFrom:
-				0:
-					playerToPickFromNode = Player1
-				1:
-					playerToPickFromNode = Player2
-				2:
-					playerToPickFromNode = Player3
-				3:
-					playerToPickFromNode = Player4
-			match playerTurn:
-				0:
-					indicatePlayerTurn(true)
-					turn(playerToPickFromNode, playerToPickFrom, Player1, 0)
-				1:
-					indicatePlayerTurn(false)
-					turn(playerToPickFromNode, playerToPickFrom, Player2, 1)
-				2:
-					indicatePlayerTurn(false)
-					turn(playerToPickFromNode, playerToPickFrom, Player3, 2)
-				3:
-					indicatePlayerTurn(false)
-					turn(playerToPickFromNode, playerToPickFrom, Player4, 3)
+		if not isPaused:
+			if PairCards.get_child_count() >= 50:
+				isGameMoving = false
+				isGameOver = true
+				GameOverText.visible = true
+				ReplayButton.visible = true
+				ExitButton.visible = true
+				var losingPlayerIndex = getLossingPlayerIndex()
+				showFinalEmotes(losingPlayerIndex)
+				showTheUnpairJack(losingPlayerIndex)
+			if isGameMoving:
+				playerToPickFrom = getNextPlayerToPickFromIndex(playerTurn)
+				match playerToPickFrom:
+					0:
+						playerToPickFromNode = Player1
+					1:
+						playerToPickFromNode = Player2
+					2:
+						playerToPickFromNode = Player3
+					3:
+						playerToPickFromNode = Player4
+				match playerTurn:
+					0:
+						indicatePlayerTurn(true)
+						turn(playerToPickFromNode, playerToPickFrom, Player1, 0)
+					1:
+						indicatePlayerTurn(false)
+						turn(playerToPickFromNode, playerToPickFrom, Player2, 1)
+					2:
+						indicatePlayerTurn(false)
+						turn(playerToPickFromNode, playerToPickFrom, Player3, 2)
+					3:
+						indicatePlayerTurn(false)
+						turn(playerToPickFromNode, playerToPickFrom, Player4, 3)
 
 func _on_remove_pair_bot_timer_timeout():
 	removeCards(Player2)
@@ -615,5 +618,25 @@ func indicatePlayerTurn(isPlayerTurn):
 func _on_shuffle_button_pressed():
 	ButtonClickAudio.play()
 
+# Pause Game
+# TODO: make the pause work when the player turn is on
 func _on_pause_button_pressed():
 	ButtonClickAudio.play()
+	isPaused = true
+	if playerTurn == 0:
+		PlayerPickTurnTimer.set_paused(true)
+	PausePanel.visible = true
+
+# Continue Game
+func _on_continue_button_pressed():
+	ButtonClickAudio.play()
+	PausePanel.visible = false
+	isPaused = false
+	if playerTurn == 0:
+		PlayerPickTurnTimer.start()
+
+# Quit Game
+func _on_quit_button_pressed():
+	ButtonClickAudio.play()
+	await get_tree().create_timer(0.1).timeout
+	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
