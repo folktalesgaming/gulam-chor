@@ -7,8 +7,7 @@ func _on_yes_button_pressed():
 
 func _on_no_button_pressed():
 	$ButtonClick.play()
-	$ExitPopupPanel.hide()
-
+	$UI/PanelContainer.hide()
 
 func _on_settings_button_pressed():
 	$ButtonClick.play()

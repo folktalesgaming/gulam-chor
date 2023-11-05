@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bdqcch58ny85f"]
+[gd_scene load_steps=17 format=3 uid="uid://bdqcch58ny85f"]
 
 [ext_resource type="Script" path="res://Scenes/main_menu.gd" id="1_37p43"]
 [ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_r35uy"]
@@ -16,9 +16,6 @@
 [ext_resource type="Texture2D" uid="uid://dfdop1ufla8wo" path="res://Assets/UI/button_no_exit_normal.png" id="13_wiqc1"]
 [ext_resource type="Texture2D" uid="uid://ltnj1e2igrxw" path="res://Assets/UI/button_no_exit_pressed.png" id="14_lqgyn"]
 [ext_resource type="AudioStream" uid="uid://caehe17orvu1p" path="res://Assets/Audios/click1.ogg" id="16_acu6k"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vnbaq"]
-bg_color = Color(0, 0, 0, 0.529412)
 
 [node name="MainMenu" type="Node2D"]
 script = ExtResource("1_37p43")
@@ -110,39 +107,68 @@ grow_vertical = 0
 texture_normal = ExtResource("6_txnc6")
 texture_pressed = ExtResource("7_mbsrj")
 
-[node name="ExitPopupPanel" type="PopupPanel" parent="."]
-transparent_bg = true
-size = Vector2i(1100, 2500)
-theme_override_styles/panel = SubResource("StyleBoxFlat_vnbaq")
+[node name="PanelContainer" type="PanelContainer" parent="UI"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -825.0
+offset_top = -1312.0
+offset_right = 841.0
+offset_bottom = 1572.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="Sprite2D" type="Sprite2D" parent="ExitPopupPanel"]
-position = Vector2(540, 960)
+[node name="ExitModelContainer" type="Control" parent="UI/PanelContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="UI/PanelContainer/ExitModelContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -275.0
+offset_right = 400.0
+offset_bottom = 275.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("10_l0yw5")
 
-[node name="YesButton" type="TextureButton" parent="ExitPopupPanel/Sprite2D"]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -800.0
-offset_top = -408.0
-offset_right = -400.0
-offset_bottom = -275.0
-grow_horizontal = 0
-grow_vertical = 0
+[node name="YesButton" type="TextureButton" parent="UI/PanelContainer/ExitModelContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = 142.0
+offset_right = 400.0
+offset_bottom = 275.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_vertical = 8
 texture_normal = ExtResource("11_5mf3j")
 texture_pressed = ExtResource("12_rsih8")
 
-[node name="NoButton" type="TextureButton" parent="ExitPopupPanel/Sprite2D"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
+[node name="NoButton" type="TextureButton" parent="UI/PanelContainer/ExitModelContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 offset_left = -400.0
-offset_top = -408.0
-offset_bottom = -275.0
-grow_vertical = 0
+offset_top = 142.0
+offset_bottom = 275.0
+grow_horizontal = 2
+grow_vertical = 2
 texture_normal = ExtResource("13_wiqc1")
 texture_pressed = ExtResource("14_lqgyn")
 
@@ -155,5 +181,5 @@ volume_db = 2.0
 [connection signal="pressed" from="UI/StartButton" to="UI/StartButton" method="_on_pressed"]
 [connection signal="pressed" from="UI/ExitButton" to="UI/ExitButton" method="_on_pressed"]
 [connection signal="pressed" from="UI/SettingsButton" to="." method="_on_settings_button_pressed"]
-[connection signal="pressed" from="ExitPopupPanel/Sprite2D/YesButton" to="." method="_on_yes_button_pressed"]
-[connection signal="pressed" from="ExitPopupPanel/Sprite2D/NoButton" to="." method="_on_no_button_pressed"]
+[connection signal="pressed" from="UI/PanelContainer/ExitModelContainer/YesButton" to="." method="_on_yes_button_pressed"]
+[connection signal="pressed" from="UI/PanelContainer/ExitModelContainer/NoButton" to="." method="_on_no_button_pressed"]
