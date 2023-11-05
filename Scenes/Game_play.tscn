@@ -36,7 +36,7 @@ script = ExtResource("1_0htco")
 
 [node name="MainBg" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
 position = Vector2(530, 967)
-scale = Vector2(0.3, 0.292)
+scale = Vector2(0.411, 0.4)
 texture = ExtResource("1_dyuqt")
 
 [node name="UI" type="CanvasLayer" parent="."]
