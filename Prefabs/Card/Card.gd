@@ -36,7 +36,7 @@ func _ready():
 	$CardBack.texture = load("res://Assets/UI/Cards/new_card_back.png")
 	$CardBack.scale *= size/$CardBack.texture.get_size()
 
-static func SetCardVisible():
+func SetCardVisible():
 	$CardBack.visible = false
 
 func _physics_process(_delta):
