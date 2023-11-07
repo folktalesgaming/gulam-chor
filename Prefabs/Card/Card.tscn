@@ -31,9 +31,9 @@ shadow_color = Color(0, 0.635294, 0.427451, 0.72549)
 shadow_size = 10
 
 [node name="MarginContainer" type="MarginContainer"]
-offset_right = 154.0
-offset_bottom = 244.0
-pivot_offset = Vector2(77, 122)
+offset_right = 171.0
+offset_bottom = 270.0
+pivot_offset = Vector2(85.5, 135)
 script = ExtResource("1_uhcpj")
 
 [node name="SelectedContainer" type="PanelContainer" parent="."]

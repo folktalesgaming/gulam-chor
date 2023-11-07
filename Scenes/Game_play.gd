@@ -42,10 +42,13 @@ const Emotes = preload("res://Utils/emotes.gd")
 @onready var deckOfCards = Utility.shuffleDeck(DeckOfCard.getDeckClassic())
 @onready var PairCardsPosition = PairCards.position
 
-@onready var ViewportSize = ProjectSettings.get_setting("display/window/size/viewport_width") # Size of viewport
-@onready var CenterCardOval = ViewportSize * Vector2(0.45, 1.55) # Calculating the center of oval for player card arc
-@onready var Horizontal_radius = ViewportSize * 0.45 # Horizontal radius of the oval arc
-@onready var Vertical_radius = ViewportSize * 0.3 # Vertical radius of the oval arc
+@onready var ViewportSizeX = ProjectSettings.get_setting("display/window/size/viewport_width") # Size of viewport
+@onready var ViewportSizeY = ProjectSettings.get_setting("display/window/size/viewport_height") # Size of viewport
+#@onready var ViewportSize = Vector2(ViewportSizeX, ViewportSizeY)
+#@onready var ViewportSize = Vector2(get_viewport().size.x, get_viewport().size.y) # Size of viewport
+@onready var CenterCardOval = ViewportSizeX * Vector2(0.45, 1.55) # Calculating the center of oval for player card arc
+@onready var Horizontal_radius = ViewportSizeX * 0.45 # Horizontal radius of the oval arc
+@onready var Vertical_radius = ViewportSizeY * 0.2 # Vertical radius of the oval arc
 var angle = deg_to_rad(-130) # Angle at which the card must be positioned
 var OvalAngleVector = Vector2() # Vector to convert the polar points (r, 0) to cartesian points (x,y)
 
@@ -294,7 +297,7 @@ func rearrangeCards(node, pIndex):
 			for card in cards:
 				card.startPosition = card.position
 				card.startRotation = card.rotation
-				card.targetPosition = ViewportSize * Vector2(0.95, 0.85 - posOffsetYRight) - node.position
+				card.targetPosition = ViewportSizeX * Vector2(0.95, 0.85 - posOffsetYRight) - node.position
 				card.targetRotation = card.rotation
 				card.state = STATE.REORGANIZE
 				posOffsetYRight += RightPlayerCardPositionOffset
@@ -303,7 +306,7 @@ func rearrangeCards(node, pIndex):
 			for card in cards:
 				card.startPosition = card.position
 				card.startRotation = card.rotation
-				card.targetPosition = ViewportSize * Vector2(0.55 - posOffsetX, -0.1) - node.position
+				card.targetPosition = ViewportSizeX * Vector2(0.55 - posOffsetX, -0.1) - node.position
 				card.targetRotation = card.rotation
 				card.state = STATE.REORGANIZE
 				posOffsetX += TopPlayerCardPositionOffset
@@ -312,7 +315,7 @@ func rearrangeCards(node, pIndex):
 			for card in cards:
 				card.startPosition = card.position
 				card.startRotation = card.rotation
-				card.targetPosition = ViewportSize * Vector2(-0.08, 0.85 - posOffsetYLeft) - node.position
+				card.targetPosition = ViewportSizeX * Vector2(-0.08, 0.85 - posOffsetYLeft) - node.position
 				card.targetRotation = card.rotation
 				card.state = STATE.REORGANIZE
 				posOffsetYLeft += LeftPlayerCardPositionOffset
@@ -344,13 +347,13 @@ func addCardToPile(toAddCardName, node, state, startPos, startRot, playerIndex, 
 			targetPosition = CenterCardOval - OvalAngleVector - node.position
 			targetRotation = deg_to_rad(angle)/2
 		1:
-			targetPosition = ViewportSize * Vector2(0.95, 1 - posOffsetYRight) - node.position
+			targetPosition = ViewportSizeX * Vector2(0.95, 1 - posOffsetYRight) - node.position
 			targetRotation = deg_to_rad(-90)
 		2:
-			targetPosition = ViewportSize * Vector2(0.75 - posOffsetX, -0.1) - node.position
+			targetPosition = ViewportSizeX * Vector2(0.75 - posOffsetX, -0.1) - node.position
 			targetRotation = deg_to_rad(180)
 		3:
-			targetPosition = ViewportSize * Vector2(-0.08, 1 - posOffsetYLeft) - node.position
+			targetPosition = ViewportSizeX * Vector2(-0.08, 1 - posOffsetYLeft) - node.position
 			targetRotation = deg_to_rad(90)
 		-1:
 			targetPosition = Vector2(rng.randf_range(-2.0, 10.0), rng.randf_range(-2.0, 10.0))
