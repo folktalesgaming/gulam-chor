@@ -1,0 +1,13 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://dqqmva14h5al4"]
+
+[ext_resource type="FontFile" uid="uid://bt8y08lfsqrgh" path="res://Assets/Fonts/PlusJakartaSans-SemiBold.ttf" id="1_eevoo"]
+[ext_resource type="FontFile" uid="uid://6f2aofkr43t6" path="res://Assets/Fonts/PlusJakartaSans-Bold.ttf" id="1_tb1rq"]
+
+[resource]
+Header/base_type = &"Label"
+Header/colors/font_color = Color(1, 0.313726, 0.313726, 1)
+Header/font_sizes/font_size = 82
+Header/fonts/font = ExtResource("1_tb1rq")
+Label/colors/font_color = Color(1, 0.313726, 0.313726, 1)
+Label/font_sizes/font_size = 36
+Label/fonts/font = ExtResource("1_eevoo")
