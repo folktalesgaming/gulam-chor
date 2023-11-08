@@ -1,8 +1,9 @@
-[gd_scene load_steps=17 format=3 uid="uid://bdqcch58ny85f"]
+[gd_scene load_steps=18 format=3 uid="uid://bdqcch58ny85f"]
 
 [ext_resource type="Script" path="res://Scenes/main_menu.gd" id="1_37p43"]
 [ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_r35uy"]
 [ext_resource type="Texture2D" uid="uid://b1gcjcf4qbryi" path="res://Assets/UI/button_primary_normal.png" id="2_yvb42"]
+[ext_resource type="Theme" uid="uid://dqqmva14h5al4" path="res://Utils/Themes/label.tres" id="3_317em"]
 [ext_resource type="Texture2D" uid="uid://c0sayeopluoor" path="res://Assets/UI/button_primary_pressed.png" id="3_wmjq0"]
 [ext_resource type="Texture2D" uid="uid://3qogcbfh4881" path="res://Assets/UI/button_exit.png" id="4_e1icq"]
 [ext_resource type="Script" path="res://Scenes/StartButton.gd" id="4_udhgg"]
@@ -31,21 +32,29 @@ texture = ExtResource("1_r35uy")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="GameName" type="RichTextLabel" parent="UI"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -280.5
-offset_top = 255.0
-offset_right = 280.5
-offset_bottom = 372.0
+offset_left = -282.5
+offset_top = 247.0
+offset_right = 282.5
+offset_bottom = 355.0
 grow_horizontal = 2
+
+[node name="GameNameGulam" type="Label" parent="UI/HBoxContainer"]
+layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_type_variation = &"HeaderLarge"
-theme_override_colors/default_color = Color(1, 0.313726, 0.313726, 1)
-theme_override_font_sizes/normal_font_size = 82
-text = "GULAM CHOR"
+theme = ExtResource("3_317em")
+theme_type_variation = &"Header"
+text = "GULAM "
+
+[node name="GameNameChor" type="Label" parent="UI/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_317em")
+theme_type_variation = &"Header"
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "CHOR"
 
 [node name="StartButton" type="TextureButton" parent="UI"]
 anchors_preset = 8
@@ -74,7 +83,8 @@ offset_left = -103.5
 offset_top = -30.492
 offset_right = 125.5
 offset_bottom = 30.508
-theme_override_font_sizes/font_size = 42
+theme = ExtResource("3_317em")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Start Game"
 horizontal_alignment = 1
 vertical_alignment = 1

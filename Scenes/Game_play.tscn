@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://bw6x2fu47ssrf"]
+[gd_scene load_steps=23 format=3 uid="uid://bw6x2fu47ssrf"]
 
 [ext_resource type="Script" path="res://Scenes/Game_play.gd" id="1_0htco"]
 [ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_dyuqt"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://ch58av02hqkn7" path="res://Assets/UI/button_pause_normal.png" id="4_4u64v"]
 [ext_resource type="Texture2D" uid="uid://dbf0ywilo5t7b" path="res://Assets/UI/button_pause_pressed.png" id="5_eobtf"]
 [ext_resource type="Texture2D" uid="uid://dire0r8koal1h" path="res://Assets/UI/button_quit.png" id="7_2jhdj"]
+[ext_resource type="Theme" uid="uid://dqqmva14h5al4" path="res://Utils/Themes/label.tres" id="7_iq7kp"]
 [ext_resource type="Texture2D" uid="uid://kiaaggymnfik" path="res://Assets/UI/Cards/deck_of_cards.png" id="8_5bn2q"]
 [ext_resource type="PackedScene" uid="uid://bwiltpf34vfyb" path="res://Prefabs/Player/Player.tscn" id="8_131w6"]
 [ext_resource type="Script" path="res://Scenes/PlayerPickTurnTime.gd" id="8_e07ah"]
@@ -75,6 +76,7 @@ texture_normal = ExtResource("4_4u64v")
 texture_pressed = ExtResource("5_eobtf")
 
 [node name="IndicatorHasJack" type="TextureRect" parent="UI"]
+unique_name_in_owner = true
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -101,6 +103,7 @@ grow_horizontal = 2
 grow_vertical = 0
 
 [node name="PlayerPickTurnProgressBar" type="ProgressBar" parent="UI/Control"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 1
 anchors_preset = 7
@@ -122,6 +125,7 @@ fill_mode = 1
 show_percentage = false
 
 [node name="PausePanel" type="PanelContainer" parent="UI"]
+unique_name_in_owner = true
 visible = false
 anchors_preset = 8
 anchor_left = 0.5
@@ -145,7 +149,9 @@ alignment = 1
 [node name="PauseLabel" type="Label" parent="UI/PausePanel/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 52
+theme = ExtResource("7_iq7kp")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 56
 text = "PAUSED"
 
 [node name="QuitMargin" type="MarginContainer" parent="UI/PausePanel/VBoxContainer"]
@@ -174,93 +180,42 @@ layout_mode = 2
 size_flags_horizontal = 4
 texture_normal = ExtResource("9_54kho")
 
-[node name="PackOfDeck" type="Node2D" parent="."]
-position = Vector2(540, 800)
-
-[node name="Decks" type="Sprite2D" parent="PackOfDeck"]
-texture = ExtResource("8_5bn2q")
-
-[node name="PairCards" type="Node2D" parent="."]
-position = Vector2(580, 960)
-rotation = 3.14159
-
-[node name="PlayerPickTurnTimer" type="Timer" parent="."]
-wait_time = 3.0
-one_shot = true
-script = ExtResource("8_e07ah")
-
-[node name="RemovePairBotTimer" type="Timer" parent="."]
-one_shot = true
-
-[node name="RemovePairPlayerTimer" type="Timer" parent="."]
-one_shot = true
-
-[node name="Players" type="Node2D" parent="."]
-
-[node name="Player" parent="Players" instance=ExtResource("8_131w6")]
-position = Vector2(-300, -300)
-
-[node name="Player2" parent="Players" instance=ExtResource("8_131w6")]
-position = Vector2(-300, -300)
-
-[node name="Player3" parent="Players" instance=ExtResource("8_131w6")]
-position = Vector2(-300, -300)
-
-[node name="Player4" parent="Players" instance=ExtResource("8_131w6")]
-position = Vector2(-300, -300)
-
-[node name="Emotes" type="Node2D" parent="."]
-
-[node name="PlayerEmote" type="Sprite2D" parent="Emotes"]
-position = Vector2(540, 1200)
-scale = Vector2(2.5, 2.5)
-
-[node name="Player2Emote" type="Sprite2D" parent="Emotes"]
-position = Vector2(900, 820)
-rotation = -1.5708
-scale = Vector2(2, 2)
-
-[node name="Player3Emote" type="Sprite2D" parent="Emotes"]
-position = Vector2(540, 200)
-rotation = 3.14159
-scale = Vector2(2, 2)
-
-[node name="Player4Emote" type="Sprite2D" parent="Emotes"]
-position = Vector2(200, 820)
-rotation = 1.5708
-scale = Vector2(2, 2)
-
-[node name="GameOverText" type="Label" parent="."]
-visible = false
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 274.0
-offset_top = 292.0
-offset_right = 824.0
-offset_bottom = 394.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 0.376471, 0.368627, 1)
-theme_override_font_sizes/font_size = 72
-text = "GAME FINISHED"
-
-[node name="ReplayButton" type="TextureButton" parent="."]
+[node name="GameOverText" type="Label" parent="UI"]
+unique_name_in_owner = true
 visible = false
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = 196.0
-offset_top = 984.0
-offset_right = 929.0
-offset_bottom = 1098.0
+offset_left = -279.0
+offset_top = -446.0
+offset_right = 279.0
+offset_bottom = -344.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("7_iq7kp")
+theme_override_font_sizes/font_size = 72
+text = "GAME FINISHED"
+
+[node name="ReplayButton" type="TextureButton" parent="UI"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -344.0
+offset_top = -936.0
+offset_right = 389.0
+offset_bottom = -822.0
 grow_horizontal = 2
 grow_vertical = 0
 texture_normal = ExtResource("11_u47v6")
 texture_pressed = ExtResource("12_7a1c6")
 
-[node name="Replay" type="Label" parent="ReplayButton"]
+[node name="Replay" type="Label" parent="UI/ReplayButton"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -273,20 +228,22 @@ offset_right = 68.0
 offset_bottom = 30.5
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 42
+theme = ExtResource("7_iq7kp")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Replay"
 
-[node name="ExitButton" type="TextureButton" parent="."]
+[node name="ExitButton" type="TextureButton" parent="UI"]
+unique_name_in_owner = true
 visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 193.0
-offset_top = 1119.0
-offset_right = 926.0
-offset_bottom = 1233.0
+offset_left = -347.0
+offset_top = 159.0
+offset_right = 386.0
+offset_bottom = 273.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
@@ -294,7 +251,7 @@ size_flags_vertical = 4
 texture_normal = ExtResource("11_u47v6")
 texture_pressed = ExtResource("12_7a1c6")
 
-[node name="Exit" type="Label" parent="ExitButton"]
+[node name="Exit" type="Label" parent="UI/ExitButton"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -307,26 +264,103 @@ offset_right = 20.0
 offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 42
+theme = ExtResource("7_iq7kp")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Exit Back"
+
+[node name="PackOfDeck" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(540, 800)
+
+[node name="Decks" type="Sprite2D" parent="PackOfDeck"]
+texture = ExtResource("8_5bn2q")
+
+[node name="PairCards" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(580, 960)
+rotation = 3.14159
+
+[node name="Timers" type="Node2D" parent="."]
+position = Vector2(-300, -300)
+
+[node name="PlayerPickTurnTimer" type="Timer" parent="Timers"]
+unique_name_in_owner = true
+wait_time = 3.0
+one_shot = true
+script = ExtResource("8_e07ah")
+
+[node name="RemovePairBotTimer" type="Timer" parent="Timers"]
+unique_name_in_owner = true
+one_shot = true
+
+[node name="RemovePairPlayerTimer" type="Timer" parent="Timers"]
+unique_name_in_owner = true
+one_shot = true
+
+[node name="Players" type="Node2D" parent="."]
+
+[node name="Player" parent="Players" instance=ExtResource("8_131w6")]
+unique_name_in_owner = true
+position = Vector2(-300, -300)
+
+[node name="Player2" parent="Players" instance=ExtResource("8_131w6")]
+unique_name_in_owner = true
+position = Vector2(-300, -300)
+
+[node name="Player3" parent="Players" instance=ExtResource("8_131w6")]
+unique_name_in_owner = true
+position = Vector2(-300, -300)
+
+[node name="Player4" parent="Players" instance=ExtResource("8_131w6")]
+unique_name_in_owner = true
+position = Vector2(-300, -300)
+
+[node name="Emotes" type="Node2D" parent="."]
+
+[node name="PlayerEmote" type="Sprite2D" parent="Emotes"]
+unique_name_in_owner = true
+position = Vector2(540, 1200)
+scale = Vector2(2.5, 2.5)
+
+[node name="Player2Emote" type="Sprite2D" parent="Emotes"]
+unique_name_in_owner = true
+position = Vector2(900, 820)
+rotation = -1.5708
+scale = Vector2(2, 2)
+
+[node name="Player3Emote" type="Sprite2D" parent="Emotes"]
+unique_name_in_owner = true
+position = Vector2(540, 200)
+rotation = 3.14159
+scale = Vector2(2, 2)
+
+[node name="Player4Emote" type="Sprite2D" parent="Emotes"]
+unique_name_in_owner = true
+position = Vector2(200, 820)
+rotation = 1.5708
+scale = Vector2(2, 2)
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 
 [node name="Audios" type="Node2D" parent="."]
 
 [node name="CardShuffle" type="AudioStreamPlayer2D" parent="Audios"]
+unique_name_in_owner = true
 stream = SubResource("AudioStreamOggVorbis_ioumw")
 volume_db = 1.0
 
 [node name="CardTake" type="AudioStreamPlayer2D" parent="Audios"]
+unique_name_in_owner = true
 stream = ExtResource("11_1qa73")
 volume_db = 2.0
 
 [node name="CardPairThrow" type="AudioStreamPlayer2D" parent="Audios"]
+unique_name_in_owner = true
 stream = ExtResource("12_s4soc")
 volume_db = 2.0
 
 [node name="ButtonClick" type="AudioStreamPlayer2D" parent="Audios"]
+unique_name_in_owner = true
 stream = ExtResource("13_4a1dj")
 volume_db = 2.0
 
@@ -334,7 +368,7 @@ volume_db = 2.0
 [connection signal="pressed" from="UI/PauseButton" to="." method="_on_pause_button_pressed"]
 [connection signal="pressed" from="UI/PausePanel/VBoxContainer/QuitMargin/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="UI/PausePanel/VBoxContainer/ContinueMargin/ContinueButton" to="." method="_on_continue_button_pressed"]
-[connection signal="timeout" from="RemovePairBotTimer" to="." method="_on_remove_pair_bot_timer_timeout"]
-[connection signal="timeout" from="RemovePairPlayerTimer" to="." method="_on_remove_pair_player_timer_timeout"]
-[connection signal="pressed" from="ReplayButton" to="." method="_on_replay_button_pressed"]
-[connection signal="pressed" from="ExitButton" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="UI/ReplayButton" to="." method="_on_replay_button_pressed"]
+[connection signal="pressed" from="UI/ExitButton" to="." method="_on_exit_button_pressed"]
+[connection signal="timeout" from="Timers/RemovePairBotTimer" to="." method="_on_remove_pair_bot_timer_timeout"]
+[connection signal="timeout" from="Timers/RemovePairPlayerTimer" to="." method="_on_remove_pair_player_timer_timeout"]

@@ -7,36 +7,36 @@ const DeckOfCard = preload("res://Utils/deck_of_cards_classic.gd")
 const Emotes = preload("res://Utils/emotes.gd")
 
 # Nodes from game play scene
-@onready var JackIndicator = get_node("UI/IndicatorHasJack")
+@onready var JackIndicator = %IndicatorHasJack
 
-@onready var CardShuffleAudio = get_node("Audios/CardShuffle")
-@onready var ButtonClickAudio = get_node("Audios/ButtonClick")
-@onready var CardTakeAudio = get_node("Audios/CardTake")
-@onready var CardPairThrowAudio = get_node("Audios/CardPairThrow")
+@onready var CardShuffleAudio = %CardShuffle
+@onready var ButtonClickAudio = %ButtonClick
+@onready var CardTakeAudio = %CardTake
+@onready var CardPairThrowAudio = %CardPairThrow
 
-@onready var Player1 = get_node("Players/Player")
-@onready var Player2 = get_node("Players/Player2")
-@onready var Player3 = get_node("Players/Player3")
-@onready var Player4 = get_node("Players/Player4")
+@onready var Player1 = %Player
+@onready var Player2 = %Player2
+@onready var Player3 = %Player3
+@onready var Player4 = %Player4
 
-@onready var PackOfDeck = get_node("PackOfDeck")
-@onready var PairCards = get_node("PairCards")
+@onready var PackOfDeck = %PackOfDeck
+@onready var PairCards = %PairCards
 
-@onready var GameOverText = get_node("GameOverText")
-@onready var ReplayButton = get_node("ReplayButton")
-@onready var ExitButton = get_node("ExitButton")
-@onready var PausePanel = get_node("UI/PausePanel")
+@onready var GameOverText = %GameOverText
+@onready var ReplayButton = %ReplayButton
+@onready var ExitButton = %ExitButton
+@onready var PausePanel = %PausePanel
 
-@onready var RemovePairBotTimer = get_node("RemovePairBotTimer")
-@onready var RemovePairPlayerTimer = get_node("RemovePairPlayerTimer")
-@onready var PlayerPickTurnTimer = get_node("PlayerPickTurnTimer")
+@onready var RemovePairBotTimer = %RemovePairBotTimer
+@onready var RemovePairPlayerTimer = %RemovePairPlayerTimer
+@onready var PlayerPickTurnTimer = %PlayerPickTurnTimer
 
-@onready var PlayerPickTurnProgressBar = get_node("UI/Control/PlayerPickTurnProgressBar")
+@onready var PlayerPickTurnProgressBar = %PlayerPickTurnProgressBar
 
-@onready var EmotePlayer1 = get_node("Emotes/PlayerEmote")
-@onready var EmotePlayer2 = get_node("Emotes/Player2Emote")
-@onready var EmotePlayer3 = get_node("Emotes/Player3Emote")
-@onready var EmotePlayer4 = get_node("Emotes/Player4Emote")
+@onready var EmotePlayer1 = %PlayerEmote
+@onready var EmotePlayer2 = %Player2Emote
+@onready var EmotePlayer3 = %Player3Emote
+@onready var EmotePlayer4 = %Player4Emote
 
 # Utilities and global variables
 @onready var deckOfCards = Utility.shuffleDeck(DeckOfCard.getDeckClassic())
