@@ -1,0 +1,31 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://bb1pnq5prixi"]
+
+[ext_resource type="Texture2D" uid="uid://bgd8iv3ac5xd6" path="res://Assets/UI/slider_knob.png" id="1_jpfne"]
+[ext_resource type="Texture2D" uid="uid://ufo2kf0v1bhn" path="res://Assets/UI/slider_fill.png" id="2_5ago2"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_payo7"]
+texture = ExtResource("2_5ago2")
+expand_margin_top = 1.0
+expand_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pdmiy"]
+texture = ExtResource("2_5ago2")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wap7s"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[resource]
+HSlider/icons/grabber = ExtResource("1_jpfne")
+HSlider/icons/grabber_highlight = ExtResource("1_jpfne")
+HSlider/styles/grabber_area = SubResource("StyleBoxTexture_payo7")
+HSlider/styles/grabber_area_highlight = SubResource("StyleBoxTexture_pdmiy")
+HSlider/styles/slider = SubResource("StyleBoxFlat_wap7s")

@@ -11,4 +11,5 @@ func _on_no_button_pressed():
 
 func _on_settings_button_pressed():
 	$ButtonClick.play()
+	await get_tree().create_timer(0.1).timeout
 	get_tree().change_scene_to_file("res://Scenes/Settings.tscn")
