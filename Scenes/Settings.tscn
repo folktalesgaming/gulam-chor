@@ -65,7 +65,9 @@ theme_override_constants/margin_bottom = 36
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("3_wliml")
-value = 50.0
+min_value = -80.0
+max_value = 6.0
+value = 6.0
 
 [node name="SFXLabel" type="Label" parent="UI/VBoxContainer"]
 layout_mode = 2
@@ -83,7 +85,8 @@ theme_override_constants/margin_bottom = 64
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("3_wliml")
-value = 100.0
+min_value = -80.0
+max_value = 6.0
 
 [node name="SaveButton" type="TextureButton" parent="UI/VBoxContainer"]
 layout_mode = 2
@@ -119,8 +122,9 @@ texture_normal = ExtResource("2_tfrg5")
 [node name="ButtonClick" type="AudioStreamPlayer2D" parent="AudioListener2D"]
 unique_name_in_owner = true
 stream = ExtResource("4_3thx3")
+bus = &"SFX"
 
-[connection signal="drag_ended" from="UI/VBoxContainer/MarginContainer/BgMusicSlider" to="." method="_on_bg_music_slider_drag_ended"]
+[connection signal="value_changed" from="UI/VBoxContainer/MarginContainer/BgMusicSlider" to="." method="_on_bg_music_slider_value_changed"]
 [connection signal="value_changed" from="UI/VBoxContainer/MarginContainer2/SfxSlider" to="." method="_on_sfx_slider_value_changed"]
 [connection signal="pressed" from="UI/VBoxContainer/SaveButton" to="." method="save"]
 [connection signal="pressed" from="UI/BackButton" to="." method="_on_back_button_pressed"]

@@ -23,10 +23,6 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="keep_height"
 window/handheld/orientation=1
 
-[gui]
-
-theme/custom_font="res://Utils/Themes/label.tres"
-
 [rendering]
 
 renderer/rendering_method="mobile"

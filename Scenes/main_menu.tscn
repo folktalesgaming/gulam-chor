@@ -187,6 +187,7 @@ texture_pressed = ExtResource("14_lqgyn")
 [node name="ButtonClick" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("16_acu6k")
 volume_db = 2.0
+bus = &"SFX"
 
 [connection signal="pressed" from="UI/StartButton" to="UI/StartButton" method="_on_pressed"]
 [connection signal="pressed" from="UI/ExitButton" to="UI/ExitButton" method="_on_pressed"]

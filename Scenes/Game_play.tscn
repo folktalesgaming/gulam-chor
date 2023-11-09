@@ -348,21 +348,25 @@ scale = Vector2(2, 2)
 unique_name_in_owner = true
 stream = SubResource("AudioStreamOggVorbis_ioumw")
 volume_db = 1.0
+bus = &"SFX"
 
 [node name="CardTake" type="AudioStreamPlayer2D" parent="Audios"]
 unique_name_in_owner = true
 stream = ExtResource("11_1qa73")
 volume_db = 2.0
+bus = &"SFX"
 
 [node name="CardPairThrow" type="AudioStreamPlayer2D" parent="Audios"]
 unique_name_in_owner = true
 stream = ExtResource("12_s4soc")
 volume_db = 2.0
+bus = &"SFX"
 
 [node name="ButtonClick" type="AudioStreamPlayer2D" parent="Audios"]
 unique_name_in_owner = true
 stream = ExtResource("13_4a1dj")
 volume_db = 2.0
+bus = &"SFX"
 
 [connection signal="pressed" from="UI/ShuffleButton" to="." method="_on_shuffle_button_pressed"]
 [connection signal="pressed" from="UI/PauseButton" to="." method="_on_pause_button_pressed"]
