@@ -231,7 +231,7 @@ func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 		if Player1.cardsInHand.size() <= 0:
 			await get_tree().create_timer(0.2).timeout
 		else:
-			await get_tree().create_timer(1).timeout
+			await get_tree().create_timer(0.6).timeout
 		pickedCard = Utility.pickRandomCard(nextPlayer.get_children())
 	
 	var sPos = pickedCard.position
@@ -248,7 +248,7 @@ func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 	if Player1.cardsInHand.size() <= 0:
 		await get_tree().create_timer(0.3).timeout
 	else:
-		await get_tree().create_timer(0.7).timeout
+		await get_tree().create_timer(0.5).timeout
 	var cardsSplitted = Utility.findPairs(currentPlayer.cardsInHand)
 	if(cardsSplitted.pairCards.size() > 0):
 		adjustPositionRotationToThrow(currentPlayer, cardsSplitted.pairCards)
@@ -259,7 +259,7 @@ func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 	if Player1.cardsInHand.size() <= 0:
 		await get_tree().create_timer(0.2).timeout
 	else:
-		await get_tree().create_timer(0.5).timeout
+		await get_tree().create_timer(0.4).timeout
 	rearrangeCards(nextPlayer, nextPlayerIndex)
 	if currentPlayerIndex == 0 || nextPlayerIndex == 0:
 		if checkJack():
@@ -642,7 +642,6 @@ func _on_quit_button_pressed():
 	ButtonClickAudio.play()
 	await get_tree().create_timer(0.1).timeout
 	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
-
 
 # Shuffle Cards
 func shuffleCardsInHand(playerNode):

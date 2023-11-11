@@ -10,6 +10,7 @@ var targetPosition = 0
 var startRotation = deg_to_rad(0)
 var targetRotation = 0
 var DRAWTIME = 0.4 # time for the tween animation to animate for. TODO: make different timing for different states of the card
+var ShuffleTime = 0.2
 var GETFROMDECKTIME = 0.08
 
 enum STATE {
@@ -60,9 +61,9 @@ func _physics_process(_delta):
 		STATE.MOVINGFROMPICKINGTOHAND:
 			animateFromStartToTarget(STATE.INHAND, DRAWTIME, true, true, false)
 		STATE.REORGANIZE:
-			animateFromStartToTarget(STATE.INHAND, DRAWTIME)
+			animateFromStartToTarget(STATE.INHAND, ShuffleTime)
 		STATE.SHUFFLE:
-			animateFromStartToTarget(STATE.INHAND, DRAWTIME, true)
+			animateFromStartToTarget(STATE.INHAND, ShuffleTime, true)
 
 func animateFromStartToTarget(nextState, tweenTime, shouldRotate=true, shouldSelect=false, selected=false):
 	if tween:
