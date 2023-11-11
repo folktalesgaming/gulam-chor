@@ -22,7 +22,7 @@ const Emotes = preload("res://Utils/emotes.gd")
 @onready var PackOfDeck = %PackOfDeck
 @onready var PairCards = %PairCards
 
-@onready var GameOverText = %GameOverText
+@onready var game_over_panel = %GameOverPanel
 @onready var ReplayButton = %ReplayButton
 @onready var ExitButton = %ExitButton
 @onready var PausePanel = %PausePanel
@@ -104,9 +104,7 @@ func startTheGame():
 		card.free()
 	removeEmotes()
 	isGameOver = false
-	GameOverText.visible = false
-	ReplayButton.visible = false
-	ExitButton.visible = false
+	game_over_panel.visible = false
 	JackIndicator.texture = null
 	indicatePlayerTurn(false)
 	
@@ -157,9 +155,7 @@ func _physics_process(_delta):
 			if PairCards.get_child_count() >= 50:
 				isGameMoving = false
 				isGameOver = true
-				GameOverText.visible = true
-				ReplayButton.visible = true
-				ExitButton.visible = true
+				game_over_panel.visible = true
 				var losingPlayerIndex = getLossingPlayerIndex()
 				showFinalEmotes(losingPlayerIndex)
 				showTheUnpairJack(losingPlayerIndex)
