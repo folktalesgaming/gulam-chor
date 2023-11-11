@@ -62,7 +62,7 @@ func _physics_process(_delta):
 		STATE.REORGANIZE:
 			animateFromStartToTarget(STATE.INHAND, DRAWTIME)
 		STATE.SHUFFLE:
-			pass
+			animateFromStartToTarget(STATE.INHAND, DRAWTIME, true)
 
 func animateFromStartToTarget(nextState, tweenTime, shouldRotate=true, shouldSelect=false, selected=false):
 	if tween:

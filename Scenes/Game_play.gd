@@ -267,6 +267,8 @@ func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 		else:
 			JackIndicator.texture = load("res://Assets/UI/indicator_no_jack.png")
 	if currentPlayer.cardsInHand.size() > 0:
+		if not currentPlayerIndex == 0:
+			shuffleCardsInHand(currentPlayer)
 		rearrangeCards(currentPlayer, currentPlayerIndex)
 	
 	playerTurn = getNextPlayerIndex(currentPlayerIndex)
@@ -616,6 +618,7 @@ func indicatePlayerTurn(isPlayerTurn):
 
 func _on_shuffle_button_pressed():
 	ButtonClickAudio.play()
+	shuffleCardsInHand(Player1)
 
 # Pause Game
 # TODO: make the pause work when the player turn is on
@@ -639,3 +642,31 @@ func _on_quit_button_pressed():
 	ButtonClickAudio.play()
 	await get_tree().create_timer(0.1).timeout
 	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
+
+
+# Shuffle Cards
+func shuffleCardsInHand(playerNode):
+	var oldPositionsWithIndex = []
+	var i = 0
+	
+	for card in playerNode.cardsInHand:
+		oldPositionsWithIndex.append({
+			"position": playerNode.get_child(i).position,
+			"rotation": playerNode.get_child(i).rotation,
+		})
+		i += 1
+	
+	playerNode.cardsInHand.shuffle()
+	i = 0
+	
+	var cardSprites = playerNode.get_children()
+	
+	for card in cardSprites:
+		var newIndex = playerNode.cardsInHand.find(card.cardName)
+		card.startPosition = card.position
+		card.startRotation = card.rotation
+		card.targetPosition = oldPositionsWithIndex[newIndex].position
+		card.targetRotation = oldPositionsWithIndex[newIndex].rotation
+		playerNode.move_child(card, newIndex)
+		card.state = STATE.SHUFFLE
+		pass
