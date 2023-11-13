@@ -1,8 +1,8 @@
-[gd_scene load_steps=25 format=3 uid="uid://bw6x2fu47ssrf"]
+[gd_scene load_steps=27 format=3 uid="uid://bw6x2fu47ssrf"]
 
 [ext_resource type="Script" path="res://Scenes/Game_play.gd" id="1_0htco"]
-[ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_dyuqt"]
 [ext_resource type="Texture2D" uid="uid://cuxtn34e6qryq" path="res://Assets/UI/button_shuffle_normal.png" id="2_h6uwh"]
+[ext_resource type="Texture2D" uid="uid://dpyefhmxfkepu" path="res://Assets/UI/MainBGLighter.png" id="2_r0gb3"]
 [ext_resource type="Texture2D" uid="uid://ckbs8n4ouovj1" path="res://Assets/UI/button_shuffle_pressed.png" id="3_nadkd"]
 [ext_resource type="Texture2D" uid="uid://ch58av02hqkn7" path="res://Assets/UI/button_pause_normal.png" id="4_4u64v"]
 [ext_resource type="Texture2D" uid="uid://dbf0ywilo5t7b" path="res://Assets/UI/button_pause_pressed.png" id="5_eobtf"]
@@ -14,10 +14,12 @@
 [ext_resource type="Texture2D" uid="uid://d26j0jp04hiiw" path="res://Assets/UI/button_continue.png" id="8_ljsxa"]
 [ext_resource type="Texture2D" uid="uid://kudj333ym0rb" path="res://Assets/UI/button_settings_in_pause.png" id="9_54kho"]
 [ext_resource type="AudioStream" uid="uid://haw8d7gsg2tl" path="res://Assets/Audios/cardPlace3.ogg" id="11_1qa73"]
-[ext_resource type="Texture2D" uid="uid://b1gcjcf4qbryi" path="res://Assets/UI/button_primary_normal.png" id="11_u47v6"]
-[ext_resource type="Texture2D" uid="uid://c0sayeopluoor" path="res://Assets/UI/button_primary_pressed.png" id="12_7a1c6"]
+[ext_resource type="Texture2D" uid="uid://ckuvt2dfljx5m" path="res://Assets/UI/no_button_exit_bg.png" id="11_5podp"]
+[ext_resource type="Texture2D" uid="uid://enuu22p72c1y" path="res://Assets/UI/no_button_exit_bg_pressed.png" id="12_kivj5"]
 [ext_resource type="AudioStream" uid="uid://cu80ead5gl2vf" path="res://Assets/Audios/cardSlide5.ogg" id="12_s4soc"]
 [ext_resource type="AudioStream" uid="uid://caehe17orvu1p" path="res://Assets/Audios/click1.ogg" id="13_4a1dj"]
+[ext_resource type="Texture2D" uid="uid://du2crpsw8t6o7" path="res://Assets/UI/yes_button_exit_bg.png" id="13_pijc6"]
+[ext_resource type="Texture2D" uid="uid://ctrj0cl3kx4g" path="res://Assets/UI/yes_button_exit_bg_pressed.png" id="14_twmts"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_keo5m"]
 bg_color = Color(0.635294, 1, 0.545098, 1)
@@ -54,7 +56,7 @@ script = ExtResource("1_0htco")
 [node name="MainBg" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
 position = Vector2(530, 967)
 scale = Vector2(0.411, 0.4)
-texture = ExtResource("1_dyuqt")
+texture = ExtResource("2_r0gb3")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -192,7 +194,6 @@ texture_normal = ExtResource("9_54kho")
 
 [node name="GameOverPanel" type="PanelContainer" parent="UI"]
 unique_name_in_owner = true
-visible = false
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -208,16 +209,20 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_rnsb4")
 [node name="GameOverBottomPanel" type="PanelContainer" parent="UI/GameOverPanel"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 8
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_inne5")
 
 [node name="MarginContainer" type="MarginContainer" parent="UI/GameOverPanel/GameOverBottomPanel"]
 layout_mode = 2
+theme_override_constants/margin_left = 32
 theme_override_constants/margin_top = 64
-theme_override_constants/margin_bottom = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 128
 
 [node name="GameOverText" type="Label" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
@@ -229,19 +234,18 @@ theme = ExtResource("7_iq7kp")
 theme_override_font_sizes/font_size = 72
 text = "GAME FINISHED"
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_top = 32
-theme_override_constants/margin_bottom = 16
+alignment = 1
 
-[node name="ReplayButton" type="TextureButton" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/MarginContainer"]
+[node name="ReplayButton" type="TextureButton" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
-texture_normal = ExtResource("11_u47v6")
-texture_pressed = ExtResource("12_7a1c6")
+texture_normal = ExtResource("11_5podp")
+texture_pressed = ExtResource("12_kivj5")
 
-[node name="Replay" type="Label" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/MarginContainer/ReplayButton"]
+[node name="Replay" type="Label" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer/ReplayButton"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -258,20 +262,15 @@ theme = ExtResource("7_iq7kp")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Replay"
 
-[node name="MarginContainer2" type="MarginContainer" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_bottom = 32
-
-[node name="ExitButton" type="TextureButton" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/MarginContainer2"]
+[node name="ExitButton" type="TextureButton" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-texture_normal = ExtResource("11_u47v6")
-texture_pressed = ExtResource("12_7a1c6")
+texture_normal = ExtResource("13_pijc6")
+texture_pressed = ExtResource("14_twmts")
 
-[node name="Exit" type="Label" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/MarginContainer2/ExitButton"]
+[node name="Exit" type="Label" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer/ExitButton"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -394,7 +393,7 @@ bus = &"SFX"
 [connection signal="pressed" from="UI/PauseButton" to="." method="_on_pause_button_pressed"]
 [connection signal="pressed" from="UI/PausePanel/VBoxContainer/QuitMargin/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="UI/PausePanel/VBoxContainer/ContinueMargin/ContinueButton" to="." method="_on_continue_button_pressed"]
-[connection signal="pressed" from="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/MarginContainer/ReplayButton" to="." method="_on_replay_button_pressed"]
-[connection signal="pressed" from="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/MarginContainer2/ExitButton" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer/ReplayButton" to="." method="_on_replay_button_pressed"]
+[connection signal="pressed" from="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]
 [connection signal="timeout" from="Timers/RemovePairBotTimer" to="." method="_on_remove_pair_bot_timer_timeout"]
 [connection signal="timeout" from="Timers/RemovePairPlayerTimer" to="." method="_on_remove_pair_player_timer_timeout"]
