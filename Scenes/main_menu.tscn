@@ -1,15 +1,13 @@
-[gd_scene load_steps=18 format=3 uid="uid://bdqcch58ny85f"]
+[gd_scene load_steps=16 format=3 uid="uid://bdqcch58ny85f"]
 
 [ext_resource type="Script" path="res://Scenes/main_menu.gd" id="1_37p43"]
-[ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_r35uy"]
+[ext_resource type="Texture2D" uid="uid://dpyefhmxfkepu" path="res://Assets/UI/MainBGLighter.png" id="2_vrw4o"]
 [ext_resource type="Texture2D" uid="uid://b1gcjcf4qbryi" path="res://Assets/UI/button_primary_normal.png" id="2_yvb42"]
 [ext_resource type="Theme" uid="uid://dqqmva14h5al4" path="res://Utils/Themes/label.tres" id="3_317em"]
 [ext_resource type="Texture2D" uid="uid://c0sayeopluoor" path="res://Assets/UI/button_primary_pressed.png" id="3_wmjq0"]
 [ext_resource type="Texture2D" uid="uid://3qogcbfh4881" path="res://Assets/UI/button_exit.png" id="4_e1icq"]
-[ext_resource type="Script" path="res://Scenes/StartButton.gd" id="4_udhgg"]
 [ext_resource type="Texture2D" uid="uid://ct4oto8qjn1xw" path="res://Assets/UI/button_exit_pressed.png" id="5_xjqnw"]
 [ext_resource type="Texture2D" uid="uid://12h5dofygqgs" path="res://Assets/UI/button_settings.png" id="6_txnc6"]
-[ext_resource type="Script" path="res://Scenes/ExitButton.gd" id="7_8u5bf"]
 [ext_resource type="Texture2D" uid="uid://biicnt0mj8rsn" path="res://Assets/UI/button_settings_pressed.png" id="7_mbsrj"]
 [ext_resource type="Texture2D" uid="uid://c1d7mpor85pkl" path="res://Assets/UI/ExitModel.png" id="10_l0yw5"]
 [ext_resource type="Texture2D" uid="uid://c1wk82yd0x01c" path="res://Assets/UI/button_yes_exit_normal.png" id="11_5mf3j"]
@@ -28,7 +26,7 @@ script = ExtResource("1_37p43")
 [node name="MainBg" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
 position = Vector2(538, 1082)
 scale = Vector2(0.412, 0.4)
-texture = ExtResource("1_r35uy")
+texture = ExtResource("2_vrw4o")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -36,10 +34,10 @@ texture = ExtResource("1_r35uy")
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -282.5
-offset_top = 247.0
-offset_right = 282.5
-offset_bottom = 355.0
+offset_left = -284.5
+offset_top = 314.0
+offset_right = 284.5
+offset_bottom = 422.0
 grow_horizontal = 2
 
 [node name="GameNameGulam" type="Label" parent="UI/HBoxContainer"]
@@ -56,38 +54,63 @@ theme_type_variation = &"Header"
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "CHOR"
 
-[node name="StartButton" type="TextureButton" parent="UI"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -366.5
-offset_top = -21.0
-offset_right = 366.5
-offset_bottom = 93.0
+offset_top = -54.0
+offset_bottom = 54.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 64
+
+[node name="SingleMode" type="TextureButton" parent="UI/VBoxContainer"]
+layout_mode = 2
 texture_normal = ExtResource("2_yvb42")
 texture_pressed = ExtResource("3_wmjq0")
-script = ExtResource("4_udhgg")
 
-[node name="Label" type="Label" parent="UI/StartButton"]
+[node name="Label" type="Label" parent="UI/VBoxContainer/SingleMode"]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 8
 anchor_left = 0.5
-anchor_top = 0.478
+anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.478
-offset_left = -103.5
-offset_top = -30.492
-offset_right = 125.5
-offset_bottom = 30.508
+anchor_bottom = 0.5
+offset_left = -162.0
+offset_top = -30.5
+offset_right = 162.0
+offset_bottom = 30.5
+grow_horizontal = 2
+grow_vertical = 2
 theme = ExtResource("3_317em")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Start Game"
+text = "Singleplayer Mode"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="MultiplayerMode" type="TextureButton" parent="UI/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_yvb42")
+texture_pressed = ExtResource("3_wmjq0")
+
+[node name="Label" type="Label" parent="UI/VBoxContainer/MultiplayerMode"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_317em")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Multiplayer Mode"
 
 [node name="ExitButton" type="TextureButton" parent="UI"]
 anchors_preset = 3
@@ -103,7 +126,6 @@ grow_horizontal = 0
 grow_vertical = 0
 texture_normal = ExtResource("4_e1icq")
 texture_pressed = ExtResource("5_xjqnw")
-script = ExtResource("7_8u5bf")
 
 [node name="SettingsButton" type="TextureButton" parent="UI"]
 anchors_preset = 2
@@ -118,6 +140,7 @@ texture_normal = ExtResource("6_txnc6")
 texture_pressed = ExtResource("7_mbsrj")
 
 [node name="PanelContainer" type="PanelContainer" parent="UI"]
+unique_name_in_owner = true
 visible = false
 anchors_preset = 8
 anchor_left = 0.5
@@ -185,12 +208,14 @@ texture_pressed = ExtResource("14_lqgyn")
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 
 [node name="ButtonClick" type="AudioStreamPlayer2D" parent="."]
+unique_name_in_owner = true
 stream = ExtResource("16_acu6k")
 volume_db = 2.0
 bus = &"SFX"
 
-[connection signal="pressed" from="UI/StartButton" to="UI/StartButton" method="_on_pressed"]
-[connection signal="pressed" from="UI/ExitButton" to="UI/ExitButton" method="_on_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/SingleMode" to="." method="_on_single_mode_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/MultiplayerMode" to="." method="_on_multiplayer_mode_pressed"]
+[connection signal="pressed" from="UI/ExitButton" to="." method="_on_exit_button_pressed"]
 [connection signal="pressed" from="UI/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="UI/PanelContainer/ExitModelContainer/YesButton" to="." method="_on_yes_button_pressed"]
 [connection signal="pressed" from="UI/PanelContainer/ExitModelContainer/NoButton" to="." method="_on_no_button_pressed"]

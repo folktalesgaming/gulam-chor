@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://bdydqeuq0efo8"]
 
-[ext_resource type="Texture2D" uid="uid://cvbpioht2krsm" path="res://Assets/UI/MainBG.png" id="1_mpolf"]
 [ext_resource type="Script" path="res://Scenes/settings.gd" id="1_nm1n6"]
+[ext_resource type="Texture2D" uid="uid://dpyefhmxfkepu" path="res://Assets/UI/MainBGLighter.png" id="2_anj2r"]
 [ext_resource type="Texture2D" uid="uid://d2lphoxbvpshk" path="res://Assets/UI/button_back.png" id="2_tfrg5"]
 [ext_resource type="Texture2D" uid="uid://b1gcjcf4qbryi" path="res://Assets/UI/button_primary_normal.png" id="3_2fag7"]
 [ext_resource type="Theme" uid="uid://dqqmva14h5al4" path="res://Utils/Themes/label.tres" id="3_3wtwt"]
@@ -19,7 +19,7 @@ script = ExtResource("1_nm1n6")
 [node name="MainBg" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
 position = Vector2(538, 1082)
 scale = Vector2(0.412, 0.4)
-texture = ExtResource("1_mpolf")
+texture = ExtResource("2_anj2r")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -43,9 +43,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -366.5
-offset_top = -14.0
+offset_top = -220.0
 offset_right = 366.5
-offset_bottom = 358.0
+offset_bottom = 220.0
 grow_horizontal = 2
 grow_vertical = 2
 
