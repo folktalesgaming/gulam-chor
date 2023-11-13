@@ -33,6 +33,8 @@ There will be two modes for the game `Classic Mode` and `Random Mode`.
 
 - [ ] Instead of the `JACK` being the odd one out, one random card will be odd one out
 
+> Will be in the settings to toggle the random card instead of it being its own mode
+
 ## Card Skins
 
 There is only one type of skin available for the card as seen below.
