@@ -11,6 +11,7 @@ extends Node2D
 @onready var hosted_set = %HostedSet
 @onready var add_bot_button = %AddBotButton
 @onready var player_list = %PlayerList
+@onready var ui = %UI
 
 @onready var player_list_tile = preload("res://Prefabs/player_list_tile.tscn")
 
@@ -102,9 +103,16 @@ func _send_removed_player_info(playerId):
 		for i in GameMaganer.Players:
 			_send_removed_player_info.rpc(i)
 
+@rpc("any_peer", "call_local")
+func _start_game():
+	var scene = load("res://Scenes/Game_play.tscn").instantiate()
+	get_tree().root.add_child(scene)
+	ui.hide()
+	self.hide()
+
 # Start the game
 func _on_start_button_pressed():
-	pass
+	_start_game.rpc()
 
 func _on_add_bot_button_pressed():
 	button_click.play()
