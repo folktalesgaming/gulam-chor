@@ -1,0 +1,45 @@
+[gd_scene load_steps=5 format=3 uid="uid://cwry0wnqof2ck"]
+
+[ext_resource type="Texture2D" uid="uid://b4i8tch1mahi8" path="res://Assets/UI/player_list_bg.png" id="1_rcwjl"]
+[ext_resource type="Script" path="res://Prefabs/player_list_tile.gd" id="2_c5evp"]
+[ext_resource type="Texture2D" uid="uid://61j1o65p5kit" path="res://Assets/UI/player_list_label.png" id="2_kgy68"]
+[ext_resource type="Theme" uid="uid://dqqmva14h5al4" path="res://Utils/Themes/label.tres" id="3_bs8cy"]
+
+[node name="PlayerList1" type="TextureButton"]
+texture_normal = ExtResource("1_rcwjl")
+script = ExtResource("2_c5evp")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -30.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 64
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+
+[node name="label" type="TextureRect" parent="HBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("2_kgy68")
+stretch_mode = 5
+
+[node name="PlayerName" type="Label" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 5.0
+theme = ExtResource("3_bs8cy")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Player 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]
