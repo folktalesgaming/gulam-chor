@@ -6,6 +6,12 @@
 
 Gulam Chor is a classic card game where one of the Jack`(Gulam)` is removed from the pack of cards and all the remaining cards are shuffled and divided among the players. After that the players will remove the pair cards and one by one players will pick the card in random from next player until all the cards are removed except for the odd Jack at which point the game ends and the player with the odd jack is the loser.
 
+# Download the apk
+
+[gulam_chor.apk](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/apks/gulam_chor.apk)
+
+> Note: It is not an official released version apk hence the game play will not be as smooth as it should be, it is soley for all of you to quickly download the apk and play and test the game 
+
 ## Few screenshots of games
 
 These screenshots contains the screenshot during the development of the game, so might not represent the final game (`i.e the MVP version of the game`)
