@@ -18,6 +18,10 @@ These screenshots contains the screenshot during the development of the game, so
 --|--|--|--
 ![Game Play Screen](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_play.png?raw=true) | ![Game Play screen first round](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_play_first_round.png?raw=true) | ![Game Play Picking](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_picking.png?raw=true) | ![Game play picked](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_pick_by_player.png?raw=true)
 
+**Game Settings Page** | **Game Paused Screen** | **Game Over Screen**
+--|--|--
+![Game setting page](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_settings.png?raw=true) | ![Game paused screen](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_paused.png?raw=true) | ![Game over screen](https://github.com/folktalesgaming/gulam-chor/blob/main/git_assets/gulam_chor_game_over.png?raw=true)
+
 # Plans For the Game
 
 ## Game Modes
@@ -60,6 +64,6 @@ Some of the future plans for the game.
 
 > This project is a hobby project and a learning project for game development in [GODOT](https://godotengine.org/) hence these future plans might be discontinued later for certain reasons.
 
-- [ ] Additional Game Mode `Extreme Mode` where the card pairs must be of same color `(i.e black-black and red-red`)
+- [ ] Additional Game Mode `Extreme Mode` where the card pairs must be of same color `(i.e black-black and red-red`) **`[Being worked on as setting to turn on and off called extreme mode or color mode]`**
 - [ ] Addition of powerup cards such as `reverse (to reverse the way of picking cards)`, `block (to block the next player from picking the card)`, etc
 - [ ] Ability to create personal Lobby to invite and play with friends.
