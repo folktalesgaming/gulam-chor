@@ -1,6 +1,6 @@
 extends Node2D
 
-var save_path = ("user://setting.save")
+var random_mode_setting_path = ("user://random-mode-setting.save")
 
 # PRELOAD
 const CardBase = preload("res://Prefabs/Card/Card.tscn")
@@ -100,9 +100,14 @@ enum STATE {
 var isRandomMode = false
 
 func _load_random_mode_setting():
-	if FileAccess.file_exists(save_path):
-		var file = FileAccess.open(save_path, FileAccess.READ)
-		isRandomMode = file.get_var(isRandomMode)
+	if FileAccess.file_exists(random_mode_setting_path):
+		var file = FileAccess.open(random_mode_setting_path, FileAccess.READ)
+		var fileData = file.get_8()
+		if fileData == 1:
+			isRandomMode = true
+		else:
+			isRandomMode = false
+		print(isRandomMode)
 
 func _ready():
 	_load_random_mode_setting()
