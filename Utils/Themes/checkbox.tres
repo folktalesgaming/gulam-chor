@@ -1,0 +1,19 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://dsaq2mfabrfw"]
+
+[ext_resource type="FontFile" uid="uid://bt8y08lfsqrgh" path="res://Assets/Fonts/PlusJakartaSans-SemiBold.ttf" id="1_hay3y"]
+[ext_resource type="Texture2D" uid="uid://qhtn3cldbq7e" path="res://Assets/UI/checkbox_checked.png" id="2_k2lh4"]
+[ext_resource type="Texture2D" uid="uid://7ujat0bxcd2i" path="res://Assets/UI/checkbox_unchecked.png" id="3_al4df"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x81ll"]
+
+[resource]
+CheckBox/colors/font_color = Color(0, 0, 0, 1)
+CheckBox/colors/font_focus_color = Color(0, 0, 0, 1)
+CheckBox/colors/font_hover_color = Color(0, 0, 0, 1)
+CheckBox/colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+CheckBox/colors/font_pressed_color = Color(0, 0, 0, 1)
+CheckBox/font_sizes/font_size = 36
+CheckBox/fonts/font = ExtResource("1_hay3y")
+CheckBox/icons/checked = ExtResource("2_k2lh4")
+CheckBox/icons/unchecked = ExtResource("3_al4df")
+CheckBox/styles/focus = SubResource("StyleBoxEmpty_x81ll")

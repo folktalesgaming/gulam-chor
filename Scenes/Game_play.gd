@@ -1,9 +1,12 @@
 extends Node2D
 
+var save_path = ("user://setting.save")
+
 # PRELOAD
 const CardBase = preload("res://Prefabs/Card/Card.tscn")
 const Utility = preload("res://Utils/utility.gd")
 const DeckOfCard = preload("res://Utils/deck_of_cards_classic.gd")
+const DeckOfCardRandomMode = preload("res://Utils/deck_of_cards_all.gd")
 const Emotes = preload("res://Utils/emotes.gd")
 
 # Nodes from game play scene
@@ -94,7 +97,15 @@ enum STATE {
 	SHUFFLE,
 }
 
+var isRandomMode = false
+
+func _load_random_mode_setting():
+	if FileAccess.file_exists(save_path):
+		var file = FileAccess.open(save_path, FileAccess.READ)
+		isRandomMode = file.get_var(isRandomMode)
+
 func _ready():
+	_load_random_mode_setting()
 	startTheGame()
 
 func startTheGame():
@@ -118,6 +129,10 @@ func startTheGame():
 	playerToPickFromNode = Player2
 	pickedCard = null
 	deckOfCards = Utility.shuffleDeck(DeckOfCard.getDeckClassic())
+	
+	if isRandomMode:
+		deckOfCards = Utility.shuffleDeck(DeckOfCardRandomMode.getDeckAllRandomMode())
+		JackIndicator.texture = load("res://Assets/UI/random_mode_indicator.png")
 	
 	# real game start
 	var packOfDeckPosition = PackOfDeck.position
@@ -261,11 +276,12 @@ func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 	else:
 		await get_tree().create_timer(0.4).timeout
 	rearrangeCards(nextPlayer, nextPlayerIndex)
-	if currentPlayerIndex == 0 || nextPlayerIndex == 0:
-		if checkJack():
-			JackIndicator.texture = load("res://Assets/UI/indicator_has_jack.png")
-		else:
-			JackIndicator.texture = load("res://Assets/UI/indicator_no_jack.png")
+	if !isRandomMode:
+		if currentPlayerIndex == 0 || nextPlayerIndex == 0:
+			if checkJack():
+				JackIndicator.texture = load("res://Assets/UI/indicator_has_jack.png")
+			else:
+				JackIndicator.texture = load("res://Assets/UI/indicator_no_jack.png")
 	if currentPlayer.cardsInHand.size() > 0:
 		if not currentPlayerIndex == 0:
 			shuffleCardsInHand(currentPlayer)
