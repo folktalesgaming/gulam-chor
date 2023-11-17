@@ -5,8 +5,8 @@ signal pick_card(card)
 var cardName = "card_a_spade"
 var isCardInPickingOrPair = false
 
-var startPosition = 0
-var targetPosition = 0
+var startPosition: Vector2 = Vector2.ZERO
+var targetPosition: Vector2 = Vector2.ZERO
 var startRotation = deg_to_rad(0)
 var targetRotation = 0
 var DRAWTIME = 0.4 # time for the tween animation to animate for. TODO: make different timing for different states of the card
