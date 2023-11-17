@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bl60ug2oh1ppq"]
+[gd_scene load_steps=10 format=3 uid="uid://bl60ug2oh1ppq"]
 
 [ext_resource type="Script" path="res://Scenes/multiplayer_setup.gd" id="1_x5a8x"]
 [ext_resource type="Theme" uid="uid://dqqmva14h5al4" path="res://Utils/Themes/label.tres" id="2_74rk6"]
@@ -6,8 +6,17 @@
 [ext_resource type="Texture2D" uid="uid://b1gcjcf4qbryi" path="res://Assets/UI/button_primary_normal.png" id="3_y8wyt"]
 [ext_resource type="Texture2D" uid="uid://c0sayeopluoor" path="res://Assets/UI/button_primary_pressed.png" id="4_iqwqb"]
 [ext_resource type="Texture2D" uid="uid://d2lphoxbvpshk" path="res://Assets/UI/button_back.png" id="5_5inl7"]
-[ext_resource type="Texture2D" uid="uid://b4i8tch1mahi8" path="res://Assets/UI/player_list_bg.png" id="7_1dpll"]
 [ext_resource type="AudioStream" uid="uid://caehe17orvu1p" path="res://Assets/Audios/click1.ogg" id="7_bqfdr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6h7fk"]
+bg_color = Color(1, 1, 1, 0)
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_grubv"]
+bg_color = Color(1, 1, 1, 0)
+border_width_bottom = 5
+border_color = Color(1, 0.313726, 0.313726, 1)
 
 [node name="Multiplayer_setup" type="Node2D"]
 script = ExtResource("1_x5a8x")
@@ -61,10 +70,15 @@ theme_override_constants/separation = 64
 
 [node name="PlayerNameInput" type="LineEdit" parent="UI/HostingSet"]
 unique_name_in_owner = true
+texture_filter = 1
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_placeholder_color = Color(0.556863, 0.556863, 0.556863, 1)
+theme_override_colors/caret_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 36
-text = "Player 1"
+theme_override_styles/normal = SubResource("StyleBoxFlat_6h7fk")
+theme_override_styles/focus = SubResource("StyleBoxFlat_grubv")
 placeholder_text = "Enter your name"
 alignment = 1
 
@@ -117,52 +131,29 @@ text = "JOIN"
 [node name="HostedSet" type="VBoxContainer" parent="UI"]
 unique_name_in_owner = true
 visible = false
+texture_filter = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -366.5
+offset_top = -121.0
+offset_right = 366.5
+offset_bottom = 121.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_constants/separation = 64
-alignment = 1
 
 [node name="PlayerList" type="VBoxContainer" parent="UI/HostedSet"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="AddBotButton" type="TextureButton" parent="UI/HostedSet"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 4
-texture_normal = ExtResource("7_1dpll")
-stretch_mode = 5
-
-[node name="AddBotButtonLabel" type="Label" parent="UI/HostedSet/AddBotButton"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -70.5
-offset_top = -24.5
-offset_right = 70.5
-offset_bottom = 24.5
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("2_74rk6")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Add Bot"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="StartButton" type="TextureButton" parent="UI/HostedSet"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 texture_normal = ExtResource("3_y8wyt")
@@ -185,6 +176,27 @@ theme = ExtResource("2_74rk6")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Start Game"
 
+[node name="BotInfo" type="Label" parent="UI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -400.5
+offset_top = -290.0
+offset_right = 400.5
+offset_bottom = -64.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+theme = ExtResource("2_74rk6")
+theme_override_colors/font_color = Color(1, 0.316861, 0.316056, 1)
+text = "Note: If Players are less than 4 players then computer bots will be automatically added to the game to compensate the missing players"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+uppercase = true
+
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 
 [node name="ButtonClick" type="AudioStreamPlayer2D" parent="AudioListener2D"]
@@ -195,5 +207,4 @@ bus = &"SFX"
 [connection signal="pressed" from="UI/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="UI/HostingSet/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="UI/HostingSet/JoinButton" to="." method="_on_join_button_pressed"]
-[connection signal="pressed" from="UI/HostedSet/AddBotButton" to="." method="_on_add_bot_button_pressed"]
 [connection signal="pressed" from="UI/HostedSet/StartButton" to="." method="_on_start_button_pressed"]
