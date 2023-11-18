@@ -15,6 +15,9 @@ const Player = preload("res://Prefabs/Player/Player.tscn")
 @onready var player_3 = %Player3
 @onready var player_4 = %Player4
 
+# Multiplayer
+@onready var multiplayer_synchronizer = %MultiplayerSynchronizer
+
 # audios
 @onready var card_shuffle_audio = %CardShuffle
 # getting the deck of cards
@@ -62,7 +65,9 @@ enum STATE {
 }
 
 func _ready():
-	_start_game.rpc()
+	multiplayer_synchronizer.set_multiplayer_authority(1)
+	if multiplayer_synchronizer.is_multiplayer_authority():
+		_start_game.rpc()
 
 func _instantiate_deck_of_cards():
 	for card in deckOfCards:
@@ -79,63 +84,67 @@ func _start_game():
 	
 	_instantiate_deck_of_cards()
 	
-	var startPosition = Vector2(540, 960)
-	var startRotation = deg_to_rad(0)
-	
 	var i = 0
 	
 	for card in pack_of_deck.get_children():
 		if playerTurn == 0:
 			# TODO: Make it more dynamic for later when removing pairs and adding cards to hand 
-			moveCard.rpc_id(1, i, player_1, STATE.MOVINGFROMDECKTOHAND, startPosition, startRotation, 0, true)
+			moveCard.rpc(i, STATE.MOVINGFROMDECKTOHAND, 0, true)
 			angle += PlayerHandCardAngleOffset
 		if playerTurn == 1:
-			moveCard.rpc_id(1, i, player_2, STATE.MOVINGFROMDECKTOHAND, startPosition, startRotation, 1)
+			moveCard.rpc(i, STATE.MOVINGFROMDECKTOHAND, 1, true)
 			posOffsetYRight += RightPlayerCardPositionOffset
 		if playerTurn == 2:
-			moveCard.rpc_id(1, i, player_3, STATE.MOVINGFROMDECKTOHAND, startPosition, startRotation, 2)
+			moveCard.rpc(i, STATE.MOVINGFROMDECKTOHAND, 2, true)
 			posOffsetX += TopPlayerCardPositionOffset
 		if playerTurn == 3:
-			moveCard.rpc_id(1, i, player_4, STATE.MOVINGFROMDECKTOHAND, startPosition, startRotation, 3)
+			moveCard.rpc(i, STATE.MOVINGFROMDECKTOHAND, 3, true)
 			posOffsetYLeft += LeftPlayerCardPositionOffset
 		
 		playerTurn = (1+playerTurn)%4
 		
 		i += 1
 		await get_tree().create_timer(0.08).timeout
+	
+	card_shuffle_audio.stop()
 
 @rpc("any_peer", "call_local")
-func moveCard(cardIndex, node, state, startPos, startRot, playerIndex, shouldCardBeVisible=false):
+func moveCard(cardIndex, state, playerIndex, shouldCardBeVisible=false):
 	var targetPosition = Vector2(0, 0)
 	var targetRotation = deg_to_rad(0)
 	var localCard = pack_of_deck.get_child(cardIndex)
 #	new_to_add_card.connect("pick_card", pickCardByPlayer)
+	var node = player_1
 	
 	match playerIndex:
 		0:
+			node = player_1
 			OvalAngleVector = Vector2(-Horizontal_radius * cos(angle), -Vertical_radius * sin(angle))
 			targetPosition = CenterCardOval - OvalAngleVector - pack_of_deck.position
 			targetRotation = deg_to_rad(angle)/2
 		1:
+			node = player_2
 			targetPosition = ViewportSizeX * Vector2(0.95, 1 - posOffsetYRight) - pack_of_deck.position
 			targetRotation = deg_to_rad(-90)
 		2:
+			node = player_3
 			targetPosition = ViewportSizeX * Vector2(0.75 - posOffsetX, -0.1) - pack_of_deck.position
 			targetRotation = deg_to_rad(180)
 		3:
+			node = player_4
 			targetPosition = ViewportSizeX * Vector2(-0.08, 1 - posOffsetYLeft) - pack_of_deck.position
 			targetRotation = deg_to_rad(90)
 		-1:
 			targetPosition = Vector2(rng.randf_range(-2.0, 10.0), rng.randf_range(-2.0, 10.0))
-			targetRotation = deg_to_rad(startRot + rng.randf_range(-30.0, 60.0))
+			targetRotation = deg_to_rad(localCard.rotation + rng.randf_range(-30.0, 60.0))
 	
-	localCard.startPosition = startPos
-	localCard.startRotation = startRot
+	localCard.startPosition = localCard.position
+	localCard.startRotation = localCard.rotation
 	localCard.targetPosition = targetPosition
 	localCard.targetRotation = targetRotation
 		
-	if shouldCardBeVisible:
-		localCard.SetCardVisible()
+#	if shouldCardBeVisible:
+	localCard.SetCardVisible()
 	
 #	node.add_child(new_to_add_card)
 	if not playerIndex == -1:
@@ -143,4 +152,4 @@ func moveCard(cardIndex, node, state, startPos, startRot, playerIndex, shouldCar
 	localCard.state = state
 	
 #	if multiplayer.is_server():
-#		moveCard.rpc(cardIndex, node, state, startPos, startRot, playerIndex, shouldCardBeVisible)
+#		moveCard.rpc(cardIndex, state, startPos, startRot, playerIndex, shouldCardBeVisible)
