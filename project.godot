@@ -12,12 +12,12 @@ config_version=5
 
 config/name="jack_the_thief"
 run/main_scene="res://Scenes/main_menu.tscn"
-config/features=PackedStringArray("4.1", "Mobile")
+config/features=PackedStringArray("4.2", "Mobile")
 config/icon="res://icon.svg"
 
 [autoload]
 
-GameMaganer="*res://Utils/game_maganer.gd"
+GameManager="*res://Utils/game_maganer.gd"
 
 [display]
 
