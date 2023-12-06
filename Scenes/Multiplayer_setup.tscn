@@ -37,14 +37,31 @@ unique_name_in_owner = true
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -353.0
-offset_top = 204.0
-offset_right = 353.0
-offset_bottom = 312.0
+offset_left = -231.5
+offset_top = 205.0
+offset_right = 231.5
+offset_bottom = 313.0
 grow_horizontal = 2
+size_flags_horizontal = 4
 theme = ExtResource("2_74rk6")
 theme_type_variation = &"Header"
-text = "Multiplayer Setup"
+text = "Multiplayer"
+
+[node name="Notice" type="Label" parent="UI"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -136.5
+offset_top = -25.0
+offset_right = 136.5
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_74rk6")
+text = "Comming Soon"
 
 [node name="BackButton" type="TextureButton" parent="UI"]
 offset_left = 65.0
@@ -55,6 +72,7 @@ texture_normal = ExtResource("5_5inl7")
 
 [node name="HostingSet" type="VBoxContainer" parent="UI"]
 unique_name_in_owner = true
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -177,6 +195,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Start Game"
 
 [node name="BotInfo" type="Label" parent="UI"]
+visible = false
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
