@@ -243,7 +243,7 @@ func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 	if currentPlayerIndex == 0:
 		PlayerPickTurnTimer.start()
 		PlayerPickTurnProgressBar.visible = true
-		await get_tree().create_timer(3).timeout
+		await get_tree().create_timer(12).timeout
 		PlayerPickTurnProgressBar.visible = false
 		if not pickedCard:
 			pickedCard = Utility.pickRandomCard(nextPlayer.get_children())
