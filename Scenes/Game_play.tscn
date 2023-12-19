@@ -50,6 +50,7 @@ loop = true
 script = ExtResource("1_0htco")
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+visible = false
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
 
@@ -59,6 +60,11 @@ scale = Vector2(0.411, 0.4)
 texture = ExtResource("2_r0gb3")
 
 [node name="UI" type="CanvasLayer" parent="."]
+
+[node name="MainBg" type="TextureRect" parent="UI"]
+offset_right = 1080.0
+offset_bottom = 1920.0
+texture = ExtResource("2_r0gb3")
 
 [node name="ShuffleButton" type="TextureButton" parent="UI"]
 anchors_preset = 7
@@ -306,7 +312,7 @@ position = Vector2(-300, -300)
 
 [node name="PlayerPickTurnTimer" type="Timer" parent="Timers"]
 unique_name_in_owner = true
-wait_time = 3.0
+wait_time = 12.0
 one_shot = true
 script = ExtResource("8_e07ah")
 
