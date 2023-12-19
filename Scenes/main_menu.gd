@@ -12,11 +12,6 @@ func _on_no_button_pressed():
 	button_click.play()
 	panel_container.hide()
 
-func _on_settings_button_pressed():
-	button_click.play()
-	await get_tree().create_timer(0.1).timeout
-	get_tree().change_scene_to_file("res://Scenes/Settings.tscn")
-
 func _on_single_mode_pressed():
 	button_click.play()
 	await get_tree().create_timer(0.2).timeout
@@ -30,3 +25,9 @@ func _on_multiplayer_mode_pressed():
 	button_click.play()
 	await get_tree().create_timer(0.1).timeout
 	get_tree().change_scene_to_file("res://Scenes/Multiplayer_setup.tscn")
+
+
+func _on_settings_pressed():
+	button_click.play()
+	await get_tree().create_timer(0.1).timeout
+	get_tree().change_scene_to_file("res://Scenes/Settings.tscn")
