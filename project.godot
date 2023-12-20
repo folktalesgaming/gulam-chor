@@ -11,13 +11,18 @@ config_version=5
 [application]
 
 config/name="jack_the_thief"
-run/main_scene="res://Scenes/main_menu.tscn"
+run/main_scene="res://Scenes/Menu_Scenes/main_menu.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
 config/icon="res://icon.svg"
+
+[audio]
+
+buses/default_bus_layout="res://Utils/Resources/default_bus_layout.tres"
 
 [autoload]
 
 GameManager="*res://Utils/game_manager.gd"
+AudioManager="*res://Utils/Autoloads/AudioManager.tscn"
 
 [display]
 
