@@ -1,0 +1,181 @@
+[gd_scene load_steps=10 format=3 uid="uid://bdydqeuq0efo8"]
+
+[ext_resource type="Script" path="res://Scenes/Menu_Scenes/settings.gd" id="1_nm1n6"]
+[ext_resource type="Texture2D" uid="uid://dpyefhmxfkepu" path="res://Assets/UI/MainBGLighter.png" id="2_anj2r"]
+[ext_resource type="Texture2D" uid="uid://d2lphoxbvpshk" path="res://Assets/UI/button_back.png" id="2_tfrg5"]
+[ext_resource type="Texture2D" uid="uid://b1gcjcf4qbryi" path="res://Assets/UI/button_primary_normal.png" id="3_2fag7"]
+[ext_resource type="Theme" uid="uid://dqqmva14h5al4" path="res://Utils/Themes/label.tres" id="3_3wtwt"]
+[ext_resource type="Theme" uid="uid://bb1pnq5prixi" path="res://Utils/Themes/slider.tres" id="3_wliml"]
+[ext_resource type="Texture2D" uid="uid://c0sayeopluoor" path="res://Assets/UI/button_primary_pressed.png" id="4_lhaxk"]
+[ext_resource type="Theme" uid="uid://dsaq2mfabrfw" path="res://Utils/Themes/checkbox.tres" id="5_b8m6m"]
+[ext_resource type="Texture2D" uid="uid://bdb54ewuvm30l" path="res://Assets/UI/save_alert_bg.png" id="9_ldeh2"]
+
+[node name="Settings" type="Node2D"]
+script = ExtResource("1_nm1n6")
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+visible = false
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+
+[node name="MainBg" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(538, 1082)
+scale = Vector2(0.412, 0.4)
+texture = ExtResource("2_anj2r")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="MainBG" type="TextureRect" parent="UI"]
+offset_right = 1080.0
+offset_bottom = 1920.0
+texture = ExtResource("2_anj2r")
+
+[node name="SettingLabel" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -194.0
+offset_top = 192.0
+offset_right = 183.0
+offset_bottom = 308.0
+grow_horizontal = 2
+theme = ExtResource("3_3wtwt")
+theme_type_variation = &"Header"
+text = "SETTINGS"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -366.5
+offset_top = -220.0
+offset_right = 366.5
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 32
+
+[node name="BgMusicLabel" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("3_3wtwt")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "BG Music"
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_bottom = 36
+
+[node name="BgMusicSlider" type="HSlider" parent="UI/VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_wliml")
+min_value = -80.0
+max_value = 6.0
+value = 6.0
+
+[node name="SFXLabel" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("3_3wtwt")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "SFX"
+
+[node name="MarginContainer2" type="MarginContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_bottom = 64
+
+[node name="SfxSlider" type="HSlider" parent="UI/VBoxContainer/MarginContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_wliml")
+min_value = -80.0
+max_value = 6.0
+
+[node name="MarginContainer3" type="MarginContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 64
+
+[node name="RandomModeCheckbox" type="CheckBox" parent="UI/VBoxContainer/MarginContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_b8m6m")
+text = "Random Mode"
+
+[node name="SaveButton" type="TextureButton" parent="UI/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("3_2fag7")
+texture_pressed = ExtResource("4_lhaxk")
+
+[node name="SaveLabel" type="Label" parent="UI/VBoxContainer/SaveButton"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_3wtwt")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Save"
+
+[node name="BackButton" type="TextureButton" parent="UI"]
+offset_left = 89.0
+offset_top = 207.0
+offset_right = 189.0
+offset_bottom = 307.0
+texture_normal = ExtResource("2_tfrg5")
+
+[node name="SaveAlertBg" type="TextureRect" parent="UI"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -807.0
+offset_top = -174.0
+offset_right = -74.0
+offset_bottom = -60.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("9_ldeh2")
+
+[node name="Label" type="Label" parent="UI/SaveAlertBg"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -54.0
+offset_top = -23.0
+offset_right = 54.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_3wtwt")
+theme_override_colors/font_color = Color(0, 0.686275, 0, 1)
+text = "Saved the data"
+
+[node name="AlertDialogTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 1.5
+
+[connection signal="value_changed" from="UI/VBoxContainer/MarginContainer/BgMusicSlider" to="." method="_on_bg_music_slider_value_changed"]
+[connection signal="value_changed" from="UI/VBoxContainer/MarginContainer2/SfxSlider" to="." method="_on_sfx_slider_value_changed"]
+[connection signal="toggled" from="UI/VBoxContainer/MarginContainer3/RandomModeCheckbox" to="." method="_on_random_mode_checkbox_toggled"]
+[connection signal="pressed" from="UI/VBoxContainer/SaveButton" to="." method="save"]
+[connection signal="pressed" from="UI/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="timeout" from="AlertDialogTimer" to="." method="_on_alert_dialog_timer_timeout"]

@@ -1,0 +1,376 @@
+[gd_scene load_steps=23 format=3 uid="uid://bw6x2fu47ssrf"]
+
+[ext_resource type="Script" path="res://Scenes/Game_Scenes/Game_play.gd" id="1_0htco"]
+[ext_resource type="Texture2D" uid="uid://dpyefhmxfkepu" path="res://Assets/UI/MainBGLighter.png" id="2_r0gb3"]
+[ext_resource type="Texture2D" uid="uid://ch58av02hqkn7" path="res://Assets/UI/button_pause_normal.png" id="4_4u64v"]
+[ext_resource type="Texture2D" uid="uid://dbf0ywilo5t7b" path="res://Assets/UI/button_pause_pressed.png" id="5_eobtf"]
+[ext_resource type="Texture2D" uid="uid://o1hspno8cutj" path="res://Assets/UI/button_secondary_small_normal.png" id="6_yuwjs"]
+[ext_resource type="Texture2D" uid="uid://dire0r8koal1h" path="res://Assets/UI/button_quit.png" id="7_2jhdj"]
+[ext_resource type="Texture2D" uid="uid://b7s2vop6852wy" path="res://Assets/UI/button_secondary_small_pressed.png" id="7_1550h"]
+[ext_resource type="Theme" uid="uid://dqqmva14h5al4" path="res://Utils/Themes/label.tres" id="7_iq7kp"]
+[ext_resource type="Texture2D" uid="uid://kiaaggymnfik" path="res://Assets/UI/Cards/deck_of_cards.png" id="8_5bn2q"]
+[ext_resource type="PackedScene" uid="uid://bwiltpf34vfyb" path="res://Prefabs/Player/Player.tscn" id="8_131w6"]
+[ext_resource type="Script" path="res://Scenes/PlayerPickTurnTime.gd" id="8_e07ah"]
+[ext_resource type="Texture2D" uid="uid://d26j0jp04hiiw" path="res://Assets/UI/button_continue.png" id="8_ljsxa"]
+[ext_resource type="Texture2D" uid="uid://kudj333ym0rb" path="res://Assets/UI/button_settings_in_pause.png" id="9_54kho"]
+[ext_resource type="Texture2D" uid="uid://ckuvt2dfljx5m" path="res://Assets/UI/no_button_exit_bg.png" id="11_5podp"]
+[ext_resource type="Texture2D" uid="uid://enuu22p72c1y" path="res://Assets/UI/no_button_exit_bg_pressed.png" id="12_kivj5"]
+[ext_resource type="Texture2D" uid="uid://du2crpsw8t6o7" path="res://Assets/UI/yes_button_exit_bg.png" id="13_pijc6"]
+[ext_resource type="Texture2D" uid="uid://ctrj0cl3kx4g" path="res://Assets/UI/yes_button_exit_bg_pressed.png" id="14_twmts"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xrmrv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_keo5m"]
+bg_color = Color(0.635294, 1, 0.545098, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5jmbt"]
+bg_color = Color(0, 0, 0, 0.843137)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rnsb4"]
+bg_color = Color(0, 0, 0, 0.470588)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_inne5"]
+bg_color = Color(1, 1, 1, 1)
+
+[node name="Game_play" type="Node2D"]
+script = ExtResource("1_0htco")
+
+[node name="MainBg" type="Sprite2D" parent="."]
+position = Vector2(524, 963.5)
+scale = Vector2(1.10741, 1.08177)
+texture = ExtResource("2_r0gb3")
+
+[node name="PackOfDeck" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(540, 800)
+
+[node name="Decks" type="Sprite2D" parent="PackOfDeck"]
+texture = ExtResource("8_5bn2q")
+
+[node name="PairCards" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(580, 960)
+rotation = 3.14159
+
+[node name="Timers" type="Node2D" parent="."]
+position = Vector2(-300, -300)
+
+[node name="PlayerPickTurnTimer" type="Timer" parent="Timers"]
+unique_name_in_owner = true
+wait_time = 12.0
+one_shot = true
+script = ExtResource("8_e07ah")
+
+[node name="RemovePairBotTimer" type="Timer" parent="Timers"]
+unique_name_in_owner = true
+wait_time = 0.5
+one_shot = true
+
+[node name="RemovePairPlayerTimer" type="Timer" parent="Timers"]
+unique_name_in_owner = true
+wait_time = 0.5
+one_shot = true
+
+[node name="Players" type="Node2D" parent="."]
+
+[node name="Player" parent="Players" instance=ExtResource("8_131w6")]
+unique_name_in_owner = true
+position = Vector2(-300, -300)
+
+[node name="Player2" parent="Players" instance=ExtResource("8_131w6")]
+unique_name_in_owner = true
+position = Vector2(-300, -300)
+
+[node name="Player3" parent="Players" instance=ExtResource("8_131w6")]
+unique_name_in_owner = true
+position = Vector2(-300, -300)
+
+[node name="Player4" parent="Players" instance=ExtResource("8_131w6")]
+unique_name_in_owner = true
+position = Vector2(-300, -300)
+
+[node name="Emotes" type="Node2D" parent="."]
+
+[node name="PlayerEmote" type="Sprite2D" parent="Emotes"]
+unique_name_in_owner = true
+position = Vector2(540, 1200)
+scale = Vector2(2.5, 2.5)
+
+[node name="Player2Emote" type="Sprite2D" parent="Emotes"]
+unique_name_in_owner = true
+position = Vector2(900, 820)
+rotation = -1.5708
+scale = Vector2(2, 2)
+
+[node name="Player3Emote" type="Sprite2D" parent="Emotes"]
+unique_name_in_owner = true
+position = Vector2(540, 200)
+rotation = 3.14159
+scale = Vector2(2, 2)
+
+[node name="Player4Emote" type="Sprite2D" parent="Emotes"]
+unique_name_in_owner = true
+position = Vector2(200, 820)
+rotation = 1.5708
+scale = Vector2(2, 2)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="ShuffleButton" type="TextureButton" parent="UI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -137.0
+offset_top = -200.0
+offset_right = 137.0
+offset_bottom = -116.0
+grow_horizontal = 2
+grow_vertical = 0
+texture_normal = ExtResource("6_yuwjs")
+texture_pressed = ExtResource("7_1550h")
+
+[node name="Label" type="Label" parent="UI/ShuffleButton"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("7_iq7kp")
+text = "SHUFFLE"
+
+[node name="PauseButton" type="TextureButton" parent="UI"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 90.0
+offset_top = -220.0
+offset_right = 216.0
+offset_bottom = -98.0
+grow_vertical = 0
+texture_normal = ExtResource("4_4u64v")
+texture_pressed = ExtResource("5_eobtf")
+
+[node name="IndicatorHasJack" type="TextureRect" parent="UI"]
+unique_name_in_owner = true
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -298.0
+offset_top = -209.0
+offset_right = -72.0
+offset_bottom = -119.0
+grow_horizontal = 0
+grow_vertical = 0
+stretch_mode = 5
+
+[node name="Control" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="PlayerPickTurnProgressBar" type="ProgressBar" parent="UI/Control"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -540.0
+offset_top = -27.0
+offset_right = 540.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/background = SubResource("StyleBoxEmpty_xrmrv")
+theme_override_styles/fill = SubResource("StyleBoxFlat_keo5m")
+step = 5.0
+value = 100.0
+fill_mode = 1
+show_percentage = false
+
+[node name="PausePanel" type="PanelContainer" parent="UI"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -751.0
+offset_top = -1280.0
+offset_right = 831.0
+offset_bottom = 1280.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5jmbt")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/PausePanel"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+alignment = 1
+
+[node name="PauseLabel" type="Label" parent="UI/PausePanel/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("7_iq7kp")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 56
+text = "PAUSED"
+
+[node name="QuitMargin" type="MarginContainer" parent="UI/PausePanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 120
+theme_override_constants/margin_bottom = 60
+
+[node name="QuitButton" type="TextureButton" parent="UI/PausePanel/VBoxContainer/QuitMargin"]
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("7_2jhdj")
+
+[node name="ContinueMargin" type="MarginContainer" parent="UI/PausePanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_bottom = 60
+
+[node name="ContinueButton" type="TextureButton" parent="UI/PausePanel/VBoxContainer/ContinueMargin"]
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("8_ljsxa")
+
+[node name="SettingButton" type="TextureButton" parent="UI/PausePanel/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("9_54kho")
+
+[node name="GameOverPanel" type="PanelContainer" parent="UI"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -575.0
+offset_top = -1954.0
+offset_right = 571.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_rnsb4")
+
+[node name="GameOverBottomPanel" type="PanelContainer" parent="UI/GameOverPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_inne5")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/GameOverPanel/GameOverBottomPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 64
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 128
+
+[node name="GameOverText" type="Label" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+size_flags_stretch_ratio = 2.0
+theme = ExtResource("7_iq7kp")
+theme_override_font_sizes/font_size = 72
+text = "GAME FINISHED"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="ReplayButton" type="TextureButton" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("11_5podp")
+texture_pressed = ExtResource("12_kivj5")
+
+[node name="Replay" type="Label" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer/ReplayButton"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -68.0
+offset_top = -30.5
+offset_right = 68.0
+offset_bottom = 30.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("7_iq7kp")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Replay"
+
+[node name="ExitButton" type="TextureButton" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("13_pijc6")
+texture_pressed = ExtResource("14_twmts")
+
+[node name="Exit" type="Label" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer/ExitButton"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("7_iq7kp")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Exit Back"
+
+[connection signal="timeout" from="Timers/RemovePairBotTimer" to="." method="_on_remove_pair_bot_timer_timeout"]
+[connection signal="timeout" from="Timers/RemovePairPlayerTimer" to="." method="_on_remove_pair_player_timer_timeout"]
+[connection signal="pressed" from="UI/ShuffleButton" to="." method="_on_shuffle_button_pressed"]
+[connection signal="pressed" from="UI/PauseButton" to="." method="_on_pause_button_pressed"]
+[connection signal="pressed" from="UI/PausePanel/VBoxContainer/QuitMargin/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="UI/PausePanel/VBoxContainer/ContinueMargin/ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="pressed" from="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer/ReplayButton" to="." method="_on_replay_button_pressed"]
+[connection signal="pressed" from="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]
