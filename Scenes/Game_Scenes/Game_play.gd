@@ -18,15 +18,14 @@ const Emotes = preload("res://Utils/emotes.gd")
 @onready var Player4 = %Player4
 
 @onready var PackOfDeck = %PackOfDeck
-@onready var PairCards = %PairCards
+@onready var pair_cards = %PairCards
 
 @onready var game_over_panel = %GameOverPanel
 @onready var ReplayButton = %ReplayButton
 @onready var ExitButton = %ExitButton
 @onready var PausePanel = %PausePanel
 
-@onready var RemovePairBotTimer = %RemovePairBotTimer
-@onready var RemovePairPlayerTimer = %RemovePairPlayerTimer
+@onready var remove_pair_bot_timer = %RemovePairBotTimer
 @onready var PlayerPickTurnTimer = %PlayerPickTurnTimer
 
 @onready var PlayerPickTurnProgressBar = %PlayerPickTurnProgressBar
@@ -35,11 +34,9 @@ const Emotes = preload("res://Utils/emotes.gd")
 @onready var EmotePlayer2 = %Player2Emote
 @onready var EmotePlayer3 = %Player3Emote
 @onready var EmotePlayer4 = %Player4Emote
+@onready var player_turn_emote = %PlayerTurnEmote
 
 # Utilities and global variables
-@onready var deckOfCards = Utility.shuffleDeck(DeckOfCard.getDeckClassic())
-@onready var PairCardsPosition = PairCards.position
-
 @onready var ViewportSizeX = ProjectSettings.get_setting("display/window/size/viewport_width") # Size of viewport
 @onready var ViewportSizeY = ProjectSettings.get_setting("display/window/size/viewport_height") # Size of viewport
 #@onready var ViewportSize = Vector2(ViewportSizeX, ViewportSizeY)
@@ -93,6 +90,7 @@ enum STATE {
 }
 
 var isRandomMode = false
+const PLAYER_PICK_TIME = 3 # time given for player to pick the card
 
 func _load_random_mode_setting():
 	if FileAccess.file_exists(random_mode_setting_path):
@@ -102,132 +100,87 @@ func _load_random_mode_setting():
 			isRandomMode = true
 		else:
 			isRandomMode = false
-		print(isRandomMode)
 
 func _ready():
 	_load_random_mode_setting()
 	startTheGame()
 
 func startTheGame():
-	# reset everything to replay
-	removeTheUnpairJack(getLossingPlayerIndex())
-	for card in PairCards.get_children():
-		card.free()
-	removeEmotes()
-	isGameOver = false
-	game_over_panel.visible = false
-	JackIndicator.texture = null
+	_reset_gameplay()
 	indicatePlayerTurn(false)
-	
-	isGameMoving = false
-	playerTurn = 0
-	angle = deg_to_rad(-130)
-	posOffsetX = 0
-	posOffsetYLeft = 0
-	posOffsetYRight = 0
-	playerToPickFrom = 1
-	playerToPickFromNode = Player2
-	pickedCard = null
-	deckOfCards = Utility.shuffleDeck(DeckOfCard.getDeckClassic())
-	
+	var deckOfCards = Utility.shuffleDeck(DeckOfCard.getDeckClassic())
 	if isRandomMode:
 		deckOfCards = Utility.shuffleDeck(DeckOfCardRandomMode.getDeckAllRandomMode())
 		JackIndicator.texture = load("res://Assets/UI/random_mode_indicator.png")
 	
-	# real game start
 	var packOfDeckPosition = PackOfDeck.position
 	var startRotation = deg_to_rad(30)
 	
 	AudioManager._play_shuffle_sfx()
 	for card in deckOfCards:
 		if playerTurn == 0:
-			# TODO: Make it more dynamic for later when removing pairs and adding cards to hand 
-			addCardToPile(card, Player1, STATE.MOVINGFROMDECKTOHAND, packOfDeckPosition, startRotation, 0, true)
 			angle += PlayerHandCardAngleOffset
 		if playerTurn == 1:
-			addCardToPile(card, Player2, STATE.MOVINGFROMDECKTOHAND, packOfDeckPosition, startRotation, 1)
 			posOffsetYRight += RightPlayerCardPositionOffset
 		if playerTurn == 2:
-			addCardToPile(card, Player3, STATE.MOVINGFROMDECKTOHAND, packOfDeckPosition, startRotation, 2)
 			posOffsetX += TopPlayerCardPositionOffset
 		if playerTurn == 3:
-			addCardToPile(card, Player4, STATE.MOVINGFROMDECKTOHAND, packOfDeckPosition, startRotation, 3)
 			posOffsetYLeft += LeftPlayerCardPositionOffset
+		_add_cards(playerTurn, card, packOfDeckPosition, startRotation, STATE.MOVINGFROMDECKTOHAND, playerTurn==0)
 		
 		playerTurn = (1+playerTurn)%4
 		
 		await get_tree().create_timer(0.08).timeout
 		
-	PackOfDeck.visible = false
+	PackOfDeck.hide()
+	checkJack()
 	playerTurn = 0
 	AudioManager._stop_shuffle_sfx()
 	
-	RemovePairBotTimer.start() # starting the timer for the bots to remove their pairs
+	remove_pair_bot_timer.start()
 
 func _physics_process(_delta):
-	if not isGameOver:
-		if not isPaused:
-			if PairCards.get_child_count() >= 50:
-				isGameMoving = false
-				isGameOver = true
-				game_over_panel.visible = true
-				var losingPlayerIndex = getLossingPlayerIndex()
-				showFinalEmotes(losingPlayerIndex)
-				showTheUnpairJack(losingPlayerIndex)
-			if isGameMoving:
-				playerToPickFrom = getNextPlayerToPickFromIndex(playerTurn)
-				match playerToPickFrom:
-					0:
-						playerToPickFromNode = Player1
-					1:
-						playerToPickFromNode = Player2
-					2:
-						playerToPickFromNode = Player3
-					3:
-						playerToPickFromNode = Player4
-				match playerTurn:
-					0:
-						indicatePlayerTurn(true)
-						turn(playerToPickFromNode, playerToPickFrom, Player1, 0)
-					1:
-						indicatePlayerTurn(false)
-						turn(playerToPickFromNode, playerToPickFrom, Player2, 1)
-					2:
-						indicatePlayerTurn(false)
-						turn(playerToPickFromNode, playerToPickFrom, Player3, 2)
-					3:
-						indicatePlayerTurn(false)
-						turn(playerToPickFromNode, playerToPickFrom, Player4, 3)
+	if not isGameOver && not isPaused:
+		if isGameMoving:
+			if pair_cards.get_child_count() >= 50:
+				_game_over()
+				return
+			playerToPickFrom = getNextPlayerToPickFromIndex(playerTurn)
+			match playerToPickFrom:
+				0:
+					playerToPickFromNode = Player1
+				1:
+					playerToPickFromNode = Player2
+				2:
+					playerToPickFromNode = Player3
+				3:
+					playerToPickFromNode = Player4
+			match playerTurn:
+				0:
+					indicatePlayerTurn(true)
+					turn(playerToPickFromNode, playerToPickFrom, Player1, 0)
+				1:
+					indicatePlayerTurn(false)
+					turn(playerToPickFromNode, playerToPickFrom, Player2, 1)
+				2:
+					indicatePlayerTurn(false)
+					turn(playerToPickFromNode, playerToPickFrom, Player3, 2)
+				3:
+					indicatePlayerTurn(false)
+					turn(playerToPickFromNode, playerToPickFrom, Player4, 3)
 
 func _on_remove_pair_bot_timer_timeout():
-	removeCards(Player2)
-	removeCards(Player3)
-	removeCards(Player4)
+	_remove_cards(Player2, 1)
+	_remove_cards(Player3, 2)
+	_remove_cards(Player4, 3)
 	
-	# starting the timer for the pairs in player hand to pop up
-	RemovePairPlayerTimer.start() 
-
-func _on_remove_pair_player_timer_timeout():
 	var cardsSplit = Utility.findPairs(Player1.cardsInHand)
 	pairUnPairCards(Player1, 0, STATE.INPAIR, false, cardsSplit.pairCards)
 	
-	# rearrange BOT cards
-	rearrangeCards(Player2, 1)
-	rearrangeCards(Player3, 2)
-	rearrangeCards(Player4, 3)
-	
-	# await 0.5 sec
 	await get_tree().create_timer(0.5).timeout
+	_remove_cards(Player1, 0)
 	
-	# remove the pair cards from player hand
-	removeCards(Player1)
-	AudioManager._play_card_pair_throw_sfx()
-	rearrangeCards(Player1, 0)
-	
-	# await 0.5 sec
 	await get_tree().create_timer(0.5).timeout
-	
-	# start the game in auto mode
 	isGameMoving = true
 
 func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
@@ -237,9 +190,9 @@ func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 	# picking card from next player
 	if currentPlayerIndex == 0:
 		PlayerPickTurnTimer.start()
-		PlayerPickTurnProgressBar.visible = true
-		await get_tree().create_timer(12).timeout
-		PlayerPickTurnProgressBar.visible = false
+		PlayerPickTurnProgressBar.show()
+		await get_tree().create_timer(PLAYER_PICK_TIME).timeout
+		PlayerPickTurnProgressBar.hide()
 		if not pickedCard:
 			pickedCard = Utility.pickRandomCard(nextPlayer.get_children())
 	else:
@@ -254,9 +207,9 @@ func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 	var shouldShowCard = false
 	if currentPlayerIndex == 0:
 		shouldShowCard = true
-	addCardToPile(pickedCard.cardName, currentPlayer, STATE.MOVINGFROMPICKINGTOHAND, sPos, sRot, currentPlayerIndex, shouldShowCard)
+	_add_cards(currentPlayerIndex, pickedCard.cardName, sPos, sRot, STATE.MOVINGFROMPICKINGTOHAND, shouldShowCard)
 	AudioManager._play_card_take_sfx()
-	removeCardsFromPile(nextPlayer, [pickedCard.cardName])
+	_remove_cards(nextPlayer, nextPlayerIndex, pickedCard.cardName)
 	pairUnPairCards(nextPlayer, nextPlayerIndex, STATE.MOVINGFROMPICKINGTOHAND, true, [], true)
 	
 	# checking if there is pair after pickup and throwing the pair cards
@@ -264,24 +217,15 @@ func turn(nextPlayer, nextPlayerIndex, currentPlayer, currentPlayerIndex):
 		await get_tree().create_timer(0.3).timeout
 	else:
 		await get_tree().create_timer(0.5).timeout
-	var cardsSplitted = Utility.findPairs(currentPlayer.cardsInHand)
-	if(cardsSplitted.pairCards.size() > 0):
-		adjustPositionRotationToThrow(currentPlayer, cardsSplitted.pairCards)
-		AudioManager._play_card_pair_throw_sfx()
-		removeCardsFromPile(currentPlayer, cardsSplitted.pairCards)
+	_remove_cards(currentPlayer, currentPlayerIndex)
 	
 	# rearranging cards for both players
 	if Player1.cardsInHand.size() <= 0:
 		await get_tree().create_timer(0.2).timeout
 	else:
 		await get_tree().create_timer(0.4).timeout
-	rearrangeCards(nextPlayer, nextPlayerIndex)
-	if !isRandomMode:
-		if currentPlayerIndex == 0 || nextPlayerIndex == 0:
-			if checkJack():
-				JackIndicator.texture = load("res://Assets/UI/indicator_has_jack.png")
-			else:
-				JackIndicator.texture = load("res://Assets/UI/indicator_no_jack.png")
+	if currentPlayerIndex == 0 || nextPlayerIndex == 0:
+		checkJack()
 	if currentPlayer.cardsInHand.size() > 0:
 		if not currentPlayerIndex == 0:
 			shuffleCardsInHand(currentPlayer)
@@ -335,73 +279,6 @@ func rearrangeCards(node, pIndex):
 				posOffsetYLeft += LeftPlayerCardPositionOffset
 
 # NEW FUNCTIONS FROM HERE
-
-# Remove the cards from pile (free the card)
-func removeCardsFromPile(node, toRemoveCards):
-	node.RemoveCardsFromHand(toRemoveCards)
-	for card in node.get_children():
-		if toRemoveCards.has(card.cardName):
-			card.free()
-
-# Add a card to the pile
-func addCardToPile(toAddCardName, node, state, startPos, startRot, playerIndex, shouldCardBeVisible=false):
-	var targetPosition = Vector2(0, 0)
-	var targetRotation = deg_to_rad(0)
-	#var cardNum = 0
-	
-	var new_to_add_card = CardBase.instantiate()
-	new_to_add_card.connect("pick_card", pickCardByPlayer)
-	new_to_add_card.cardName = toAddCardName
-	new_to_add_card.startPosition = startPos
-	new_to_add_card.startRotation = startRot
-	
-	match playerIndex:
-		0:
-			OvalAngleVector = Vector2(-Horizontal_radius * cos(angle), -Vertical_radius * sin(angle))
-			targetPosition = CenterCardOval - OvalAngleVector - node.position
-			targetRotation = deg_to_rad(angle)/2
-		1:
-			targetPosition = ViewportSizeX * Vector2(0.95, 1 - posOffsetYRight) - node.position
-			targetRotation = deg_to_rad(-90)
-		2:
-			targetPosition = ViewportSizeX * Vector2(0.75 - posOffsetX, -0.1) - node.position
-			targetRotation = deg_to_rad(180)
-		3:
-			targetPosition = ViewportSizeX * Vector2(-0.08, 1 - posOffsetYLeft) - node.position
-			targetRotation = deg_to_rad(90)
-		-1:
-			targetPosition = Vector2(rng.randf_range(-2.0, 10.0), rng.randf_range(-2.0, 10.0))
-			targetRotation = deg_to_rad(startRot + rng.randf_range(-30.0, 60.0))
-	
-	new_to_add_card.targetPosition = targetPosition
-	new_to_add_card.targetRotation = targetRotation
-		
-	if shouldCardBeVisible:
-		new_to_add_card.SetCardVisible()
-	# TODO: make rearrange of cards more smoother upon new card
-#	if playerIndex == 0:
-#		for card in node.get_children():
-#			angle = PI/2 + cardSpread*(float(node.get_child_count())/2 - cardNum)
-#			OvalAngleVector = Vector2(-Horizontal_radius * cos(angle), -Vertical_radius * sin(angle))
-#			card.startPosition = card.position
-#			card.startRotation = card.rotation
-#			targetPosition = CenterCardOval - OvalAngleVector - node.position
-#			targetRotation = deg_to_rad(angle)/2
-#			card.state = STATE.REORGANIZE
-#			cardNum += 1
-#	if playerIndex == 1:
-#		for card in node.get_children():
-#			card.startPosition = card.position
-#			card.startRotation = card.rotation
-#			card.targetPosition = ViewportSize * Vector2(card.position.x, 0.6 + pow(cardNum, -1) * 0.07* floor(cardNum/2)) - node.position
-#			card.targetRotation = card.rotation
-#			card.state = STATE.REORGANIZE
-#			cardNum += 1
-	
-	node.add_child(new_to_add_card)
-	if not playerIndex == -1:
-		node.AddCardInHand(new_to_add_card.cardName)
-	new_to_add_card.state = state
 
 # Adjust card in picking mode, after picking mode and in pair mode for player cards
 func pairUnPairCards(node, index, state, shouldEffectAllCard=true, affectedCardsName=[], isreverse=false):
@@ -457,25 +334,6 @@ func pairUnPairCards(node, index, state, shouldEffectAllCard=true, affectedCards
 				card.isCardInPickingOrPair = isCardInPickingOrPair
 				card.state = state
 
-# Adjust the card before adding it to the pair pile and add to pile card
-func adjustPositionRotationToThrow(node, toRemoveCards):
-	var sPos = 0
-	var sRot = 0
-	
-	for card in node.get_children():
-		if toRemoveCards.has(card.cardName):
-			sPos = Vector2(PairCardsPosition.x - card.position.x, PairCardsPosition.y - card.position.y)
-			sRot = card.rotation
-			addCardToPile(card.cardName, PairCards, STATE.MOVINGFROMHANDTODECK, sPos, sRot, -1, true)
-
-# Remove the cards to pair pile
-func removeCards(node):
-	var cardsSplited = Utility.findPairs(node.cardsInHand)
-	node.SetNewSetOfCards(cardsSplited.nonPairCards)
-	adjustPositionRotationToThrow(node, cardsSplited.pairCards)
-	AudioManager._play_card_pair_throw_sfx()
-	removeCardsFromPile(node, cardsSplited.pairCards)
-
 # Get the index of next player that will pick
 func getNextPlayerIndex(currentIndex):
 	var nextPlayerIndex = (currentIndex+1) % 4
@@ -522,16 +380,6 @@ func pickCardByPlayer(card):
 	else:
 		pickedCard = card
 
-func getLossingPlayerIndex():
-	if Player1.cardsInHand.size() >= 1:
-		return 0
-	if Player2.cardsInHand.size() >= 1:
-		return 1
-	if Player3.cardsInHand.size() >= 1:
-		return 2
-	
-	return 3
-
 # show emotes at end of game
 func showFinalEmotes(losserIndex):
 	match losserIndex:
@@ -556,80 +404,6 @@ func showFinalEmotes(losserIndex):
 			EmotePlayer3.texture = load("res://Assets/Emotes/emote_"+Emotes.getHappyEmote()+".png")
 			EmotePlayer4.texture = load("res://Assets/Emotes/emote_"+Emotes.getSadEmote()+".png")
 
-# on click replay button
-func _on_replay_button_pressed():
-	AudioManager._play_button_sfx()
-	startTheGame()
-
-# on click exit button
-func _on_exit_button_pressed():
-	AudioManager._play_button_sfx()
-	get_tree().change_scene_to_file("res://Scenes/Menu_Scenes/main_menu.tscn")
-
-# remove the emotes
-func removeEmotes():
-	EmotePlayer1.texture = null
-	EmotePlayer2.texture = null
-	EmotePlayer3.texture = null
-	EmotePlayer4.texture = null
-
-# Show the remaining jack
-func showTheUnpairJack(playerIndex):
-	var player
-	match playerIndex:
-		0:
-			player = Player1
-		1:
-			player = Player2
-		2:
-			player = Player3
-		3:
-			player = Player4
-	
-	for card in player.get_children():
-		card.SetCardVisible()
-
-# Remove the unpaired jack
-func removeTheUnpairJack(playerIndex):
-	var player
-	match playerIndex:
-		0:
-			player = Player1
-		1:
-			player = Player2
-		2:
-			player = Player3
-		3:
-			player = Player4
-	
-	for card in player.get_children():
-		card.free()
-	player.RemoveAllCards()
-
-# Check for jack in player hand
-func checkJack():
-	for card in Player1.cardsInHand:
-		if card == "card_j_spade" or card == "card_j_diamond" or card == "card_j_heart":
-			return true
-	return false
-
-# indicate player turn
-func indicatePlayerTurn(isPlayerTurn):
-	if isPlayerTurn:
-		EmotePlayer1.texture = load("res://Assets/Emotes/emote_dots1.png")
-		await get_tree().create_timer(0.5).timeout
-		EmotePlayer1.texture = load("res://Assets/Emotes/emote_dots2.png")
-		await get_tree().create_timer(0.5).timeout
-		EmotePlayer1.texture = load("res://Assets/Emotes/emote_dots3.png")
-		await get_tree().create_timer(0.5).timeout
-		EmotePlayer1.texture = load("res://Assets/Emotes/emote_dots1.png")
-		await get_tree().create_timer(0.5).timeout
-		EmotePlayer1.texture = load("res://Assets/Emotes/emote_dots2.png")
-		await get_tree().create_timer(0.5).timeout
-		EmotePlayer1.texture = null
-	else:
-		EmotePlayer1.texture = null
-
 func _on_shuffle_button_pressed():
 	AudioManager._play_button_sfx()
 	shuffleCardsInHand(Player1)
@@ -650,11 +424,6 @@ func _on_continue_button_pressed():
 	isPaused = false
 	if playerTurn == 0:
 		PlayerPickTurnTimer.start()
-
-# Quit Game
-func _on_quit_button_pressed():
-	AudioManager._play_button_sfx()
-	get_tree().change_scene_to_file("res://Scenes/Menu_Scenes/main_menu.tscn")
 
 # Shuffle Cards
 func shuffleCardsInHand(playerNode):
@@ -682,3 +451,197 @@ func shuffleCardsInHand(playerNode):
 		playerNode.move_child(card, newIndex)
 		card.state = STATE.SHUFFLE
 		pass
+
+
+# ALL NEW FUNCTION FROM HERE ALL FUNCTIONS ABOVE THIS WILL BE REPLACED LATER
+# Except for the inbuilt functions and singal connected functions from button pressed
+
+# remove card from the given node
+func _remove_cards(node, nodeIndex, removeCard = null):
+	var toRemoveCards = []
+	if !removeCard:
+		var cardsSplited = Utility.findPairs(node.cardsInHand)
+		if cardsSplited.pairCards.size() <= 0:
+			return
+		node.SetNewSetOfCards(cardsSplited.nonPairCards)
+		_remove_pairs_to_pile(node, cardsSplited.pairCards)
+		toRemoveCards = cardsSplited.pairCards
+		AudioManager._play_card_pair_throw_sfx()
+	else:
+		toRemoveCards = [removeCard]
+	
+	node.RemoveCardsFromHand(toRemoveCards)
+	for card in node.get_children():
+		if toRemoveCards.has(card.cardName):
+			card.queue_free()
+	
+	await get_tree().create_timer(0.6).timeout
+	rearrangeCards(node, nodeIndex)
+
+# add card to the given node
+func _add_cards(nodeIndex, cardName, startPos, startRot, state, showCard = false):
+	var targetPosition = Vector2(0, 0)
+	var targetRotation = deg_to_rad(0)
+	var node = pair_cards
+	
+	if nodeIndex != -1:
+		node = _get_current_player_node(nodeIndex)
+	
+	var new_to_add_card = CardBase.instantiate()
+	new_to_add_card.connect("pick_card", pickCardByPlayer)
+	new_to_add_card.cardName = cardName
+	new_to_add_card.startPosition = startPos
+	new_to_add_card.startRotation = startRot
+	
+	match nodeIndex:
+		0:
+			OvalAngleVector = Vector2(-Horizontal_radius * cos(angle), -Vertical_radius * sin(angle))
+			targetPosition = CenterCardOval - OvalAngleVector - node.position
+			targetRotation = deg_to_rad(angle)/2
+		1:
+			targetPosition = ViewportSizeX * Vector2(0.95, 1 - posOffsetYRight) - node.position
+			targetRotation = deg_to_rad(-90)
+		2:
+			targetPosition = ViewportSizeX * Vector2(0.75 - posOffsetX, -0.1) - node.position
+			targetRotation = deg_to_rad(180)
+		3:
+			targetPosition = ViewportSizeX * Vector2(-0.08, 1 - posOffsetYLeft) - node.position
+			targetRotation = deg_to_rad(90)
+		-1:
+			targetPosition = Vector2(rng.randf_range(-2.0, 10.0), rng.randf_range(-2.0, 10.0))
+			targetRotation = deg_to_rad(startRot + rng.randf_range(-30.0, 60.0))
+	
+	new_to_add_card.targetPosition = targetPosition
+	new_to_add_card.targetRotation = targetRotation
+		
+	if showCard:
+		new_to_add_card.SetCardVisible()
+	# TODO: make rearrange of cards more smoother upon new card
+#	if playerIndex == 0:
+#		for card in node.get_children():
+#			angle = PI/2 + cardSpread*(float(node.get_child_count())/2 - cardNum)
+#			OvalAngleVector = Vector2(-Horizontal_radius * cos(angle), -Vertical_radius * sin(angle))
+#			card.startPosition = card.position
+#			card.startRotation = card.rotation
+#			targetPosition = CenterCardOval - OvalAngleVector - node.position
+#			targetRotation = deg_to_rad(angle)/2
+#			card.state = STATE.REORGANIZE
+#			cardNum += 1
+#	if playerIndex == 1:
+#		for card in node.get_children():
+#			card.startPosition = card.position
+#			card.startRotation = card.rotation
+#			card.targetPosition = ViewportSize * Vector2(card.position.x, 0.6 + pow(cardNum, -1) * 0.07* floor(cardNum/2)) - node.position
+#			card.targetRotation = card.rotation
+#			card.state = STATE.REORGANIZE
+#			cardNum += 1
+	
+	node.add_child(new_to_add_card)
+	if not nodeIndex == -1:
+		node.AddCardInHand(new_to_add_card.cardName)
+	new_to_add_card.state = state
+	
+	await get_tree().create_timer(0.6).timeout
+	rearrangeCards(node, nodeIndex)
+
+# remove the pair cards in hand to the pile of the cards in center
+func _remove_pairs_to_pile(node, toRemoveCards):
+	var sPos = 0
+	var sRot = 0
+	
+	for card in node.get_children():
+		if toRemoveCards.has(card.cardName):
+			sPos = Vector2(pair_cards.position.x - card.position.x, pair_cards.position.y - card.position.y)
+			sRot = card.rotation
+			_add_cards(-1, card.cardName, sPos, sRot, STATE.MOVINGFROMHANDTODECK, true)
+
+# indicate player turn
+func indicatePlayerTurn(isPlayerTurn):
+	if isPlayerTurn:
+		player_turn_emote.show()
+		player_turn_emote.play()
+	else:
+		player_turn_emote.hide()
+		player_turn_emote.stop()
+
+# Check for jack in player hand if not random mode
+func checkJack():
+	if isRandomMode:
+		return
+	if Player1.cardsInHand.has("card_j_spade") || Player1.cardsInHand.has("card_j_diamond") || Player1.cardsInHand.has("card_j_heart"):
+		JackIndicator.texture = load("res://Assets/UI/indicator_has_jack.png")
+	else:
+		JackIndicator.texture = load("res://Assets/UI/indicator_no_jack.png")
+
+func _exit_game():
+	AudioManager._play_button_sfx()
+	get_tree().change_scene_to_file("res://Scenes/Menu_Scenes/main_menu.tscn")
+
+# on click exit button
+func _on_exit_button_pressed():
+	_exit_game()
+
+# Quit Game
+func _on_quit_button_pressed():
+	_exit_game()
+
+# on click replay button
+func _on_replay_button_pressed():
+	AudioManager._play_button_sfx()
+	startTheGame()
+
+# Reset all the cards and variables to the initial state
+func _reset_gameplay():
+	Player1.RemoveAllCards()
+	for player1Card in Player1.get_children():
+		player1Card.queue_free()
+	Player2.RemoveAllCards()
+	for player2Card in Player2.get_children():
+		player2Card.queue_free()
+	Player3.RemoveAllCards()
+	for player3Card in Player3.get_children():
+		player3Card.queue_free()
+	Player4.RemoveAllCards()
+	for player4Card in Player4.get_children():
+		player4Card.queue_free()
+		
+	for pileCard in pair_cards.get_children():
+		pileCard.queue_free()
+	
+	isGameOver = false
+	isGameMoving = false
+	isPaused = false
+	game_over_panel.hide()
+	PausePanel.hide()
+	
+	checkJack()
+	
+	playerTurn = 0
+	angle = deg_to_rad(-130)
+	posOffsetX = 0
+	posOffsetYLeft = 0
+	posOffsetYRight = 0
+	playerToPickFrom = 1
+	playerToPickFromNode = Player2
+	pickedCard = null
+
+# Game over function
+func _game_over():
+	isGameOver = true
+	isGameMoving = false
+	indicatePlayerTurn(false)
+	for cards in _get_current_player_node(playerTurn).get_children():
+		cards.SetCardVisible()
+	game_over_panel.show()
+
+# Get the player node with the index
+func _get_current_player_node(playerIndex):
+	match playerIndex:
+		0:
+			return Player1
+		1:
+			return Player2
+		2:
+			return Player3
+		3:
+			return Player4

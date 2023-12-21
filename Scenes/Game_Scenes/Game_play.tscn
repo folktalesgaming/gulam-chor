@@ -1,22 +1,43 @@
-[gd_scene load_steps=23 format=3 uid="uid://bw6x2fu47ssrf"]
+[gd_scene load_steps=28 format=3 uid="uid://bw6x2fu47ssrf"]
 
 [ext_resource type="Script" path="res://Scenes/Game_Scenes/Game_play.gd" id="1_0htco"]
 [ext_resource type="Texture2D" uid="uid://dpyefhmxfkepu" path="res://Assets/UI/MainBGLighter.png" id="2_r0gb3"]
 [ext_resource type="Texture2D" uid="uid://ch58av02hqkn7" path="res://Assets/UI/button_pause_normal.png" id="4_4u64v"]
 [ext_resource type="Texture2D" uid="uid://dbf0ywilo5t7b" path="res://Assets/UI/button_pause_pressed.png" id="5_eobtf"]
+[ext_resource type="Texture2D" uid="uid://ce74kb5157qpf" path="res://Assets/Emotes/emote_dots1.png" id="6_3llnq"]
 [ext_resource type="Texture2D" uid="uid://o1hspno8cutj" path="res://Assets/UI/button_secondary_small_normal.png" id="6_yuwjs"]
 [ext_resource type="Texture2D" uid="uid://dire0r8koal1h" path="res://Assets/UI/button_quit.png" id="7_2jhdj"]
 [ext_resource type="Texture2D" uid="uid://b7s2vop6852wy" path="res://Assets/UI/button_secondary_small_pressed.png" id="7_1550h"]
 [ext_resource type="Theme" uid="uid://dqqmva14h5al4" path="res://Utils/Themes/label.tres" id="7_iq7kp"]
+[ext_resource type="Texture2D" uid="uid://biikjhi8xnl1q" path="res://Assets/Emotes/emote_dots2.png" id="7_ywlyh"]
 [ext_resource type="Texture2D" uid="uid://kiaaggymnfik" path="res://Assets/UI/Cards/deck_of_cards.png" id="8_5bn2q"]
 [ext_resource type="PackedScene" uid="uid://bwiltpf34vfyb" path="res://Prefabs/Player/Player.tscn" id="8_131w6"]
 [ext_resource type="Script" path="res://Scenes/PlayerPickTurnTime.gd" id="8_e07ah"]
 [ext_resource type="Texture2D" uid="uid://d26j0jp04hiiw" path="res://Assets/UI/button_continue.png" id="8_ljsxa"]
+[ext_resource type="Texture2D" uid="uid://dc7u2qa3ad3py" path="res://Assets/Emotes/emote_dots3.png" id="8_usb4w"]
 [ext_resource type="Texture2D" uid="uid://kudj333ym0rb" path="res://Assets/UI/button_settings_in_pause.png" id="9_54kho"]
 [ext_resource type="Texture2D" uid="uid://ckuvt2dfljx5m" path="res://Assets/UI/no_button_exit_bg.png" id="11_5podp"]
+[ext_resource type="Texture2D" uid="uid://ipplvoogk7t6" path="res://Assets/UI/indicator_no_jack.png" id="11_80cfg"]
 [ext_resource type="Texture2D" uid="uid://enuu22p72c1y" path="res://Assets/UI/no_button_exit_bg_pressed.png" id="12_kivj5"]
 [ext_resource type="Texture2D" uid="uid://du2crpsw8t6o7" path="res://Assets/UI/yes_button_exit_bg.png" id="13_pijc6"]
 [ext_resource type="Texture2D" uid="uid://ctrj0cl3kx4g" path="res://Assets/UI/yes_button_exit_bg_pressed.png" id="14_twmts"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fcm41"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_3llnq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_ywlyh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_usb4w")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xrmrv"]
 
@@ -61,18 +82,13 @@ position = Vector2(-300, -300)
 
 [node name="PlayerPickTurnTimer" type="Timer" parent="Timers"]
 unique_name_in_owner = true
-wait_time = 12.0
+wait_time = 3.0
 one_shot = true
 script = ExtResource("8_e07ah")
 
 [node name="RemovePairBotTimer" type="Timer" parent="Timers"]
 unique_name_in_owner = true
-wait_time = 0.5
-one_shot = true
-
-[node name="RemovePairPlayerTimer" type="Timer" parent="Timers"]
-unique_name_in_owner = true
-wait_time = 0.5
+wait_time = 1.5
 one_shot = true
 
 [node name="Players" type="Node2D" parent="."]
@@ -94,6 +110,13 @@ unique_name_in_owner = true
 position = Vector2(-300, -300)
 
 [node name="Emotes" type="Node2D" parent="."]
+
+[node name="PlayerTurnEmote" type="AnimatedSprite2D" parent="Emotes"]
+unique_name_in_owner = true
+position = Vector2(540, 1200)
+scale = Vector2(2.5, 2.5)
+sprite_frames = SubResource("SpriteFrames_fcm41")
+frame_progress = 0.789642
 
 [node name="PlayerEmote" type="Sprite2D" parent="Emotes"]
 unique_name_in_owner = true
@@ -170,12 +193,13 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -298.0
+offset_left = -274.0
 offset_top = -209.0
-offset_right = -72.0
+offset_right = -48.0
 offset_bottom = -119.0
 grow_horizontal = 0
 grow_vertical = 0
+texture = ExtResource("11_80cfg")
 stretch_mode = 5
 
 [node name="Control" type="Control" parent="UI"]
@@ -286,7 +310,6 @@ grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_rnsb4")
 
 [node name="GameOverBottomPanel" type="PanelContainer" parent="UI/GameOverPanel"]
-unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
@@ -367,7 +390,6 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Exit Back"
 
 [connection signal="timeout" from="Timers/RemovePairBotTimer" to="." method="_on_remove_pair_bot_timer_timeout"]
-[connection signal="timeout" from="Timers/RemovePairPlayerTimer" to="." method="_on_remove_pair_player_timer_timeout"]
 [connection signal="pressed" from="UI/ShuffleButton" to="." method="_on_shuffle_button_pressed"]
 [connection signal="pressed" from="UI/PauseButton" to="." method="_on_pause_button_pressed"]
 [connection signal="pressed" from="UI/PausePanel/VBoxContainer/QuitMargin/QuitButton" to="." method="_on_quit_button_pressed"]
