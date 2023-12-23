@@ -5,9 +5,7 @@ signal pick_card(card)
 var cardName = "card_a_spade"
 var isCardInPickingOrPair = false
 
-var startPosition: Vector2 = Vector2.ZERO
 var targetPosition: Vector2 = Vector2.ZERO
-var startRotation = deg_to_rad(0)
 var targetRotation = 0
 var DRAWTIME = 0.4 # time for the tween animation to animate for. TODO: make different timing for different states of the card
 var ShuffleTime = 0.2
@@ -17,13 +15,12 @@ enum STATE {
 	INDECK,
 	MOVINGFROMDECKTOHAND,
 	INHAND,
+	INTOBEPICKED,
 	INPICKING,
+	MOVINGFROMPICKINGTOHAND,
 	INPAIR,
 	MOVINGFROMHANDTODECK,
-	MOVINGFROMPICKINGTOHAND,
 	REORGANIZE,
-	INPICKED,
-	INREMOVEPICKED,
 	SHUFFLE,
 }
 var state = STATE.INDECK
@@ -40,6 +37,9 @@ func _ready():
 func SetCardVisible():
 	$CardBack.visible = false
 
+func SetCardNotVisible():
+	$CardBack.visible = true
+
 func _physics_process(_delta):
 	match state:
 		STATE.INDECK:
@@ -51,13 +51,9 @@ func _physics_process(_delta):
 		STATE.INPAIR:
 			animateFromStartToTarget(STATE.INHAND, DRAWTIME, false, true, true)
 		STATE.MOVINGFROMHANDTODECK:
-			animateFromStartToTarget(STATE.INDECK, DRAWTIME)
-		STATE.INPICKING:
+			animateFromStartToTarget(STATE.INDECK, DRAWTIME, true, true, false)
+		STATE.INTOBEPICKED:
 			animateFromStartToTarget(STATE.INHAND, DRAWTIME, false, true, true)
-		STATE.INPICKED:
-			animateInPicked()
-		STATE.INREMOVEPICKED:
-			animateInRemovePicked()
 		STATE.MOVINGFROMPICKINGTOHAND:
 			animateFromStartToTarget(STATE.INHAND, DRAWTIME, true, true, false)
 		STATE.REORGANIZE:
@@ -74,9 +70,9 @@ func animateFromStartToTarget(nextState, tweenTime, shouldRotate=true, shouldSel
 	tween.set_trans(Tween.TRANS_CUBIC)
 	tween.set_parallel(true)
 	
-	tween.tween_property($".", "position", targetPosition, tweenTime).from(startPosition)
+	tween.tween_property($".", "position", targetPosition, tweenTime).from(self.position)
 	if shouldRotate:
-		tween.tween_property($".", "rotation", targetRotation, tweenTime).from(startRotation)
+		tween.tween_property($".", "rotation", targetRotation, tweenTime).from(self.rotation)
 	if shouldSelect:
 		if selected:
 			tween.tween_property($SelectedContainer, "visible", true, tweenTime-0.3).from(false)
@@ -115,5 +111,5 @@ func animateInRemovePicked():
 
 func _on_selected_container_gui_input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == 1 and isCardInPickingOrPair:
-		state = STATE.INPICKED
+		state = STATE.MOVINGFROMPICKINGTOHAND
 		emit_signal("pick_card", self)

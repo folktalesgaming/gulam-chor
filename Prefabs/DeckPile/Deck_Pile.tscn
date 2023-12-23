@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cp62o2ufut3lb"]
+
+[ext_resource type="Script" path="res://Prefabs/DeckPile/Deck_Pile.gd" id="1_t4pko"]
+
+[node name="DeckPile" type="Node2D"]
+script = ExtResource("1_t4pko")
