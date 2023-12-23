@@ -1,8 +1,9 @@
-[gd_scene load_steps=28 format=3 uid="uid://bw6x2fu47ssrf"]
+[gd_scene load_steps=29 format=3 uid="uid://bw6x2fu47ssrf"]
 
-[ext_resource type="Script" path="res://Scenes/Game_Scenes/Game_play.gd" id="1_0htco"]
+[ext_resource type="Script" path="res://Scenes/Game_Scenes/game_play_new.gd" id="1_kit1s"]
 [ext_resource type="Texture2D" uid="uid://dpyefhmxfkepu" path="res://Assets/UI/MainBGLighter.png" id="2_r0gb3"]
 [ext_resource type="Texture2D" uid="uid://ch58av02hqkn7" path="res://Assets/UI/button_pause_normal.png" id="4_4u64v"]
+[ext_resource type="PackedScene" uid="uid://cp62o2ufut3lb" path="res://Prefabs/DeckPile/Deck_Pile.tscn" id="4_jv7ex"]
 [ext_resource type="Texture2D" uid="uid://dbf0ywilo5t7b" path="res://Assets/UI/button_pause_pressed.png" id="5_eobtf"]
 [ext_resource type="Texture2D" uid="uid://ce74kb5157qpf" path="res://Assets/Emotes/emote_dots1.png" id="6_3llnq"]
 [ext_resource type="Texture2D" uid="uid://o1hspno8cutj" path="res://Assets/UI/button_secondary_small_normal.png" id="6_yuwjs"]
@@ -58,7 +59,7 @@ corner_radius_bottom_left = 25
 bg_color = Color(1, 1, 1, 1)
 
 [node name="Game_play" type="Node2D"]
-script = ExtResource("1_0htco")
+script = ExtResource("1_kit1s")
 
 [node name="MainBg" type="Sprite2D" parent="."]
 position = Vector2(524, 963.5)
@@ -72,10 +73,9 @@ position = Vector2(540, 800)
 [node name="Decks" type="Sprite2D" parent="PackOfDeck"]
 texture = ExtResource("8_5bn2q")
 
-[node name="PairCards" type="Node2D" parent="."]
+[node name="DeckPile" parent="." instance=ExtResource("4_jv7ex")]
 unique_name_in_owner = true
-position = Vector2(580, 960)
-rotation = 3.14159
+position = Vector2(540, 800)
 
 [node name="Timers" type="Node2D" parent="."]
 position = Vector2(-300, -300)
@@ -85,11 +85,6 @@ unique_name_in_owner = true
 wait_time = 3.0
 one_shot = true
 script = ExtResource("8_e07ah")
-
-[node name="RemovePairBotTimer" type="Timer" parent="Timers"]
-unique_name_in_owner = true
-wait_time = 1.5
-one_shot = true
 
 [node name="Players" type="Node2D" parent="."]
 
@@ -389,7 +384,6 @@ theme = ExtResource("7_iq7kp")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Exit Back"
 
-[connection signal="timeout" from="Timers/RemovePairBotTimer" to="." method="_on_remove_pair_bot_timer_timeout"]
 [connection signal="pressed" from="UI/ShuffleButton" to="." method="_on_shuffle_button_pressed"]
 [connection signal="pressed" from="UI/PauseButton" to="." method="_on_pause_button_pressed"]
 [connection signal="pressed" from="UI/PausePanel/VBoxContainer/QuitMargin/QuitButton" to="." method="_on_quit_button_pressed"]
