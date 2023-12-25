@@ -6,10 +6,10 @@ func _ready():
 	cardsInPile = 0
 
 # Throwing pair cards
-func _add_to_pile():
+func _add_to_pile(numberOfRemovedCards):
 	#for card in card_pairs:
 		#self.add_child(card)
-	cardsInPile += 2
+	cardsInPile = cardsInPile + numberOfRemovedCards
 
 # Resetting / Picking back cards
 func _pick_back_cards():
