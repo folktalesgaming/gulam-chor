@@ -18,10 +18,12 @@ const DeckOfCardRandomMode = preload("res://Utils/deck_of_cards_all.gd")
 @onready var player_4 = %Player4
 
 @onready var indicator_has_jack = %IndicatorHasJack
+@onready var player_pick_turn_timer = %PlayerPickTurnTimer
+@onready var player_pick_turn_progress_bar = %PlayerPickTurnProgressBar
 
 @onready var ViewportSizeX = ProjectSettings.get_setting("display/window/size/viewport_width") # Size of viewport
 @onready var ViewportSizeY = ProjectSettings.get_setting("display/window/size/viewport_height") # Size of viewport
-@onready var CenterCardOval = ViewportSizeX * Vector2(0.45, 1.55) # Calculating the center of oval for player card arc
+@onready var CenterCardOval = ViewportSizeX * Vector2(0.5, 1.65) # Calculating the center of oval for player card arc
 @onready var Horizontal_radius = ViewportSizeX * 0.45 # Horizontal radius of the oval arc
 @onready var Vertical_radius = ViewportSizeY * 0.2 # Vertical radius of the oval arc
 
@@ -50,6 +52,8 @@ var isGamePaused = false
 
 var isRandomMode = false
 var playerTurnIndex = 0
+
+var pickedCard = null
 
 var rng = RandomNumberGenerator.new()
 
@@ -82,10 +86,39 @@ func _ready():
 	_load_random_mode_setting()
 	_start_game()
 
-func _process(delta):
+func _process(_delta):
 	if !isGameOver && !isGamePaused:
 		if isGameMoving:
-			pass
+			var nextPlayerIndex = _get_next_player_index(playerTurnIndex)
+			var playerNode = _get_player_node_from_player_index(playerTurnIndex)
+			var nextPlayerNode = _get_player_node_from_player_index(nextPlayerIndex)
+			_player_card_pick_state(nextPlayerIndex)
+			isGameMoving = false
+			if playerTurnIndex == 0:
+				_player_pick(nextPlayerIndex)
+				if !pickedCard:
+					return
+			else:
+				pickedCard = Utility.pickRandomCard(_get_player_cards(nextPlayerNode))
+			
+			var targetValues = _get_player_card_target_destination(playerTurnIndex)
+			pickedCard.targetPosition = targetValues.targetPosition
+			pickedCard.targetRotation = targetValues.targetRotation
+			pickedCard.state = STATE.MOVINGFROMPICKINGTOHAND
+			if nextPlayerIndex == 0:
+				pickedCard.SetCardNotVisible()
+			if playerTurnIndex == 0:
+				pickedCard.SetCardVisible()
+			playerNode._add_cards(pickedCard.cardName)
+			nextPlayerNode._remove_cards([pickedCard.cardName])
+			
+			await get_tree().create_timer(0.3).timeout
+			_remove_pair_cards_from_hand(playerTurnIndex)
+			await get_tree().create_timer(0.3).timeout
+			_player_card_pick_state(nextPlayerIndex, true)
+			pickedCard = null
+			playerTurnIndex = _get_next_player_index(playerTurnIndex)
+			isGameMoving = true
 
 # Start the game by shuffling and diving the 51 cards
 func _start_game():
@@ -97,6 +130,7 @@ func _start_game():
 	for cardName in deckOfCards:
 		var targetDestination = _get_player_card_target_destination(playerTurnIndex)
 		var card = CardBase.instantiate()
+		card.connect("pick_card", _pick_card)
 		card.cardName = cardName
 		card.targetPosition = targetDestination.targetPosition
 		card.targetRotation = targetDestination.targetRotation
@@ -130,6 +164,8 @@ func _start_game():
 	_player_card_pick_state(playerTurnIndex, false, true)
 	await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.2).timeout
 	_remove_pair_cards_from_hand(playerTurnIndex) 
+	await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.2).timeout
+	isGameMoving = true
 
 # Reset the game to the initial position for replay
 func _reset_game():
@@ -152,10 +188,10 @@ func _reset_game():
 # Make the next player cards in hand in picking state
 func _player_card_pick_state(playerIndex, isReverse = false, onlyPair = false):
 	var offset = 60
-	var spread = 0 # TODO: Create a spread effect in picking mode
+	#var spread = 0 # TODO: Create a spread effect in picking mode
 	var tPosOffSetX = offset * _get_one_or_zero_or_minus_one(playerIndex, isReverse, 0)
 	var tPosOffSetY = offset * _get_one_or_zero_or_minus_one(playerIndex, isReverse, 1)
-	var isCardInPickingOrPair = false
+	var cardsInPickByPlayer = false
 	
 	var playerNode = _get_player_node_from_player_index(playerIndex)
 	var playerCardsInHand = _get_player_cards(playerNode)
@@ -164,13 +200,23 @@ func _player_card_pick_state(playerIndex, isReverse = false, onlyPair = false):
 	if onlyPair:
 		pairCards = Utility.findPairs(playerNode._get_cards_in_hand()).pairCards
 	
+	if playerTurnIndex == 0:
+		cardsInPickByPlayer = true
+	
+	if isReverse:
+		cardsInPickByPlayer = false
+	
 	for card in playerCardsInHand:
 		var targetPosition = Vector2(card.position.x + tPosOffSetX, card.position.y + tPosOffSetY)
 		if onlyPair:
 			if pairCards.has(card.cardName):
+				card.isCardInPickingOrPair = cardsInPickByPlayer
+				card.dragging_zone = "pile"
 				card.targetPosition = targetPosition
 				card.state = STATE.INTOBEPICKED
 		else:
+			card.dragging_zone = "player"
+			card.isCardInPickingOrPair = cardsInPickByPlayer
 			card.targetPosition = targetPosition
 			card.state = STATE.INTOBEPICKED
 
@@ -203,17 +249,15 @@ func _picking_card(cardName):
 	pass
 
 # Picks the card from next player in line to the current player hand
-func _pick_card(cardName):
+func _pick_card(card):
 	var playerNode = _get_player_node_from_player_index(playerTurnIndex)
 	var nextPlayerIndex = _get_next_player_index(playerTurnIndex)
 	var nextPlayerNode = _get_player_node_from_player_index(nextPlayerIndex)
 	
-	var cardNode = _get_card_node_from_card_name(cardName)
+	playerNode._add_cards(card.cardName)
+	nextPlayerNode._remove_cards([card.cardName])
 	
-	playerNode._add_cards(cardName)
-	nextPlayerNode._remove_cards([cardName])
-	
-	cardNode.state = STATE.MOVINGFROMPICKINGTOHAND
+	card.state = STATE.MOVINGFROMPICKINGTOHAND
 
 # Removes the pair of cards from the players hand to the pile of cards
 func _remove_pair_cards_from_hand(playerIndex):
@@ -223,12 +267,18 @@ func _remove_pair_cards_from_hand(playerIndex):
 		return
 	
 	playerNode._remove_cards(cardsSplitted.pairCards)
+	deck_pile._add_to_pile(cardsSplitted.pairCards.size())
 	for cardName in cardsSplitted.pairCards:
 		var cardNode = _get_card_node_from_card_name(cardName)
 		cardNode.targetPosition = Vector2(rng.randf_range(0.0, 5.0), rng.randf_range(0.0, 5.0))
 		cardNode.targetRotation = deg_to_rad(rng.randf_range(-30.0, 60.0))
+		cardNode.isCardInPickingOrPair = false
 		cardNode.state = STATE.MOVINGFROMHANDTODECK
 		cardNode.SetCardVisible()
+	# Check if all cards expect the odd jack or odd card is removed or not to set game over state
+	if deck_pile.cardsInPile >= 50:
+		isGameMoving = false
+		isGameOver = true
 
 # Shows and operates the essential operation on game finish
 func _game_finish():
@@ -239,10 +289,16 @@ func _game_finish():
 
 # Shuffles the cards in hand
 func _shuffle_cards_in_hand(playerIndex):
-	var playerNode = _get_player_node_from_player_index(playerIndex)
-	var cardsInPlayerHand = _get_player_cards(playerNode)
+	pass
+	#var playerNode = _get_player_node_from_player_index(playerIndex)
+	#var cardsInPlayerHand = _get_player_cards(playerNode)
 	
 	# TODO: shuffle the cards around
+
+# Start the timer for player pick turn
+func _player_pick(nextPlayerIndex):
+	player_pick_turn_timer.start()
+	player_pick_turn_progress_bar.show()
 
 # UTILITY FUNCTIONS
 
@@ -257,13 +313,13 @@ func _get_player_card_target_destination(playerIndex):
 			targetPosition = CenterCardOval - OvalAngleVector - deck_pile.position
 			targetRotation = deg_to_rad(angle)/2
 		1:
-			targetPosition = ViewportSizeX * Vector2(0.95, 1 - posOffsetYRight) - deck_pile.position 
+			targetPosition = ViewportSizeX * Vector2(1, 1 - posOffsetYRight) - deck_pile.position 
 			targetRotation = deg_to_rad(-90)
 		2:
-			targetPosition = ViewportSizeX * Vector2(0.75 - posOffsetX, -0.1) - deck_pile.position
+			targetPosition = ViewportSizeX * Vector2(0.75 - posOffsetX, -0.05) - deck_pile.position
 			targetRotation = deg_to_rad(180)
 		3:
-			targetPosition = ViewportSizeX * Vector2(-0.08, 1 - posOffsetYLeft) - deck_pile.position
+			targetPosition = ViewportSizeX * Vector2(-0.06, 1 - posOffsetYLeft) - deck_pile.position
 			targetRotation = deg_to_rad(90)
 	
 	return {
@@ -317,8 +373,16 @@ func _get_next_player_index(currentPlayerIndex):
 func _check_jack_in_player(playerIndex = 0):
 	if isRandomMode:
 		return
-	var playerNode = _get_player_node_from_player_index(playerIndex)
-	if playerNode._check_jack():
+	if _get_player_node_from_player_index(playerIndex)._check_jack():
 		indicator_has_jack.texture = load("res://Assets/UI/indicator_has_jack.png")
 	else:
 		indicator_has_jack.texture = load("res://Assets/UI/indicator_no_jack.png")
+
+
+func _on_player_pick_turn_timer_timeout():
+	if !pickedCard:
+		player_pick_turn_progress_bar.hide()
+		var nextPlayerIndex = _get_next_player_index(0)
+		var nextPlayerNode = _get_player_node_from_player_index(nextPlayerIndex)
+		pickedCard = Utility.pickRandomCard(_get_player_cards(nextPlayerNode))
+		isGameMoving = true
