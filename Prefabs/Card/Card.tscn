@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://cohmcy8s6a7qf"]
+[gd_scene load_steps=7 format=3 uid="uid://cohmcy8s6a7qf"]
 
 [ext_resource type="Script" path="res://Prefabs/Card/Card.gd" id="1_uhcpj"]
 
@@ -8,12 +8,12 @@ border_width_left = 5
 border_width_top = 5
 border_width_right = 5
 border_width_bottom = 5
-border_color = Color(0.831373, 0.176471, 0.286275, 1)
+border_color = Color(0.831373, 1, 0.286275, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-shadow_color = Color(1, 0, 0, 0.72549)
+shadow_color = Color(1, 0.878431, 0, 0.72549)
 shadow_size = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v8fip"]
@@ -30,6 +30,12 @@ corner_radius_bottom_left = 10
 shadow_color = Color(0, 0.635294, 0.427451, 0.72549)
 shadow_size = 10
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_snabq"]
+size = Vector2(160, 263)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fhuxt"]
+size = Vector2(167.5, 268.5)
+
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_yghxu"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
@@ -44,30 +50,46 @@ properties/3/path = NodePath(".:state")
 properties/3/spawn = true
 properties/3/replication_mode = 1
 
-[node name="MarginContainer" type="MarginContainer"]
-offset_right = 171.0
-offset_bottom = 270.0
-pivot_offset = Vector2(85.5, 135)
+[node name="MarginContainer" type="StaticBody2D"]
 script = ExtResource("1_uhcpj")
 
 [node name="SelectedContainer" type="PanelContainer" parent="."]
 visible = false
-layout_mode = 2
+offset_right = 171.0
+offset_bottom = 270.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_7g344")
 
 [node name="PickedContainer" type="PanelContainer" parent="."]
 visible = false
-layout_mode = 2
+offset_right = 171.0
+offset_bottom = 270.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_v8fip")
 
 [node name="Card" type="Sprite2D" parent="."]
-centered = false
+unique_name_in_owner = true
+scale = Vector2(1.2, 1.2)
 
 [node name="CardBack" type="Sprite2D" parent="."]
-centered = false
+unique_name_in_owner = true
+scale = Vector2(1.2, 1.2)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, 0.5)
+shape = SubResource("RectangleShape2D_snabq")
+debug_color = Color(0.658824, 0.388235, 0.866667, 0.419608)
+
+[node name="DragArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DragArea"]
+shape = SubResource("RectangleShape2D_fhuxt")
+debug_color = Color(0, 0.6, 0.701961, 0.419608)
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_yghxu")
 
 [connection signal="gui_input" from="SelectedContainer" to="." method="_on_selected_container_gui_input"]
 [connection signal="gui_input" from="PickedContainer" to="." method="_on_selected_container_gui_input"]
+[connection signal="body_entered" from="DragArea" to="." method="_on_drag_area_body_entered"]
+[connection signal="body_exited" from="DragArea" to="." method="_on_drag_area_body_exited"]
+[connection signal="mouse_entered" from="DragArea" to="." method="_on_drag_area_mouse_entered"]
+[connection signal="mouse_exited" from="DragArea" to="." method="_on_drag_area_mouse_exited"]
