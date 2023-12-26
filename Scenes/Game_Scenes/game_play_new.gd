@@ -100,7 +100,7 @@ func _process(_delta):
 			isGameMoving = false
 			
 			if playerTurnIndex == 0:
-				_player_pick(nextPlayerIndex)
+				_player_pick()
 				if !pickedCard:
 					return
 			else:
@@ -134,6 +134,7 @@ func _start_game():
 		deckOfCards = Utility.shuffleDeck(DeckOfCardRandomMode.getDeckAllRandomMode())
 		indicator_has_jack.texture = load("res://Assets/UI/random_mode_indicator.png")
 	
+	AudioManager._play_shuffle_sfx()
 	for cardName in deckOfCards:
 		var targetDestination = _get_player_card_target_destination(playerTurnIndex)
 		var card = CardBase.instantiate()
@@ -164,6 +165,7 @@ func _start_game():
 	
 	playerTurnIndex = 0
 	pack_of_deck.hide()
+	AudioManager._stop_shuffle_sfx()
 	
 	await get_tree().create_timer(REMOVE_BOT_CARDS_TIME).timeout
 	_remove_pair_cards_from_hand(1)
@@ -377,17 +379,14 @@ func _shuffle_cards_in_hand(playerIndex):
 		return
 	
 	var oldPositionsWithIndex = []
-	var i = 0
 	
 	for card in cardsInPlayerHand:
 		oldPositionsWithIndex.append({
 			"position": card.position,
 			"rotation": card.rotation,
 		})
-		i += 1
 	
 	playerNode.cardsInHand.shuffle()
-	i = 0
 	
 	for card in cardsInPlayerHand:
 		var newIndex = playerNode._get_cards_in_hand().find(card.cardName)
@@ -397,7 +396,8 @@ func _shuffle_cards_in_hand(playerIndex):
 		card.state = STATE.SHUFFLE
 
 # Start the timer for player pick turn
-func _player_pick(nextPlayerIndex):
+func _player_pick():
+	# TODO: Add player indicator on player turn
 	player_pick_turn_timer.start()
 	player_pick_turn_progress_bar.show()
 
