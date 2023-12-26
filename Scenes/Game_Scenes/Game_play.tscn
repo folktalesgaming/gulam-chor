@@ -307,7 +307,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_rnsb4")
 
 [node name="GameOverBottomPanel" type="PanelContainer" parent="UI/GameOverPanel"]
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_inne5")
 
@@ -339,9 +338,10 @@ alignment = 1
 [node name="ReplayButton" type="TextureButton" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 3
 texture_normal = ExtResource("11_5podp")
 texture_pressed = ExtResource("12_kivj5")
+stretch_mode = 0
 
 [node name="Replay" type="Label" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer/ReplayButton"]
 layout_mode = 1
@@ -363,10 +363,11 @@ text = "Replay"
 [node name="ExitButton" type="TextureButton" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 3
 size_flags_vertical = 4
 texture_normal = ExtResource("13_pijc6")
 texture_pressed = ExtResource("14_twmts")
+stretch_mode = 0
 
 [node name="Exit" type="Label" parent="UI/GameOverPanel/GameOverBottomPanel/MarginContainer/VBoxContainer/HBoxContainer/ExitButton"]
 layout_mode = 1
@@ -389,7 +390,7 @@ text = "Exit Back"
 position = Vector2(528, 796)
 
 [node name="PlayerDragZone" parent="." groups=["playerdragzone"] instance=ExtResource("10_s2frj")]
-position = Vector2(537, 1725)
+position = Vector2(529, 1414)
 dragging_zone = "player"
 
 [connection signal="timeout" from="Timers/PlayerPickTurnTimer" to="." method="_on_player_pick_turn_timer_timeout"]
