@@ -1,4 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://bp1tylk44o0ew"]
+[gd_scene load_steps=4 format=3 uid="uid://bp1tylk44o0ew"]
+
+[ext_resource type="Script" path="res://Prefabs/DragZone/Drag_Zone.gd" id="1_avknl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kxw80"]
 size = Vector2(655, 534)
@@ -7,6 +9,7 @@ size = Vector2(655, 534)
 size = Vector2(658, 536)
 
 [node name="DragZone" type="StaticBody2D" groups=["dragzone"]]
+script = ExtResource("1_avknl")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_kxw80")
