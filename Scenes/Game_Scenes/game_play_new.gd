@@ -22,6 +22,7 @@ const DeckOfCardRandomMode = preload("res://Utils/deck_of_cards_all.gd")
 @onready var indicator_has_jack = %IndicatorHasJack
 @onready var player_pick_turn_timer = %PlayerPickTurnTimer
 @onready var player_pick_turn_progress_bar = %PlayerPickTurnProgressBar
+@onready var player_turn_emote = %PlayerTurnEmote
 
 @onready var ViewportSizeX = ProjectSettings.get_setting("display/window/size/viewport_width") # Size of viewport
 @onready var ViewportSizeY = ProjectSettings.get_setting("display/window/size/viewport_height") # Size of viewport
@@ -55,6 +56,7 @@ var isGamePaused = false
 
 var isRandomMode = false
 var playerTurnIndex = 0
+var wasGameRegular = true
 
 var pickedCard = null
 var mayBePickedCards = []
@@ -100,7 +102,10 @@ func _process(_delta):
 			isGameMoving = false
 			
 			if playerTurnIndex == 0:
-				_player_pick()
+				if wasGameRegular:
+					_player_pick()
+				else:
+					wasGameRegular = true
 				if !pickedCard:
 					return
 			else:
@@ -129,6 +134,7 @@ func _process(_delta):
 
 # Start the game by shuffling and diving the 51 cards
 func _start_game():
+	_indicate_player_turn(false)
 	var deckOfCards = Utility.shuffleDeck(DeckOfCard.getDeckClassic())
 	if isRandomMode:
 		deckOfCards = Utility.shuffleDeck(DeckOfCardRandomMode.getDeckAllRandomMode())
@@ -292,11 +298,12 @@ func _pick_card(card):
 	card.SetCardVisible()
 	
 	player_pick_turn_timer.stop()
-	player_pick_turn_progress_bar.hide()
+	_indicate_player_turn(false)
 	await get_tree().create_timer(0.2).timeout
 	_remove_pair_cards_from_hand(0)
 	_rearrange_cards_in_hand(0)
 	
+	wasGameRegular = true
 	isGameMoving = true
 	
 	if nextPlayerNode._get_cards_in_hand().size() >= 1:
@@ -325,13 +332,6 @@ func _remove_pair_cards_from_hand(playerIndex):
 		isGameMoving = false
 		isGameOver = true
 		game_over_panel.show()
-
-# Shows and operates the essential operation on game finish
-func _game_finish():
-	isGameOver = true
-	isGameMoving = false
-	
-	# TODO: Operate other stuffs like showing UI and etc
 
 # Rearrange the cards in hand after cards in hand changes
 func _rearrange_cards_in_hand(playerIndex):
@@ -397,9 +397,8 @@ func _shuffle_cards_in_hand(playerIndex):
 
 # Start the timer for player pick turn
 func _player_pick():
-	# TODO: Add player indicator on player turn
+	_indicate_player_turn()
 	player_pick_turn_timer.start()
-	player_pick_turn_progress_bar.show()
 
 # UTILITY FUNCTIONS
 
@@ -478,9 +477,20 @@ func _check_jack_in_player(playerIndex = 0):
 	else:
 		indicator_has_jack.texture = load("res://Assets/UI/indicator_no_jack.png")
 
+# Indicate either its player turn or not
+func _indicate_player_turn(isPlayerTurn = true):
+	if isPlayerTurn:
+		player_turn_emote.play()
+		player_turn_emote.show()
+		player_pick_turn_progress_bar.show()
+	else:
+		player_turn_emote.stop()
+		player_turn_emote.hide()
+		player_pick_turn_progress_bar.hide()
+
 # On player pick timer timeout if player already hasn't picked a card pick a random card for player
 func _on_player_pick_turn_timer_timeout():
-	player_pick_turn_progress_bar.hide()
+	_indicate_player_turn(false)
 	var nextPlayerIndex = _get_next_player_index(0)
 	var nextPlayerNode = _get_player_node_from_player_index(nextPlayerIndex)
 	
@@ -490,6 +500,7 @@ func _on_player_pick_turn_timer_timeout():
 		
 	pickedCard = Utility.pickRandomCard(_get_player_cards(nextPlayerNode))
 	
+	wasGameRegular = false
 	isGameMoving = true
 
 # Replay the game
@@ -514,15 +525,16 @@ func _on_continue_button_pressed():
 	AudioManager._play_button_sfx()
 	pause_panel.hide()
 	isGamePaused = false
-	#if playerTurn == 0:
-		#PlayerPickTurnTimer.start()
+	if playerTurnIndex == 0:
+		player_pick_turn_timer.paused = false
 
 # Pause the game
 func _on_pause_button_pressed():
 	AudioManager._play_button_sfx()
+	wasGameRegular = false
 	isGamePaused = true
-	#if playerTurn == 0:
-		#PlayerPickTurnTimer.set_paused(true)
+	if playerTurnIndex == 0:
+		player_pick_turn_timer.paused = true
 	pause_panel.show()
 
 # Shuffle the cards in hand
