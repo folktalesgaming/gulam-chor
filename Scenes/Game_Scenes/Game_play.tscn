@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bw6x2fu47ssrf"]
+[gd_scene load_steps=33 format=3 uid="uid://bw6x2fu47ssrf"]
 
 [ext_resource type="Script" path="res://Scenes/Game_Scenes/game_play_new.gd" id="1_kit1s"]
 [ext_resource type="Texture2D" uid="uid://dpyefhmxfkepu" path="res://Assets/UI/MainBGLighter.png" id="2_r0gb3"]
@@ -23,6 +23,22 @@
 [ext_resource type="Texture2D" uid="uid://enuu22p72c1y" path="res://Assets/UI/no_button_exit_bg_pressed.png" id="12_kivj5"]
 [ext_resource type="Texture2D" uid="uid://du2crpsw8t6o7" path="res://Assets/UI/yes_button_exit_bg.png" id="13_pijc6"]
 [ext_resource type="Texture2D" uid="uid://ctrj0cl3kx4g" path="res://Assets/UI/yes_button_exit_bg_pressed.png" id="14_twmts"]
+
+[sub_resource type="Curve" id="Curve_0blo7"]
+min_value = -1.0
+_data = [Vector2(0, -1), 0.0, 1.91338, 0, 1, Vector2(1, 1), 2.02583, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_44b8o"]
+min_value = -1.0
+max_value = 0.0
+_data = [Vector2(0, -1), 0.0, 2.0, 0, 1, Vector2(0.5, 0), 0.0, 0.0, 0, 0, Vector2(1, -1), -2.0, 0.0, 1, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_d7mek"]
+min_value = -1.0
+_data = [Vector2(0, 1), 0.0, -2.0, 0, 1, Vector2(1, -1), -2.0, 0.0, 1, 0]
+point_count = 2
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_fcm41"]
 animations = [{
@@ -61,6 +77,9 @@ bg_color = Color(1, 1, 1, 1)
 
 [node name="Game_play" type="Node2D"]
 script = ExtResource("1_kit1s")
+spread_curve = SubResource("Curve_0blo7")
+height_curve = SubResource("Curve_44b8o")
+rotation_curve = SubResource("Curve_d7mek")
 
 [node name="MainBg" type="Sprite2D" parent="."]
 position = Vector2(524, 963.5)
