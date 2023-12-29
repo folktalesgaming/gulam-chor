@@ -55,8 +55,10 @@ script = ExtResource("1_uhcpj")
 
 [node name="SelectedContainer" type="PanelContainer" parent="."]
 visible = false
-offset_right = 171.0
-offset_bottom = 270.0
+offset_left = -87.0
+offset_top = -136.0
+offset_right = 84.0
+offset_bottom = 134.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_7g344")
 
 [node name="PickedContainer" type="PanelContainer" parent="."]

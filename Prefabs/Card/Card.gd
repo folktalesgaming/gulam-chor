@@ -61,9 +61,9 @@ func _physics_process(_delta):
 			offset = get_global_mouse_position() - global_position
 		if Input.is_action_pressed("click"):
 			global_position = get_global_mouse_position() - offset
-		_check_inentered_drop_zone()
 		if Input.is_action_just_released("click"):
 			_check_drop()
+		_check_inentered_drop_zone()
 	match state:
 		STATE.INDECK:
 			pass
@@ -164,9 +164,12 @@ func _on_drag_area_mouse_entered():
 	if isCardInPickingOrPair:
 		is_draggable = true
 		scale = Vector2(1.2, 1.2)
+		emit_signal("select_card", self)
 
 func _on_drag_area_mouse_exited():
+	is_draggable = false
 	scale = Vector2(1, 1)
+	emit_signal("cancel_select")
 
 func _on_drag_area_body_entered(body):
 	if body.is_in_group("dragzone"):
