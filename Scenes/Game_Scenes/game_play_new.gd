@@ -31,6 +31,9 @@ const DeckOfCardRandomMode = preload("res://Utils/deck_of_cards_all.gd")
 @onready var Vertical_radius = ViewportSizeY * 0.2 # Vertical radius of the oval arc
 
 @onready var player_position = Vector2(540, 1400) - deck_pile.position
+@onready var player2_position = Vector2(540, 960) - deck_pile.position
+@onready var player3_position = Vector2(540, 320) - deck_pile.position
+@onready var player4_position = Vector2(320, 960) - deck_pile.position
 
 # exported variables
 @export var spread_curve: Curve
@@ -128,6 +131,8 @@ func _process(_delta):
 				pickedCard.SetCardVisible()
 			playerNode._add_cards(pickedCard.cardName)
 			nextPlayerNode._remove_cards([pickedCard.cardName])
+			await get_tree().create_timer(BOT_PICK_TIME - 0.3).timeout
+			_move_player_cards_to_target_destination(nextPlayerIndex)
 			
 			await get_tree().create_timer(BOT_PICK_TIME).timeout
 			_remove_pair_cards_from_hand(playerTurnIndex)
@@ -449,13 +454,34 @@ func _move_player_cards_to_target_destination(playerIndex):
 	var playerNode = _get_player_node_from_player_index(playerIndex)
 	var cardsInPlayerHand = _get_player_cards(playerNode)
 	cardsInPlayerHand.reverse()
+	var numOfCards = cardsInPlayerHand.size()
+	
+	var playerPos = player_position
+	var cardRotationOffset = deg_to_rad(0)
+	
+	match playerIndex:
+		1:
+			playerPos = player2_position
+			cardRotationOffset = deg_to_rad(90)
+		2:
+			playerPos = player3_position
+			cardRotationOffset = deg_to_rad(180)
+		3:
+			playerPos = player4_position
+			cardRotationOffset = deg_to_rad(-90)
 	
 	var i = 0
 	for card in cardsInPlayerHand:
 		var hand_ratio = 0.5
 		hand_ratio = float(i) / float(cardsInPlayerHand.size() - 1)
-		card.targetPosition = Vector2(player_position.x - spread_curve.sample(hand_ratio) * (315 + cardsInPlayerHand.size() * 5), player_position.y - height_curve.sample(hand_ratio) * 120)
-		card.targetRotation = rotation_curve.sample(hand_ratio) * 0.6
+		var xPos = playerPos.x - spread_curve.sample(hand_ratio) * (30 * (numOfCards - 1))
+		var yPos = playerPos.y - height_curve.sample(hand_ratio) * (10 * (numOfCards - 1))
+		match playerIndex:
+			0, 2:
+				card.targetPosition = Vector2(xPos, yPos)
+			1, 3:
+				card.targetPosition = Vector2(yPos, xPos)
+		card.targetRotation = rotation_curve.sample(hand_ratio) * (0.05 * (numOfCards - 1)) - cardRotationOffset
 		card.state = STATE.REORGANIZE
 		i += 1
 
