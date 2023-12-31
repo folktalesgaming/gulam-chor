@@ -70,20 +70,8 @@ var mayBePickedCards = []
 
 var rng = RandomNumberGenerator.new()
 
-var angle = deg_to_rad(-130) # Angle at which the card must be positioned
-var OvalAngleVector = Vector2() # Vector to convert the polar points (r, 0) to cartesian points (x,y)
-
-var posOffsetYRight = 0 # Position of cards of player to the right
-var posOffsetYLeft = 0 # Position of cards of player to the left
 var posOffsetX = 0 # Position of cards of player to the top
-
 var isPlayerTurnToPick = false # Determine if it is players turn to pick card
-
-# Offset of cards angle and position of each players
-const PlayerHandCardAngleOffset = 0.12
-const RightPlayerCardPositionOffset = 0.07
-const TopPlayerCardPositionOffset = 0.05
-const LeftPlayerCardPositionOffset = 0.07
 
 # FUNCTIONS
 func _load_random_mode_setting():
@@ -166,13 +154,6 @@ func _start_game():
 		playerNode._add_cards(cardName)
 		if playerTurnIndex == 0:
 			card.SetCardVisible()
-			angle += PlayerHandCardAngleOffset
-		if playerTurnIndex == 1:
-			posOffsetYRight += RightPlayerCardPositionOffset
-		if playerTurnIndex == 2:
-			posOffsetX += TopPlayerCardPositionOffset
-		if playerTurnIndex == 3:
-			posOffsetYLeft += LeftPlayerCardPositionOffset
 		playerTurnIndex = (playerTurnIndex+1)%NUM_OF_PLAYERS
 		
 		await get_tree().create_timer(DIVIDING_TIME).timeout
@@ -187,7 +168,7 @@ func _start_game():
 	_remove_pair_cards_from_hand(3)
 	_remove_pair_cards_from_hand(playerTurnIndex)
 	
-	await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.5).timeout
+	await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.2).timeout
 	_check_jack_in_player()
 	isGameMoving = true
 
@@ -207,10 +188,6 @@ func _reset_game():
 	pack_of_deck.show()
 	
 	playerTurnIndex = 0
-	angle = deg_to_rad(-130)
-	posOffsetX = 0
-	posOffsetYLeft = 0
-	posOffsetYRight = 0
 	pickedCard = null
 
 # Make the next player cards in hand in picking state
@@ -302,7 +279,7 @@ func _pick_card(card):
 	
 	player_pick_turn_timer.stop()
 	_indicate_player_turn(false)
-	await get_tree().create_timer(0.2).timeout
+	#await get_tree().create_timer(0.2).timeout
 	_remove_pair_cards_from_hand(0)
 	_rearrange_cards_in_hand(0)
 	
