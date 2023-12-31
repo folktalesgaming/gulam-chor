@@ -74,6 +74,10 @@ var posOffsetX = 0 # Position of cards of player to the top
 var isPlayerTurnToPick = false # Determine if it is players turn to pick card
 
 # FUNCTIONS
+func _notification(what):
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		_on_pause_button_pressed()
+
 func _load_random_mode_setting():
 	if FileAccess.file_exists(random_mode_setting_path):
 		var file = FileAccess.open(random_mode_setting_path, FileAccess.READ)

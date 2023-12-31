@@ -149,6 +149,29 @@ grow_vertical = 0
 theme = ExtResource("3_317em")
 text = "Hello new Player welcome to game"
 
+[node name="QuitMessage" type="Label" parent="UI"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -208.0
+offset_top = -182.0
+offset_right = 208.0
+offset_bottom = -136.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("3_317em")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Press back again to Quit"
+
+[node name="QuitTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 2.0
+
 [connection signal="pressed" from="UI/VBoxContainer/SingleMode" to="." method="_on_single_mode_pressed"]
 [connection signal="pressed" from="UI/VBoxContainer/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="UI/VBoxContainer/MultiplayerMode" to="." method="_on_multiplayer_mode_pressed"]
+[connection signal="timeout" from="QuitTimer" to="." method="_on_quit_timer_timeout"]
