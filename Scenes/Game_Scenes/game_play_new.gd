@@ -26,14 +26,11 @@ const DeckOfCardRandomMode = preload("res://Utils/deck_of_cards_all.gd")
 
 @onready var ViewportSizeX = ProjectSettings.get_setting("display/window/size/viewport_width") # Size of viewport
 @onready var ViewportSizeY = ProjectSettings.get_setting("display/window/size/viewport_height") # Size of viewport
-@onready var CenterCardOval = ViewportSizeX * Vector2(0.5, 1.65) # Calculating the center of oval for player card arc
-@onready var Horizontal_radius = ViewportSizeX * 0.45 # Horizontal radius of the oval arc
-@onready var Vertical_radius = ViewportSizeY * 0.2 # Vertical radius of the oval arc
 
-@onready var player_position = Vector2(540, 1400) - deck_pile.position
-@onready var player2_position = Vector2(540, 960) - deck_pile.position
-@onready var player3_position = Vector2(540, 320) - deck_pile.position
-@onready var player4_position = Vector2(320, 960) - deck_pile.position
+@onready var player_position = Vector2(ViewportSizeX / 2, ViewportSizeY - 520) - deck_pile.position
+@onready var player2_position = Vector2(ViewportSizeX - 40, ViewportSizeY - 1170) - deck_pile.position
+@onready var player3_position = Vector2(ViewportSizeX / 2, ViewportSizeY - 1880) - deck_pile.position
+@onready var player4_position = Vector2(ViewportSizeX - 1040, ViewportSizeY - 1170) - deck_pile.position
 
 # exported variables
 @export var spread_curve: Curve
@@ -125,14 +122,13 @@ func _process(_delta):
 			pickedCard.targetPosition = targetValues.targetPosition
 			pickedCard.targetRotation = targetValues.targetRotation
 			pickedCard.state = STATE.MOVINGFROMPICKINGTOHAND
-			if nextPlayerIndex == 0:
-				pickedCard.SetCardNotVisible()
-			if playerTurnIndex == 0:
-				pickedCard.SetCardVisible()
 			playerNode._add_cards(pickedCard.cardName)
 			nextPlayerNode._remove_cards([pickedCard.cardName])
-			await get_tree().create_timer(BOT_PICK_TIME - 0.3).timeout
-			_move_player_cards_to_target_destination(nextPlayerIndex)
+			if nextPlayerIndex == 0:
+				pickedCard.SetCardNotVisible()
+				_rearrange_cards_in_hand(0)
+			if playerTurnIndex == 0:
+				pickedCard.SetCardVisible()
 			
 			await get_tree().create_timer(BOT_PICK_TIME).timeout
 			_remove_pair_cards_from_hand(playerTurnIndex)
@@ -187,20 +183,11 @@ func _start_game():
 	
 	await get_tree().create_timer(REMOVE_BOT_CARDS_TIME).timeout
 	_remove_pair_cards_from_hand(1)
-	_rearrange_cards_in_hand(1)
 	_remove_pair_cards_from_hand(2)
-	_rearrange_cards_in_hand(2)
 	_remove_pair_cards_from_hand(3)
-	_rearrange_cards_in_hand(3)
+	_remove_pair_cards_from_hand(playerTurnIndex)
 	
-	_move_player_cards_to_target_destination(0)
-	await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.2).timeout	
-	_player_card_pick_state(playerTurnIndex, false, true)
-	await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.2).timeout
-	_remove_pair_cards_from_hand(playerTurnIndex) 
-	await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.2).timeout	
-	_rearrange_cards_in_hand(0)
-	await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.2).timeout
+	await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.5).timeout
 	_check_jack_in_player()
 	isGameMoving = true
 
@@ -343,48 +330,15 @@ func _remove_pair_cards_from_hand(playerIndex):
 		cardNode.isCardInPickingOrPair = false
 		cardNode.state = STATE.MOVINGFROMHANDTODECK
 		cardNode.SetCardVisible()
+	
+	if playerNode._get_cards_in_hand().size() > 0:
+		await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.6).timeout
+		_rearrange_cards_in_hand(playerIndex)
 	# Check if all cards expect the odd jack or odd card is removed or not to set game over state
 	if deck_pile.cardsInPile >= 50:
 		isGameMoving = false
 		isGameOver = true
 		game_over_panel.show()
-
-# Rearrange the cards in hand after cards in hand changes
-func _rearrange_cards_in_hand(playerIndex):
-	var playerNode = _get_player_node_from_player_index(playerIndex);
-	var cardsInHand = _get_player_cards(playerNode)
-	
-	match playerIndex:
-		0:
-			_move_player_cards_to_target_destination(playerIndex)
-			#angle = deg_to_rad(-105)
-			#for card in cardsInHand:
-				#OvalAngleVector = Vector2(-Horizontal_radius * cos(angle), -Vertical_radius * sin(angle))
-				#card.targetPosition = CenterCardOval - OvalAngleVector - deck_pile.position
-				#card.targetRotation = deg_to_rad(angle)/2
-				#card.state = STATE.REORGANIZE
-				#angle += PlayerHandCardAngleOffset
-		1:
-			posOffsetYRight = 0
-			for card in cardsInHand:
-				card.targetPosition = ViewportSizeX * Vector2(1, 1 - posOffsetYRight) - deck_pile.position
-				card.targetRotation = card.rotation
-				card.state = STATE.REORGANIZE
-				posOffsetYRight += RightPlayerCardPositionOffset
-		2:
-			posOffsetX = 0
-			for card in cardsInHand:
-				card.targetPosition = ViewportSizeX * Vector2(0.75 - posOffsetX, 0) - deck_pile.position
-				card.targetRotation = card.rotation
-				card.state = STATE.REORGANIZE
-				posOffsetX += TopPlayerCardPositionOffset
-		3:
-			posOffsetYLeft = 0
-			for card in cardsInHand:
-				card.targetPosition = ViewportSizeX * Vector2(0, 1 - posOffsetYLeft) - deck_pile.position
-				card.targetRotation = card.rotation
-				card.state = STATE.REORGANIZE
-				posOffsetYLeft += LeftPlayerCardPositionOffset
 
 # Shuffles the cards in hand
 func _shuffle_cards_in_hand(playerIndex):
@@ -426,23 +380,16 @@ func _get_player_card_target_destination(playerIndex):
 	
 	match playerIndex:
 		0:
-			#var totalCardsInPlayerHand = _get_player_cards(_get_player_node_from_player_index(playerIndex)).size() + 1
-			#var handRatio = 0.5
-			#if totalCardsInPlayerHand > 1:
-				#handRatio = float(totalCardsInPlayerHand - 1) / float(totalCardsInPlayerHand)
-			#OvalAngleVector = Vector2(-Horizontal_radius * cos(angle), -Vertical_radius * sin(angle))
-			#targetPosition = CenterCardOval - OvalAngleVector - deck_pile.position
 			targetPosition = player_position
-			#targetRotation = deg_to_rad(angle)/2
 			targetRotation = deg_to_rad(0)
 		1:
-			targetPosition = ViewportSizeX * Vector2(1, 1 - posOffsetYRight) - deck_pile.position 
+			targetPosition = player2_position
 			targetRotation = deg_to_rad(-90)
 		2:
-			targetPosition = ViewportSizeX * Vector2(0.75 - posOffsetX, 0) - deck_pile.position
+			targetPosition = player3_position
 			targetRotation = deg_to_rad(180)
 		3:
-			targetPosition = ViewportSizeX * Vector2(0, 1 - posOffsetYLeft) - deck_pile.position
+			targetPosition = player4_position
 			targetRotation = deg_to_rad(90)
 	
 	return {
@@ -450,38 +397,51 @@ func _get_player_card_target_destination(playerIndex):
 		"targetRotation": targetRotation,
 	}
 
-func _move_player_cards_to_target_destination(playerIndex):
+# Rearrange the cards in hand after cards in hand changes
+func _rearrange_cards_in_hand(playerIndex):
 	var playerNode = _get_player_node_from_player_index(playerIndex)
 	var cardsInPlayerHand = _get_player_cards(playerNode)
 	cardsInPlayerHand.reverse()
 	var numOfCards = cardsInPlayerHand.size()
 	
 	var playerPos = player_position
-	var cardRotationOffset = deg_to_rad(0)
+	var cardRotationOffset = deg_to_rad(90)
 	
 	match playerIndex:
 		1:
 			playerPos = player2_position
-			cardRotationOffset = deg_to_rad(90)
 		2:
 			playerPos = player3_position
-			cardRotationOffset = deg_to_rad(180)
 		3:
 			playerPos = player4_position
-			cardRotationOffset = deg_to_rad(-90)
 	
 	var i = 0
 	for card in cardsInPlayerHand:
 		var hand_ratio = 0.5
-		hand_ratio = float(i) / float(cardsInPlayerHand.size() - 1)
-		var xPos = playerPos.x - spread_curve.sample(hand_ratio) * (30 * (numOfCards - 1))
-		var yPos = playerPos.y - height_curve.sample(hand_ratio) * (10 * (numOfCards - 1))
+		
+		if numOfCards > 1:
+			hand_ratio = float(i) / float(numOfCards - 1)
+		
+		var spreadOffset = spread_curve.sample(hand_ratio) * (30 * (numOfCards - 1))
+		var heightOffset = height_curve.sample(hand_ratio) * (10 * (numOfCards - 1))
+		var rotationOffset = rotation_curve.sample(hand_ratio) * (0.05 * (numOfCards - 1))
+		
+		var xPos = playerPos.x
+		var yPos = playerPos.y
+		
 		match playerIndex:
-			0, 2:
-				card.targetPosition = Vector2(xPos, yPos)
-			1, 3:
-				card.targetPosition = Vector2(yPos, xPos)
-		card.targetRotation = rotation_curve.sample(hand_ratio) * (0.05 * (numOfCards - 1)) - cardRotationOffset
+			0:
+				card.targetPosition = Vector2(xPos - spreadOffset, yPos - heightOffset)
+				card.targetRotation = rotationOffset
+			1:
+				card.targetPosition = Vector2(xPos - heightOffset, yPos - spreadOffset)
+				card.targetRotation = -rotationOffset - cardRotationOffset
+			2:
+				card.targetPosition = Vector2(xPos - spreadOffset, yPos + heightOffset)
+				card.targetRotation = -rotationOffset
+			3:
+				card.targetPosition = Vector2(xPos + heightOffset, yPos + spreadOffset)
+				card.targetRotation = -(cardRotationOffset + rotationOffset)
 		card.state = STATE.REORGANIZE
 		i += 1
 
