@@ -53,16 +53,16 @@ func SetCardVisible():
 func SetCardNotVisible():
 	card_back.visible = true
 
-func _physics_process(_delta):
+func _physics_process(delta):
 	if is_draggable:
 		if Input.is_action_just_pressed("click"):
 			initialPosition = global_position
 			emit_signal("select_card", self)
 			offset = get_global_mouse_position() - global_position
 		if Input.is_action_pressed("click"):
-			global_position = get_global_mouse_position() - offset
+			global_position = lerp(global_position, get_global_mouse_position(), 25 * delta)
 		if Input.is_action_just_released("click"):
-			_check_drop()
+			_check_drop(delta)
 		_check_inentered_drop_zone()
 	match state:
 		STATE.INDECK:
@@ -106,20 +106,22 @@ func animateFromStartToTarget(nextState, tweenTime, shouldRotate=true, shouldSel
 	
 	state = nextState
 
-func _check_drop():
+func _check_drop(delta):
 	if is_inside_dropable:
 		is_draggable = false
 		if dragging_zone == drop_zone_ref.dragging_zone:
 			emit_signal("pick_card", self)
 		else:
 			is_draggable = true
-			targetPosition = initialPosition
-			state = STATE.MOVINGFROMHANDTODECK
+			global_position = lerp(global_position, initialPosition, 10 * delta)
+			#targetPosition = initialPosition
+			#state = STATE.MOVINGFROMHANDTODECK
 			emit_signal("cancel_select")
 	else:
 		is_draggable = true
-		targetPosition = initialPosition
-		state = STATE.MOVINGFROMHANDTODECK
+		global_position = lerp(global_position, initialPosition, 10 * delta)
+		#targetPosition = initialPosition
+		#state = STATE.MOVINGFROMHANDTODECK
 		emit_signal("cancel_select")
 
 func _check_inentered_drop_zone():
