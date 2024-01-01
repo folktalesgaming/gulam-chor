@@ -105,6 +105,7 @@ func _process(_delta):
 					_player_pick()
 				else:
 					wasGameRegular = true
+					isGameMoving = true
 				if !pickedCard:
 					return
 			else:
