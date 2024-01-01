@@ -31,3 +31,6 @@ func _check_jack():
 	if cardsInHand.has("card_j_spade") || cardsInHand.has("card_j_diamond") || cardsInHand.has("card_j_heart"):
 		return true
 	return false
+
+func _shuffle_cards():
+	cardsInHand.shuffle()
