@@ -75,7 +75,7 @@ var isPlayerTurnToPick = false # Determine if it is players turn to pick card
 
 # FUNCTIONS
 func _notification(what):
-	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST || what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		_on_pause_button_pressed()
 
 func _load_random_mode_setting():
@@ -110,6 +110,7 @@ func _process(_delta):
 			else:
 				pickedCard = Utility.pickRandomCard(_get_player_cards(nextPlayerNode))
 			
+			await get_tree().create_timer(BOT_PICK_TIME - 0.4).timeout
 			var targetValues = _get_player_card_target_destination(playerTurnIndex)
 			pickedCard.targetPosition = targetValues.targetPosition
 			pickedCard.targetRotation = targetValues.targetRotation
@@ -130,6 +131,7 @@ func _process(_delta):
 			if playerTurnIndex == 0 || nextPlayerIndex == 0:
 				_check_jack_in_player()
 			playerTurnIndex = _get_next_player_index(playerTurnIndex)
+			await get_tree().create_timer(BOT_PICK_TIME).timeout
 			isGameMoving = true
 
 # Start the game by shuffling and diving the 51 cards
@@ -196,10 +198,6 @@ func _reset_game():
 
 # Make the next player cards in hand in picking state
 func _player_card_pick_state(playerIndex, isReverse = false, onlyPair = false):
-	var offset = 60
-	#var spread = 0 # TODO: Create a spread effect in picking mode
-	var tPosOffSetX = offset * _get_one_or_zero_or_minus_one(playerIndex, isReverse, 0)
-	var tPosOffSetY = offset * _get_one_or_zero_or_minus_one(playerIndex, isReverse, 1)
 	var cardsInPickByPlayer = false
 	
 	var playerNode = _get_player_node_from_player_index(playerIndex)
@@ -216,18 +214,15 @@ func _player_card_pick_state(playerIndex, isReverse = false, onlyPair = false):
 		cardsInPickByPlayer = false
 	
 	for card in playerCardsInHand:
-		var targetPosition = Vector2(card.position.x + tPosOffSetX, card.position.y + tPosOffSetY)
 		if onlyPair:
 			if pairCards.has(card.cardName):
 				card.isCardInPickingOrPair = cardsInPickByPlayer
 				card.dragging_zone = "pile"
-				card.targetPosition = targetPosition
-				card.state = STATE.INTOBEPICKED
 		else:
 			card.dragging_zone = "player"
 			card.isCardInPickingOrPair = cardsInPickByPlayer
-			card.targetPosition = targetPosition
-			card.state = STATE.INTOBEPICKED
+	
+	_rearrange_cards_in_hand(playerIndex, !isReverse)
 
 func _get_one_or_zero_or_minus_one(playerIndex, isReverse, coordinate):
 	match coordinate:
@@ -257,16 +252,15 @@ func _picking_card(card):
 	for cardInHand in cardsInNextPlayerHand:
 		if card.cardName != cardInHand.cardName:
 			cardInHand.isCardInPickingOrPair = false
+			cardInHand.is_draggable = false
 			mayBePickedCards.append(cardInHand)
 	
-	mayBePickedCards.append(card)
 	card.state = STATE.INPICKING
 
 # When player cancels the picking of card
 func _cancel_select():
 	for card in mayBePickedCards:
 		card.isCardInPickingOrPair = true
-	
 	mayBePickedCards = []
 
 # Picks the card from next player in line to the current player hand
@@ -279,13 +273,17 @@ func _pick_card(card):
 	nextPlayerNode._remove_cards([card.cardName])
 	
 	card.state = STATE.MOVINGFROMPICKINGTOHAND
+	card.isCardInPickingOrPair = false
 	card.SetCardVisible()
 	
 	player_pick_turn_timer.stop()
 	_indicate_player_turn(false)
-	#await get_tree().create_timer(0.2).timeout
+	await get_tree().create_timer(0.2).timeout
 	_remove_pair_cards_from_hand(0)
 	_rearrange_cards_in_hand(0)
+	_rearrange_cards_in_hand(nextPlayerIndex)
+	
+	await get_tree().create_timer(0.2).timeout
 	
 	wasGameRegular = true
 	isGameMoving = true
@@ -338,7 +336,7 @@ func _shuffle_cards_in_hand(playerIndex):
 			"rotation": card.rotation,
 		})
 	
-	playerNode.cardsInHand.shuffle()
+	playerNode._shuffle_cards()
 	
 	for card in cardsInPlayerHand:
 		var newIndex = playerNode._get_cards_in_hand().find(card.cardName)
@@ -379,7 +377,7 @@ func _get_player_card_target_destination(playerIndex):
 	}
 
 # Rearrange the cards in hand after cards in hand changes
-func _rearrange_cards_in_hand(playerIndex):
+func _rearrange_cards_in_hand(playerIndex, isInPick = false):
 	var playerNode = _get_player_node_from_player_index(playerIndex)
 	var cardsInPlayerHand = _get_player_cards(playerNode)
 	cardsInPlayerHand.reverse()
@@ -387,6 +385,26 @@ func _rearrange_cards_in_hand(playerIndex):
 	
 	var playerPos = player_position
 	var cardRotationOffset = deg_to_rad(90)
+	var inPickOffset = 180
+	var spreadOffsetGlobal = 30
+	var heightOffsetGlobal = 10
+	var rotationOffsetGlobal = 0.05
+	var posXOffset = 0
+	var posYOffset = 0
+	
+	if isInPick:
+		spreadOffsetGlobal = 50
+		heightOffsetGlobal = 30
+		rotationOffsetGlobal = 0.1
+		match playerIndex:
+			0:
+				posYOffset = -inPickOffset
+			1:
+				posXOffset = -inPickOffset
+			2:
+				posYOffset = inPickOffset
+			3:
+				posXOffset = inPickOffset
 	
 	match playerIndex:
 		1:
@@ -403,12 +421,12 @@ func _rearrange_cards_in_hand(playerIndex):
 		if numOfCards > 1:
 			hand_ratio = float(i) / float(numOfCards - 1)
 		
-		var spreadOffset = spread_curve.sample(hand_ratio) * (30 * (numOfCards - 1))
-		var heightOffset = height_curve.sample(hand_ratio) * (10 * (numOfCards - 1))
-		var rotationOffset = rotation_curve.sample(hand_ratio) * (0.05 * (numOfCards - 1))
+		var spreadOffset = spread_curve.sample(hand_ratio) * (spreadOffsetGlobal * (numOfCards - 1))
+		var heightOffset = height_curve.sample(hand_ratio) * (heightOffsetGlobal * (numOfCards - 1))
+		var rotationOffset = rotation_curve.sample(hand_ratio) * (rotationOffsetGlobal * (numOfCards - 1))
 		
-		var xPos = playerPos.x
-		var yPos = playerPos.y
+		var xPos = playerPos.x + posXOffset
+		var yPos = playerPos.y + posYOffset
 		
 		match playerIndex:
 			0:
@@ -492,13 +510,13 @@ func _on_player_pick_turn_timer_timeout():
 	_indicate_player_turn(false)
 	var nextPlayerIndex = _get_next_player_index(0)
 	var nextPlayerNode = _get_player_node_from_player_index(nextPlayerIndex)
+	var nextPlayerCards = _get_player_cards(nextPlayerNode)
 	
-	# TODO: Check for timeout when a card is picked
-	if pickedCard:
-		pickedCard.isCardInPickingOrPair = false
-		
-	pickedCard = Utility.pickRandomCard(_get_player_cards(nextPlayerNode))
+	for card in nextPlayerCards:
+		card.is_draggable = false
 	
+	pickedCard = Utility.pickRandomCard(nextPlayerCards)
+
 	wasGameRegular = false
 	isGameMoving = true
 

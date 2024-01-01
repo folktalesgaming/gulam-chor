@@ -410,8 +410,8 @@ visible = false
 position = Vector2(528, 796)
 
 [node name="PlayerDragZone" parent="." groups=["playerdragzone"] instance=ExtResource("10_s2frj")]
-position = Vector2(529, 1414)
-scale = Vector2(0.679999, 0.320002)
+position = Vector2(540, 1360)
+scale = Vector2(1.32, 0.320002)
 dragging_zone = "player"
 
 [connection signal="timeout" from="Timers/PlayerPickTurnTimer" to="." method="_on_player_pick_turn_timer_timeout"]
