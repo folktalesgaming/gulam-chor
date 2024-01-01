@@ -17,7 +17,7 @@ func _ready():
 		get_tree().create_timer(4).timeout.connect(_open_tutorial)
 
 func _notification(what):
-	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST || what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if has_quit_timer_started && !has_quit_timer_expired:
 			get_tree().quit()
 		else:
