@@ -281,10 +281,12 @@ func _pick_card(card):
 	_indicate_player_turn(false)
 	await get_tree().create_timer(0.2).timeout
 	_remove_pair_cards_from_hand(0)
+	await get_tree().create_timer(0.2).timeout
 	_rearrange_cards_in_hand(0)
 	_rearrange_cards_in_hand(nextPlayerIndex)
 	
 	await get_tree().create_timer(0.2).timeout
+	_check_jack_in_player()
 	
 	wasGameRegular = true
 	isGameMoving = true
@@ -514,12 +516,12 @@ func _on_player_pick_turn_timer_timeout():
 	var nextPlayerCards = _get_player_cards(nextPlayerNode)
 	
 	for card in nextPlayerCards:
+		card.isCardInPickingOrPair = false
 		card.is_draggable = false
 	
 	pickedCard = Utility.pickRandomCard(nextPlayerCards)
-
-	wasGameRegular = false
-	isGameMoving = true
+	
+	_pick_card(pickedCard)
 
 # Replay the game
 func _on_replay_button_pressed():
