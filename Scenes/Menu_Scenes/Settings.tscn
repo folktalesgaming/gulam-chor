@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bdydqeuq0efo8"]
+[gd_scene load_steps=9 format=3 uid="uid://bdydqeuq0efo8"]
 
 [ext_resource type="Script" path="res://Scenes/Menu_Scenes/settings.gd" id="1_nm1n6"]
 [ext_resource type="Texture2D" uid="uid://dpyefhmxfkepu" path="res://Assets/UI/MainBGLighter.png" id="2_anj2r"]
@@ -8,7 +8,6 @@
 [ext_resource type="Theme" uid="uid://bb1pnq5prixi" path="res://Utils/Themes/slider.tres" id="3_wliml"]
 [ext_resource type="Texture2D" uid="uid://c0sayeopluoor" path="res://Assets/UI/button_primary_pressed.png" id="4_lhaxk"]
 [ext_resource type="Theme" uid="uid://dsaq2mfabrfw" path="res://Utils/Themes/checkbox.tres" id="5_b8m6m"]
-[ext_resource type="Texture2D" uid="uid://bdb54ewuvm30l" path="res://Assets/UI/save_alert_bg.png" id="9_ldeh2"]
 
 [node name="Settings" type="Node2D"]
 script = ExtResource("1_nm1n6")
@@ -113,18 +112,14 @@ texture_normal = ExtResource("3_2fag7")
 texture_pressed = ExtResource("4_lhaxk")
 
 [node name="SaveLabel" type="Label" parent="UI/VBoxContainer/SaveButton"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -11.5
-offset_right = 20.0
-offset_bottom = 11.5
+layout_mode = 2
+offset_left = 346.5
+offset_top = 34.0
+offset_right = 430.5
+offset_bottom = 80.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 4
 theme = ExtResource("3_3wtwt")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Save"
@@ -136,38 +131,23 @@ offset_right = 189.0
 offset_bottom = 307.0
 texture_normal = ExtResource("2_tfrg5")
 
-[node name="SaveAlertBg" type="TextureRect" parent="UI"]
+[node name="DataSavedLabel" type="Label" parent="UI"]
 unique_name_in_owner = true
 visible = false
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -807.0
-offset_top = -174.0
-offset_right = -74.0
-offset_bottom = -60.0
-grow_horizontal = 0
-grow_vertical = 0
-texture = ExtResource("9_ldeh2")
-
-[node name="Label" type="Label" parent="UI/SaveAlertBg"]
-layout_mode = 1
-anchors_preset = 8
+anchors_preset = 7
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -54.0
-offset_top = -23.0
-offset_right = 54.0
-offset_bottom = 23.0
+anchor_bottom = 1.0
+offset_left = -210.5
+offset_top = -242.0
+offset_right = 210.5
+offset_bottom = -196.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 theme = ExtResource("3_3wtwt")
-theme_override_colors/font_color = Color(0, 0.686275, 0, 1)
-text = "Saved the data"
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Your  preference  is  saved"
 
 [node name="AlertDialogTimer" type="Timer" parent="."]
 unique_name_in_owner = true

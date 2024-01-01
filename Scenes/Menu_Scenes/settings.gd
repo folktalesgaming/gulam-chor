@@ -9,8 +9,8 @@ var isRandomMode = false
 @onready var BgSlider = %BgMusicSlider
 @onready var SfxSlider = %SfxSlider
 @onready var random_mode_checkbox = %RandomModeCheckbox
-@onready var save_alert_bg = %SaveAlertBg
 @onready var alert_dialog_timer = %AlertDialogTimer
+@onready var data_saved_label = %DataSavedLabel
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -23,7 +23,6 @@ func _on_back_button_pressed():
 
 func save():
 	AudioManager._play_button_sfx()
-	save_alert_bg.show()
 	alert_dialog_timer.start()
 	var file = FileAccess.open(save_path, FileAccess.WRITE)
 	file.store_var(bgVolume)
@@ -49,6 +48,7 @@ func _save_random_mode_setting():
 	if isRandomMode:
 		isRandom = 1
 	file.store_8(isRandom)
+	data_saved_label.show()
 
 func _load_data():
 	if FileAccess.file_exists(save_path):
@@ -75,4 +75,4 @@ func _on_random_mode_checkbox_toggled(button_pressed):
 	isRandomMode = button_pressed
 
 func _on_alert_dialog_timer_timeout():
-	save_alert_bg.hide()
+	data_saved_label.hide()
