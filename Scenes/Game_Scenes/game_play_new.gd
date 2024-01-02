@@ -118,6 +118,7 @@ func _process(_delta):
 			pickedCard.state = STATE.MOVINGFROMPICKINGTOHAND
 			playerNode._add_cards(pickedCard.cardName)
 			nextPlayerNode._remove_cards([pickedCard.cardName])
+			AudioManager._play_card_take_sfx()
 			if nextPlayerIndex == 0:
 				pickedCard.SetCardNotVisible()
 				_rearrange_cards_in_hand(0)
@@ -219,9 +220,17 @@ func _player_card_pick_state(playerIndex, isReverse = false, onlyPair = false):
 			if pairCards.has(card.cardName):
 				card.isCardInPickingOrPair = cardsInPickByPlayer
 				card.dragging_zone = "pile"
+				#if !isReverse:
+					#card._play_glow_animation()
+				#else:
+					#card._stop_glow_animation()
 		else:
 			card.dragging_zone = "player"
 			card.isCardInPickingOrPair = cardsInPickByPlayer
+			#if !isReverse:
+				#card._play_glow_animation()
+			#else:
+				#card._stop_glow_animation()
 	
 	_rearrange_cards_in_hand(playerIndex, !isReverse)
 
@@ -257,6 +266,7 @@ func _picking_card(card):
 			mayBePickedCards.append(cardInHand)
 	
 	card.state = STATE.INPICKING
+	AudioManager._play_card_take_sfx()
 
 # When player cancels the picking of card
 func _cancel_select():
@@ -273,9 +283,12 @@ func _pick_card(card):
 	player._add_cards(card.cardName)
 	nextPlayerNode._remove_cards([card.cardName])
 	
+	card.targetPosition = player_position
+	card.targetRotation = deg_to_rad(0)
 	card.state = STATE.MOVINGFROMPICKINGTOHAND
 	card.isCardInPickingOrPair = false
 	card.SetCardVisible()
+	AudioManager._play_card_take_sfx()
 	
 	player_pick_turn_timer.stop()
 	_indicate_player_turn(false)
@@ -312,6 +325,7 @@ func _remove_pair_cards_from_hand(playerIndex):
 		cardNode.isCardInPickingOrPair = false
 		cardNode.state = STATE.MOVINGFROMHANDTODECK
 		cardNode.SetCardVisible()
+	AudioManager._play_card_pair_throw_sfx()
 	
 	if playerNode._get_cards_in_hand().size() > 0:
 		await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.6).timeout
