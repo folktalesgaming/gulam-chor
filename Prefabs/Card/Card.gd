@@ -71,21 +71,21 @@ func _physics_process(delta):
 		STATE.INHAND:
 			pass
 		STATE.INPAIR:
-			animateFromStartToTarget(STATE.INHAND, DRAWTIME, false, true, true)
+			animateFromStartToTarget(STATE.INHAND, DRAWTIME, false)
 		STATE.INPICKING:
 			pass
 		STATE.MOVINGFROMHANDTODECK:
-			animateFromStartToTarget(STATE.INDECK, DRAWTIME, true, true, false)
+			animateFromStartToTarget(STATE.INDECK, DRAWTIME)
 		STATE.INTOBEPICKED:
-			animateFromStartToTarget(STATE.INHAND, DRAWTIME, false, true, true)
+			animateFromStartToTarget(STATE.INHAND, DRAWTIME)
 		STATE.MOVINGFROMPICKINGTOHAND:
-			animateFromStartToTarget(STATE.INHAND, DRAWTIME, true, true, false)
+			animateFromStartToTarget(STATE.INHAND, DRAWTIME)
 		STATE.REORGANIZE:
 			animateFromStartToTarget(STATE.INHAND, ShuffleTime)
 		STATE.SHUFFLE:
 			animateFromStartToTarget(STATE.INHAND, ShuffleTime, true)
 
-func animateFromStartToTarget(nextState, tweenTime, shouldRotate=true, shouldSelect=false, selected=false):
+func animateFromStartToTarget(nextState, tweenTime, shouldRotate=true):
 	if tween:
 		tween.kill()
 		
@@ -97,11 +97,6 @@ func animateFromStartToTarget(nextState, tweenTime, shouldRotate=true, shouldSel
 	tween.tween_property($".", "position", targetPosition, tweenTime).from(self.position)
 	if shouldRotate:
 		tween.tween_property($".", "rotation", targetRotation, tweenTime).from(self.rotation)
-	#if shouldSelect:
-		#if selected:
-			#tween.tween_property($SelectedContainer, "visible", true, tweenTime-0.3).from(false)
-		#else:
-			#tween.tween_property($SelectedContainer, "visible", false, tweenTime-0.3).from(true)
 	
 	state = nextState
 
@@ -124,39 +119,6 @@ func _check_inentered_drop_zone():
 		is_draggable = false
 		emit_signal("pick_card", self)
 
-func animateInPicked():
-	if tween:
-		tween.kill()
-	
-	tween = create_tween()
-	tween.set_ease(Tween.EASE_IN_OUT)
-	tween.set_trans(Tween.TRANS_CUBIC)
-	tween.set_parallel(true)
-	
-	tween.tween_property($PickedContainer, "visible", true, 0.5).from(false)
-	tween.tween_property($SelectedContainer, "visible", false, 0.5).from(true)
-	
-	state = STATE.INHAND
-
-func animateInRemovePicked():
-	if tween:
-		tween.kill()
-	
-	tween = create_tween()
-	tween.set_ease(Tween.EASE_IN_OUT)
-	tween.set_trans(Tween.TRANS_CUBIC)
-	tween.set_parallel(true)
-	
-	tween.tween_property($PickedContainer, "visible", false, 0.5).from(true)
-	tween.tween_property($SelectedContainer, "visible", true, 0.5).from(false)
-	
-	state = STATE.INHAND
-
-#func _on_selected_container_gui_input(event):
-	#if event is InputEventMouseButton and event.pressed and event.button_index == 1 and isCardInPickingOrPair:
-		#state = STATE.MOVINGFROMPICKINGTOHAND
-		#emit_signal("pick_card", self)
-
 func _on_drag_area_mouse_entered():
 	if isCardInPickingOrPair:
 		initialPosition = self.position
@@ -178,3 +140,9 @@ func _on_drag_area_body_entered(body):
 func _on_drag_area_body_exited(body):
 	if body.is_in_group("dragzone"):
 		is_inside_dropable = false
+
+func _play_glow_animation():
+	$GlowAnimationPlayer.play("glow")
+	
+func _stop_glow_animation():
+	$GlowAnimationPlayer.stop()

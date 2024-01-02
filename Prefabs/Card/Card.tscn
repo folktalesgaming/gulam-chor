@@ -1,34 +1,23 @@
-[gd_scene load_steps=7 format=3 uid="uid://cohmcy8s6a7qf"]
+[gd_scene load_steps=13 format=3 uid="uid://cohmcy8s6a7qf"]
 
 [ext_resource type="Script" path="res://Prefabs/Card/Card.gd" id="1_uhcpj"]
+[ext_resource type="Shader" path="res://Prefabs/Card/Card.gdshader" id="2_ywken"]
+[ext_resource type="Texture2D" uid="uid://cyxli846ceu42" path="res://Assets/UI/Shaders/card_glow_new.png" id="3_ejy3e"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7g344"]
-bg_color = Color(1, 1, 1, 0)
-border_width_left = 5
-border_width_top = 5
-border_width_right = 5
-border_width_bottom = 5
-border_color = Color(0.831373, 1, 0.286275, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_color = Color(1, 0.878431, 0, 0.72549)
-shadow_size = 10
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_yh6mm"]
+metadata/_preview_in_3d_space_ = true
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v8fip"]
-bg_color = Color(1, 1, 1, 0)
-border_width_left = 5
-border_width_top = 5
-border_width_right = 5
-border_width_bottom = 5
-border_color = Color(0.0823529, 0.541176, 0.392157, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_color = Color(0, 0.635294, 0.427451, 0.72549)
-shadow_size = 10
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pnnru"]
+width = 64
+height = 64
+seamless = true
+noise = SubResource("FastNoiseLite_yh6mm")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3imia"]
+shader = ExtResource("2_ywken")
+shader_parameter/intensity = 0.0
+shader_parameter/speed = 1.0
+shader_parameter/n = SubResource("NoiseTexture2D_pnnru")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_snabq"]
 size = Vector2(160, 263)
@@ -50,22 +39,51 @@ properties/3/path = NodePath(".:state")
 properties/3/spawn = true
 properties/3/replication_mode = 1
 
+[sub_resource type="Animation" id="Animation_28cf0"]
+resource_name = "glow"
+length = 0.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CardGlow:material:shader_parameter/intensity")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 3.0]
+}
+
+[sub_resource type="Animation" id="Animation_78e73"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CardGlow:material:shader_parameter/intensity")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_nfbnb"]
+_data = {
+"RESET": SubResource("Animation_78e73"),
+"glow": SubResource("Animation_28cf0")
+}
+
 [node name="MarginContainer" type="StaticBody2D"]
 script = ExtResource("1_uhcpj")
 
-[node name="SelectedContainer" type="PanelContainer" parent="."]
-visible = false
-offset_left = -87.0
-offset_top = -136.0
-offset_right = 84.0
-offset_bottom = 134.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_7g344")
-
-[node name="PickedContainer" type="PanelContainer" parent="."]
-visible = false
-offset_right = 171.0
-offset_bottom = 270.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_v8fip")
+[node name="CardGlow" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_3imia")
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("3_ejy3e")
 
 [node name="Card" type="Sprite2D" parent="."]
 unique_name_in_owner = true
@@ -89,8 +107,11 @@ debug_color = Color(0, 0.6, 0.701961, 0.419608)
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_yghxu")
 
-[connection signal="gui_input" from="SelectedContainer" to="." method="_on_selected_container_gui_input"]
-[connection signal="gui_input" from="PickedContainer" to="." method="_on_selected_container_gui_input"]
+[node name="GlowAnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_nfbnb")
+}
+
 [connection signal="body_entered" from="DragArea" to="." method="_on_drag_area_body_entered"]
 [connection signal="body_exited" from="DragArea" to="." method="_on_drag_area_body_exited"]
 [connection signal="mouse_entered" from="DragArea" to="." method="_on_drag_area_mouse_entered"]
