@@ -270,6 +270,7 @@ func _picking_card(card):
 
 # When player cancels the picking of card
 func _cancel_select():
+	Drag._remove_picked_card()
 	for card in mayBePickedCards:
 		card.isCardInPickingOrPair = true
 	mayBePickedCards = []
@@ -288,6 +289,7 @@ func _pick_card(card):
 	card.state = STATE.MOVINGFROMPICKINGTOHAND
 	card.isCardInPickingOrPair = false
 	card.SetCardVisible()
+	Drag._remove_picked_card()
 	AudioManager._play_card_take_sfx()
 	
 	player_pick_turn_timer.stop()

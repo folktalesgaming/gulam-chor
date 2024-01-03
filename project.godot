@@ -24,6 +24,7 @@ buses/default_bus_layout="res://Utils/Resources/default_bus_layout.tres"
 
 GameManager="*res://Utils/game_manager.gd"
 AudioManager="*res://Utils/Autoloads/AudioManager.tscn"
+Drag="*res://Utils/Autoloads/drag.gd"
 
 [display]
 
