@@ -553,6 +553,7 @@ func _on_exit_button_pressed():
 
 # Quit game from pause menu
 func _on_quit_button_pressed():
+	AudioManager._stop_shuffle_sfx()
 	AudioManager._play_button_sfx()
 	get_tree().change_scene_to_file("res://Scenes/Menu_Scenes/main_menu.tscn")
 

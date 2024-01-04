@@ -103,17 +103,12 @@ func animateFromStartToTarget(nextState, tweenTime, shouldRotate=true):
 	state = nextState
 
 func _check_drop():
-	if is_inside_dropable:
+	scale = Vector2(1, 1)
+	if is_inside_dropable && dragging_zone == drop_zone_ref.dragging_zone:
 		is_draggable = false
-		if dragging_zone == drop_zone_ref.dragging_zone:
-			emit_signal("pick_card", self)
-		else:
-			Drag._remove_picked_card()
-			targetPosition = initialPosition
-			state = STATE.MOVINGFROMHANDTODECK
-			emit_signal("cancel_select")
+		scale = Vector2(1, 1)
+		emit_signal("pick_card", self)
 	else:
-		Drag._remove_picked_card()
 		targetPosition = initialPosition
 		state = STATE.MOVINGFROMHANDTODECK
 		emit_signal("cancel_select")
@@ -121,7 +116,7 @@ func _check_drop():
 func _check_inentered_drop_zone():
 	if is_inside_dropable && dragging_zone == drop_zone_ref.dragging_zone:
 		is_draggable = false
-		Drag._remove_picked_card()
+		scale = Vector2(1, 1)
 		emit_signal("pick_card", self)
 
 func _on_drag_area_mouse_entered():
@@ -131,18 +126,12 @@ func _on_drag_area_mouse_entered():
 		scale = Vector2(1.2, 1.2)
 		emit_signal("select_card", self)
 
-func _on_drag_area_mouse_exited():
-	#is_draggable = false
-	scale = Vector2(1, 1)
-	emit_signal("cancel_select")
-
 func _on_drag_area_body_entered(body):
 	if body.is_in_group("dragzone") && body.dragging_zone == dragging_zone:
 		is_inside_dropable = true
 		drop_zone_ref = body
 
 func _on_drag_area_body_exited(_body):
-	#if body.is_in_group("dragzone"):
 	is_inside_dropable = false
 
 func _play_glow_animation():
