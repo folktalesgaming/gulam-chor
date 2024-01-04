@@ -259,18 +259,21 @@ func _picking_card(card):
 	var nextPlayerNode = _get_player_node_from_player_index(nextPlayerIndex)
 	var cardsInNextPlayerHand = _get_player_cards(nextPlayerNode)
 	
+	var maybepickedcardsname = []
+	
 	for cardInHand in cardsInNextPlayerHand:
 		if card.cardName != cardInHand.cardName:
 			cardInHand.isCardInPickingOrPair = false
 			cardInHand.is_draggable = false
 			mayBePickedCards.append(cardInHand)
+			maybepickedcardsname.append(cardInHand.cardName)
 	
 	card.state = STATE.INPICKING
 	AudioManager._play_card_take_sfx()
 
 # When player cancels the picking of card
 func _cancel_select():
-	Drag._remove_picked_card()
+	#Drag._remove_picked_card()
 	for card in mayBePickedCards:
 		card.isCardInPickingOrPair = true
 	mayBePickedCards = []
@@ -288,9 +291,17 @@ func _pick_card(card):
 	card.targetRotation = deg_to_rad(0)
 	card.state = STATE.MOVINGFROMPICKINGTOHAND
 	card.isCardInPickingOrPair = false
+	card.is_draggable = false
 	card.SetCardVisible()
+	
 	Drag._remove_picked_card()
 	AudioManager._play_card_take_sfx()
+	
+	for mayBeCard in mayBePickedCards:
+		mayBeCard.isCardInPickingOrPair = false
+		mayBeCard.is_draggable = false
+	
+	mayBePickedCards = []
 	
 	player_pick_turn_timer.stop()
 	_indicate_player_turn(false)
@@ -325,13 +336,15 @@ func _remove_pair_cards_from_hand(playerIndex):
 		cardNode.targetPosition = Vector2(rng.randf_range(0.0, 5.0), rng.randf_range(0.0, 5.0))
 		cardNode.targetRotation = deg_to_rad(rng.randf_range(-30.0, 60.0))
 		cardNode.isCardInPickingOrPair = false
+		cardNode.is_draggable = false
 		cardNode.state = STATE.MOVINGFROMHANDTODECK
 		cardNode.SetCardVisible()
 	AudioManager._play_card_pair_throw_sfx()
 	
+	await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.6).timeout
 	if playerNode._get_cards_in_hand().size() > 0:
-		await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.6).timeout
 		_rearrange_cards_in_hand(playerIndex)
+	
 	# Check if all cards expect the odd jack or odd card is removed or not to set game over state
 	if deck_pile.cardsInPile >= 50:
 		isGameMoving = false
@@ -412,7 +425,7 @@ func _rearrange_cards_in_hand(playerIndex, isInPick = false):
 	var posYOffset = 0
 	
 	if isInPick:
-		spreadOffsetGlobal = 50
+		spreadOffsetGlobal = 40
 		heightOffsetGlobal = 30
 		rotationOffsetGlobal = 0.1
 		match playerIndex:

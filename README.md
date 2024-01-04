@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/folktalesgaming/gulam-chor/a8ecd1813606b27f019c28d7374c721b9dd531d4/icon.svg" />
+   <img src="https://raw.githubusercontent.com/folktalesgaming/gulam-chor/a8ecd1813606b27f019c28d7374c721b9dd531d4/icon.svg" />
 </div>
 
 # Gulam Chor (Jack the theif)
