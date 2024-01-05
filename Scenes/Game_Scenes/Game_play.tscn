@@ -405,10 +405,6 @@ theme = ExtResource("7_iq7kp")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Exit Back"
 
-[node name="PileDragZone" parent="." groups=["piledragzone"] instance=ExtResource("10_s2frj")]
-visible = false
-position = Vector2(528, 796)
-
 [node name="PlayerDragZone" parent="." groups=["playerdragzone"] instance=ExtResource("10_s2frj")]
 position = Vector2(540, 1360)
 scale = Vector2(1.32, 0.320002)
