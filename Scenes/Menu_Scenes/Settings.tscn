@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bdydqeuq0efo8"]
+[gd_scene load_steps=10 format=3 uid="uid://bdydqeuq0efo8"]
 
 [ext_resource type="Script" path="res://Scenes/Menu_Scenes/settings.gd" id="1_nm1n6"]
 [ext_resource type="Texture2D" uid="uid://dpyefhmxfkepu" path="res://Assets/UI/MainBGLighter.png" id="2_anj2r"]
@@ -8,6 +8,7 @@
 [ext_resource type="Theme" uid="uid://bb1pnq5prixi" path="res://Utils/Themes/slider.tres" id="3_wliml"]
 [ext_resource type="Texture2D" uid="uid://c0sayeopluoor" path="res://Assets/UI/button_primary_pressed.png" id="4_lhaxk"]
 [ext_resource type="Theme" uid="uid://dsaq2mfabrfw" path="res://Utils/Themes/checkbox.tres" id="5_b8m6m"]
+[ext_resource type="FontFile" uid="uid://6f2aofkr43t6" path="res://Assets/Fonts/PlusJakartaSans-Bold.ttf" id="9_7g48a"]
 
 [node name="Settings" type="Node2D"]
 script = ExtResource("1_nm1n6")
@@ -134,19 +135,17 @@ texture_normal = ExtResource("2_tfrg5")
 [node name="DataSavedLabel" type="Label" parent="UI"]
 unique_name_in_owner = true
 visible = false
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -210.5
-offset_top = -242.0
-offset_right = 210.5
-offset_bottom = -196.0
-grow_horizontal = 2
-grow_vertical = 0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -503.0
+offset_top = 93.0
+offset_right = -64.0
+offset_bottom = 139.0
+grow_horizontal = 0
 theme = ExtResource("3_3wtwt")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(1, 0.313726, 0.313726, 1)
+theme_override_fonts/font = ExtResource("9_7g48a")
 text = "Your  preference  is  saved"
 
 [node name="AlertDialogTimer" type="Timer" parent="."]
