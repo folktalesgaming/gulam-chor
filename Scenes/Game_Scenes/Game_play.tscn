@@ -406,8 +406,8 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Exit Back"
 
 [node name="PlayerDragZone" parent="." groups=["playerdragzone"] instance=ExtResource("10_s2frj")]
-position = Vector2(540, 1400)
-scale = Vector2(1.005, 1.12)
+position = Vector2(538, 1480)
+scale = Vector2(1.685, 0.960885)
 dragging_zone = "player"
 
 [connection signal="timeout" from="Timers/PlayerPickTurnTimer" to="." method="_on_player_pick_turn_timer_timeout"]
