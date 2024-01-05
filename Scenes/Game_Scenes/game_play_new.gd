@@ -347,6 +347,20 @@ func _remove_pair_cards_from_hand(playerIndex):
 	
 	# Check if all cards expect the odd jack or odd card is removed or not to set game over state
 	if deck_pile.cardsInPile >= 50:
+		if playerNode._get_cards_in_hand().size() > 0:
+			var card = _get_card_node_from_card_name(playerNode._get_cards_in_hand()[0])
+			if playerIndex == 2 || playerIndex == 3:
+				card.targetRotation = deg_to_rad(180)
+				card.state = STATE.MOVINGFROMPICKINGTOHAND
+			card.SetCardVisible()
+		else:
+			var nextPlayerIndex = _get_next_player_index(playerIndex)
+			var nextPlayerNode = _get_player_node_from_player_index(nextPlayerIndex)
+			var card = _get_card_node_from_card_name(nextPlayerNode._get_cards_in_hand()[0])
+			if nextPlayerIndex == 2 || nextPlayerIndex == 3:
+				card.targetRotation = deg_to_rad(180)
+				card.state = STATE.MOVINGFROMPICKINGTOHAND
+			card.SetCardVisible()
 		isGameMoving = false
 		isGameOver = true
 		game_over_panel.show()
