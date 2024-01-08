@@ -60,6 +60,7 @@ const BOT_PICK_TIME = 0.9
 var isGameMoving = false
 var isGameOver = false
 var isGamePaused = false
+var hasGameStarted = false
 
 var isRandomMode = false
 var playerTurnIndex = 0
@@ -127,7 +128,7 @@ func _process(_delta):
 			
 			await get_tree().create_timer(BOT_PICK_TIME).timeout
 			_remove_pair_cards_from_hand(playerTurnIndex)
-			_rearrange_cards_in_hand(playerTurnIndex)
+			_shuffle_cards_in_hand(playerTurnIndex)
 			_player_card_pick_state(nextPlayerIndex, true)
 			pickedCard = null
 			if playerTurnIndex == 0 || nextPlayerIndex == 0:
@@ -179,6 +180,7 @@ func _start_game():
 	await get_tree().create_timer(REMOVE_BOT_CARDS_TIME - 0.2).timeout
 	_check_jack_in_player()
 	isGameMoving = true
+	hasGameStarted = true
 
 # Reset the game to the initial position for replay
 func _reset_game():
@@ -192,6 +194,7 @@ func _reset_game():
 	isGameMoving = false
 	isGameOver = false
 	isGamePaused = false
+	hasGameStarted = false
 	
 	pack_of_deck.show()
 	
@@ -349,17 +352,21 @@ func _remove_pair_cards_from_hand(playerIndex):
 	if deck_pile.cardsInPile >= 50:
 		if playerNode._get_cards_in_hand().size() > 0:
 			var card = _get_card_node_from_card_name(playerNode._get_cards_in_hand()[0])
-			if playerIndex == 2 || playerIndex == 3:
+			if playerIndex == 2:
 				card.targetRotation = deg_to_rad(180)
-				card.state = STATE.MOVINGFROMPICKINGTOHAND
+			if playerIndex == 3:
+				card.targetRotation = deg_to_rad(90)
+			card.state = STATE.MOVINGFROMPICKINGTOHAND
 			card.SetCardVisible()
 		else:
 			var nextPlayerIndex = _get_next_player_index(playerIndex)
 			var nextPlayerNode = _get_player_node_from_player_index(nextPlayerIndex)
 			var card = _get_card_node_from_card_name(nextPlayerNode._get_cards_in_hand()[0])
-			if nextPlayerIndex == 2 || nextPlayerIndex == 3:
+			if nextPlayerIndex == 2:
 				card.targetRotation = deg_to_rad(180)
-				card.state = STATE.MOVINGFROMPICKINGTOHAND
+			if nextPlayerIndex == 3:
+				card.targetRotation = deg_to_rad(90)
+			card.state = STATE.MOVINGFROMPICKINGTOHAND
 			card.SetCardVisible()
 		isGameMoving = false
 		isGameOver = true
@@ -370,8 +377,7 @@ func _shuffle_cards_in_hand(playerIndex):
 	var playerNode = _get_player_node_from_player_index(playerIndex)
 	var cardsInPlayerHand = _get_player_cards(playerNode)
 	
-	# TODO: Proper shuffling and check for start of the game
-	if cardsInPlayerHand.size() < 0:
+	if cardsInPlayerHand.size() < 0 || !hasGameStarted:
 		return
 	
 	var oldPositionsWithIndex = []
@@ -390,6 +396,7 @@ func _shuffle_cards_in_hand(playerIndex):
 		card.targetRotation = oldPositionsWithIndex[newIndex].rotation
 		deck_pile.move_child(card, newIndex)
 		card.state = STATE.SHUFFLE
+	_rearrange_cards_in_hand(playerIndex)
 
 # Start the timer for player pick turn
 func _player_pick():
